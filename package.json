@@ -1,0 +1,40 @@
+{
+  "name": "birds2",
+  "version": "1.0.0",
+  "description": "Simple SPA for bird ringers",
+  "main": "index.js",
+  "dependencies": {
+    "firebase": "^2.4.1",
+    "purebem": "^0.3.0",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-router": "^2.0.0",
+    "reactfire": "^0.6.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.5.2",
+    "babel-loader": "^6.2.3",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "css-loader": "^0.23.1",
+    "less": "^2.6.0",
+    "less-loader": "^2.2.2",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.14"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --devtool eval --progress --colors --inline --hot --content-base build --history-api-fallback",
+    "build": "webpack -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tscok/birds2.git"
+  },
+  "author": "Mikael Carlsson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tscok/birds2/issues"
+  },
+  "homepage": "https://github.com/tscok/birds2#readme"
+}

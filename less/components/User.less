@@ -1,0 +1,39 @@
+.user {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    position: relative;
+    cursor: pointer;
+
+    @size: 40px;
+
+    &__avatar {
+        width: @size;
+        height: @size;
+        border-radius: 100%;
+    }
+
+    &__name {
+        line-height: @size;
+        margin-left: 10px;
+        display: none;
+
+        @media (min-width: @responsive-size-tablet) {
+            display: block;
+        }
+    }
+
+    &__links {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: @color-white;
+    }
+
+    &__link {
+        display: block;
+        line-height: 40px;
+        padding: 0 15px;
+    }
+}

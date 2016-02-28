@@ -1,0 +1,37 @@
+// Skeleton
+// http://getskeleton.com/
+@import "normalize.css";
+@import "skeleton.css";
+
+// Customization
+
+/* Base Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+body {
+  font-size: 1.6em;
+  line-height: 1.6;
+  font-weight: 300;
+  color: @text-color;
+}
+
+/* Grid
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+@media (min-width: @responsive-size-tablet) {
+    .container {
+        width: 90%;
+    }
+}
+
+.button.button-primary[disabled],
+button.button-primary[disabled],
+input[type="submit"].button-primary[disabled],
+input[type="reset"].button-primary[disabled],
+input[type="button"].button-primary[disabled],
+.button.button-primary[disabled]:hover,
+button.button-primary[disabled]:hover,
+input[type="submit"].button-primary[disabled]:hover,
+input[type="reset"].button-primary[disabled]:hover,
+input[type="button"].button-primary[disabled]:hover {
+  background-color: #999;
+  border-color: transparent;
+}
