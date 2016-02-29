@@ -32,7 +32,7 @@ function requireAuth(nextState, replace) {
 const routes = (
     <Router history={ browserHistory }>
         <Route path="/" component={ App }>
-            <IndexRoute component={ ProfileView } />
+            <IndexRoute component={ ProfileView } onEnter={ requireAuth } />
 
             <Route path="/login" component={ LoginView } onEnter={ logout } />
             
