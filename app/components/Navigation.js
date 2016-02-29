@@ -16,6 +16,11 @@ const Navigation = React.createClass({
         router: PropTypes.object
     },
 
+    propTypes: {
+        location: PropTypes.object.isRequired,
+        params: PropTypes.object.isRequired
+    },
+
     isLoggedIn() {
         return firebaseRef.getAuth() !== null;
     },
@@ -23,7 +28,7 @@ const Navigation = React.createClass({
     isProject() {
         const route = this.props.location.pathname.split('/');
         const match = route.some(part => part === 'project');
-        const id = this.props.params.id;
+        const { id } = this.props.params;
 
         return match === true && !!id;
     },
@@ -57,7 +62,7 @@ const Navigation = React.createClass({
             return null;
         }
 
-        const id = this.props.params.id;
+        const { id } = this.props.params;
 
         return (
             <nav className={ block('links', ['project']) }>
