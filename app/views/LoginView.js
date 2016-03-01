@@ -63,18 +63,20 @@ const LoginView = React.createClass({
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
 
         return (
-            <form className={ block('form') } onSubmit={ this.onSubmit }>
-                <label className={ block('group') }>
-                    <span className={ block('label') }>Email</span>
-                    <input type="text" className={ block('input') } onChange={ this.onChange } ref={ (ref) => this.email = ref } />
-                </label>
-                <label className={ block('group') }>
-                    <span className={ block('label') }>Password</span>
-                    <input type="password" className={ block('input') } ref={ (ref) => this.password = ref } />
-                </label>
-                <button type="submit" className={ buttonClass } disabled={ this.state.isSubmitting }>Login</button>
+            <div className={ block('password-login') }>
+                <form className={ block('form') } onSubmit={ this.onSubmit }>
+                    <label className={ block('group') }>
+                        <span className={ block('label') }>Email</span>
+                        <input type="text" className={ block('input') } onChange={ this.onChange } ref={ (ref) => this.email = ref } />
+                    </label>
+                    <label className={ block('group') }>
+                        <span className={ block('label') }>Password</span>
+                        <input type="password" className={ block('input') } ref={ (ref) => this.password = ref } />
+                    </label>
+                    <button type="submit" className={ buttonClass } disabled={ this.state.isSubmitting }>Login</button>
+                </form>
                 { this.renderError() }
-            </form>
+            </div>
         );
     },
 
