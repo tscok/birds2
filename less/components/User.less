@@ -14,9 +14,25 @@
     }
 
     &__name {
+        .user-select;
+
         line-height: @size;
         margin-left: 10px;
+        padding-right: 15px;
         display: none;
+
+        &:after {
+            content: "";
+            width: 0;
+            height: 0;
+            display: inline-flex;
+            border-width: 5px;
+            border-style: solid;
+            border-color: @color-black transparent transparent;
+            position: relative;
+            top: -2px;
+            right: -10px;
+        }
 
         @media (min-width: @responsive-size-tablet) {
             display: block;
@@ -25,7 +41,8 @@
 
     &__links {
         position: absolute;
-        top: 60px;
+        z-index: @z-index-top;
+        top: 70px;
         left: 0;
         width: 100%;
         background-color: @color-white;
