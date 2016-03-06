@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import purebem from 'purebem';
+import onclickoutside from 'react-onclickoutside';
 
 import NavLink from './NavLink';
 
@@ -8,6 +9,8 @@ import NavLink from './NavLink';
 const block = purebem.of('user');
 
 const User = React.createClass({
+
+    mixins: [onclickoutside],
 
     propTypes: {
         data: PropTypes.object.isRequired
@@ -21,6 +24,10 @@ const User = React.createClass({
 
     toggleLinks(visible) {
         this.setState({ visible });
+    },
+
+    handleClickOutside() {
+        this.toggleLinks(false);
     },
 
     renderLinks() {

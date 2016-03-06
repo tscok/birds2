@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
+import purebem from 'purebem';
 
 import Navigation from 'app/components/Navigation';
 
+
+const block = purebem.of('app');
 
 const App = React.createClass({
 
@@ -11,9 +14,11 @@ const App = React.createClass({
 
     render() {
         return (
-            <div>
+            <div className={ block() }>
                 <Navigation { ...this.props } />
-                { this.props.children }
+                <main className={ block('main') }>
+                    { this.props.children }
+                </main>
             </div>
         );
     }

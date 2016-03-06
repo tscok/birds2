@@ -5,9 +5,11 @@
   "main": "index.js",
   "dependencies": {
     "firebase": "^2.4.1",
+    "moment": "^2.11.2",
     "purebem": "^0.3.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
+    "react-onclickoutside": "^4.5.0",
     "react-router": "^2.0.0",
     "reactfire": "^0.6.0"
   },

@@ -7,6 +7,7 @@ import NavLink from 'app/components/NavLink';
 
 
 const block = purebem.of('profile-view');
+const box = purebem.of('box');
 
 const ProfileView = React.createClass({
 
@@ -14,21 +15,19 @@ const ProfileView = React.createClass({
         // firebaseRef.child('user/123/projects')
     },
 
-    renderProjectsEmpty() {
+    renderEmpty() {
         return (
-            <div className={ block('box-body', ['empty']) }>
-                <p>You are currently not participating in any projects. To get started you can either create a new project or find &amp; join existing projects.</p>
-                <NavLink to="/create" base="button">Create project</NavLink>
-                <NavLink to="/search" base="button">Search projects</NavLink>
+            <div className={ box('body', ['empty']) }>
+                <p>You are currently not participating in any projects.<br/>To get started you can either <NavLink to="/create">create a new project</NavLink> or <NavLink to="/search">search for projects</NavLink> to join.</p>
             </div>
         );
     },
 
     renderProjects() {
         return (
-            <div className={ purebem.many(block('projects'), block('box')) }>
-                <div className={ block('box-title') }>Projects</div>
-                { this.renderProjectsEmpty() }
+            <div className={ purebem.many(block('projects'), box(['border'])) }>
+                <div className={ box('title') }>Projects</div>
+                { this.renderEmpty() }
             </div>
         );
     },
@@ -37,7 +36,6 @@ const ProfileView = React.createClass({
         return (
             <div className={ block() }>
                 <div className="container">
-                    <h1 className={ block('title') }>Profile</h1>
                     { this.renderProjects() }
                 </div>
             </div>
