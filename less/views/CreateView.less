@@ -4,6 +4,16 @@
         text-align: center;
     }
 
+    &__info {
+        font-style: italic;
+        text-align: center;
+        margin-bottom: 3em;
+    }
+
+    &__toggle-button {
+        margin: 3em 0 1em;
+    }
+
     &__form {
         margin: 0 auto;
         max-width: 440px;
@@ -35,7 +45,7 @@
         font-size: 1.4em;
         line-height: 40px;
 
-        &--removable {
+        &--icon {
             padding-right: 40px !important;
         }
 
@@ -47,25 +57,49 @@
     &__remove {
         width: 40px;
         height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         position: absolute;
         right: 0;
         bottom: 0;
+        cursor: pointer;
+
+        &:before, &:after {
+            content: "";
+            width: 20px;
+            height: 2px;
+            background-color: @color-gray7;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        &:before {
+            -webkit-transform: rotate(-45deg);
+        }
+        &:after {
+            -webkit-transform: rotate(45deg);
+        }
+
+        &:hover {
+            &:before, &:after {
+                background-color: @color-gray6;
+            }
+        }
     }
 
     &__actions {
         margin-top: 4em;
+        text-align: center;
     }
 
     &__button {
         font-size: 1em;
         font-weight: 400;
         border-radius: 5px;
-        margin-right: 1em;
         line-height: 50px;
         height: 50px;
         text-transform: none;
+
+        &--reset {
+            margin-left: 1em;
+        }
     }
 }
