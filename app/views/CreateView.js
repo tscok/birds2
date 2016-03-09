@@ -14,8 +14,8 @@ const CreateView = React.createClass({
 
     getInitialState() {
         return {
-            dateEnd: '',
-            dateStart: '',
+            dateEnd: false,
+            dateStart: false,
             isSubmitting: false,
             options: [
                 { text: 'Public', value: true },
@@ -30,9 +30,7 @@ const CreateView = React.createClass({
         return evt => {
             const input = evt.target.value;
             const isValid = moment(input, 'YYYYMMDD', true).isValid();
-            if (isValid) {
-                this.setState({ [name]: input });
-            }
+            this.setState({ [name]: isValid ? input : false });
         };
     },
 
@@ -42,7 +40,8 @@ const CreateView = React.createClass({
     },
 
     onFormSubmit() {
-
+        const { title, dateStart, dateEnd, sites } = this.state;
+        // ...
     },
 
     onMapClick(marker) {
@@ -71,7 +70,8 @@ const CreateView = React.createClass({
         };
     },
 
-    onToggleClick(index) {
+    onToggle(index) {
+        this.setState({ options });
         const options = this.state.options.map((item, i) => {
             item.value = i === index ? true : false;
             return item;
@@ -84,24 +84,19 @@ const CreateView = React.createClass({
         this.setState({ sites });
     },
 
-    renderPrivacyText() {
+    renderToggleInfo() {
         const active = this.state.options.filter(item => item.value === true);
+        let info;
 
-        if (active[0].text === 'Private') {
-            return <p>Private projects are a one man show. No one can find your project and you are on your own.</p>
+        switch (active[0].text) {
+            case 'Private':
+                info = (<p>Private projects are the one man bands. No one can find your project, so you'll be on your own.</p>);
+                break;
+            default:
+                info = (<p>Public projects aim at collaboration. Users can find your project and may request to join.</p>);
         }
 
-        return (
-            <p>Public projects aim at collaboration. Users can find your project and may request to join.</p>
-        );
-    },
-
-    renderMap() {
-        return (
-            <ProjectMap
-                onMapClick={ this.onMapClick }
-                sites={ this.state.sites } />
-        );
+        return info;
     },
 
     renderSite(item, index) {
@@ -109,13 +104,14 @@ const CreateView = React.createClass({
             <label className={ block('group') } key={ index }>
                 <span className={ block('label') }>Site name { index + 1 }</span>
                 <input type="text" className={ block('input', ['icon']) } value={ item.value } onChange={ this.onSiteChange(index) } />
-                <i className={ block('remove') } onClick={ this.onSiteRemove(index) } />
+                <i className={ block('icon', ['remove']) } onClick={ this.onSiteRemove(index) } />
             </label>
         );
     },
 
     renderForm() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
+        const { dateEnd, dateStart } = this.state;
 
         return (
             <form className={ block('form') } onSubmit={ this.onSubmit } ref={ (form) => this.form = form }>
@@ -128,20 +124,22 @@ const CreateView = React.createClass({
                 </label>
                 <label className={ block('group') }>
                     <span className={ block('label') }>Start date - YYYYMMDD</span>
-                    <input type="text" className={ block('input', ['icon']) } onChange={ this.onDateChange('dateStart') } />
+                    <input type="text" className={ block('input') } onChange={ this.onDateChange('dateStart') } />
                 </label>
                 <label className={ block('group') }>
                     <span className={ block('label') }>End date - YYYYMMDD</span>
-                    <input type="text" className={ block('input', ['icon']) } onChange={ this.onDateChange('dateEnd') } />
+                    <input type="text" className={ block('input') } onChange={ this.onDateChange('dateEnd') } />
                 </label>
                 {
                     [].map.call(this.state.sites, this.renderSite)
                 }
                 <ToggleButton
-                    onClick={ this.onToggleClick }
+                    onClick={ this.onToggle }
                     options={ this.state.options }
                     className={ block('toggle-button') } />
-                <div className={ block('info') }>{ this.renderPrivacyText() }</div>
+                <div className={ block('info') }>
+                    { this.renderToggleInfo() }
+                </div>
                 <div className={ block('actions') }>
                     <button type="submit" className={ buttonClass } disabled={ this.state.isSubmitting } onClick={ this.onFormSubmit }>Create</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.onFormReset }>Reset</button>
@@ -151,11 +149,12 @@ const CreateView = React.createClass({
     },
 
     render() {
-        console.log(this.state);
         return (
             <div className={ block() }>
                 <div className="container">
-                    { this.renderMap() }
+                    <ProjectMap
+                        onMapClick={ this.onMapClick }
+                        sites={ this.state.sites } />
                     <div className="box box--border">
                         { this.renderForm() }
                     </div>
