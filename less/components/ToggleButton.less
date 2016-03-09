@@ -3,9 +3,8 @@
     &__options {
         display: flex;
         height: 50px;
-        border-radius: 5px;
         background-color: @color-gray9;
-        box-shadow: 0 0 5px rgba(0,0,0,.1) inset;
+        .border-radius(5px);
     }
 
     &__option {
@@ -15,8 +14,8 @@
         justify-content: center;
         border: 1px solid @color-gray8;
         cursor: pointer;
-        color: #999;
-        -webkit-transition: all 150ms;
+        color: @color-gray5;
+        .transition(all 150ms);
 
         &--active {
             color: inherit;
@@ -24,10 +23,10 @@
             border-color: @color-gray7;
         }
         &--first {
-            border-radius: 5px 0 0 5px;
+            .border-radius(5px 0 0 5px);
         }
         &--last {
-            border-radius: 0 5px 5px 0;
+            .border-radius(0 5px 5px 0);
         }
     }
 }

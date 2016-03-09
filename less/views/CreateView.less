@@ -28,8 +28,8 @@
         display: block;
         font-weight: 300;
         font-size: 1rem;
-        letter-spacing: 0.1em;
-        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 
     &__input {
@@ -54,34 +54,37 @@
         }
     }
 
-    &__remove {
+    &__icon {
         width: 40px;
         height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+        color: @color-gray7;
         position: absolute;
         right: 0;
         bottom: 0;
-        cursor: pointer;
+        .transition(all 150ms);
 
-        &:before, &:after {
-            content: "";
-            width: 20px;
-            height: 2px;
-            background-color: @color-gray7;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        &:before {
-            -webkit-transform: rotate(-45deg);
-        }
-        &:after {
-            -webkit-transform: rotate(45deg);
-        }
+        &--remove {
+            .icon(@icon-cross);
+            cursor: pointer;
 
-        &:hover {
-            &:before, &:after {
-                background-color: @color-gray6;
+            &:hover {
+                color: @color-red;
             }
+        }
+
+        &--check {
+            .icon(@icon-check);
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        &--visible {
+            visibility: visible;
+            opacity: 1;
         }
     }
 
