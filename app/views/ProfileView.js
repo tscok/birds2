@@ -1,46 +1,48 @@
 import React from 'react';
 import purebem from 'purebem';
+import assign from 'lodash.assign';
 
 import firebaseRef from 'app/firebaseRef';
 
-import NavLink from 'app/components/NavLink';
+import Greeting from 'app/components/Greeting';
+import Projects from 'app/components/Projects';
 
 
 const block = purebem.of('profile-view');
-const box = purebem.of('box');
 
 const ProfileView = React.createClass({
 
+    getInitialState() {
+        return {
+            user: {}
+        };
+    },
+
     componentWillMount() {
-        // firebaseRef.child('user/123/projects')
+        this.authData = firebaseRef.getAuth();
+        const userData = this.authData[this.authData.provider];
+        this.setState({ user: userData });
+
+        firebaseRef.child('users/' + this.authData.uid).on('value', (snap) => {
+            const user = assign(userData, snap.val());
+            this.setState({ user });
+        });
     },
 
-    renderEmpty() {
-        return (
-            <div className={ box('body', ['empty']) }>
-                <p>You are currently not participating in any projects.<br/>To get started you can either <NavLink to="/create">create a new project</NavLink> or <NavLink to="/search">search for projects</NavLink> to join.</p>
-            </div>
-        );
-    },
-
-    renderProjects() {
-        return (
-            <div className={ purebem.many(block('projects'), box(['border'])) }>
-                <div className={ box('title') }>Projects</div>
-                { this.renderEmpty() }
-            </div>
-        );
+    onNameChange(name) {
+        const uid = this.authData.uid;
+        firebaseRef.child('users/' + uid).set({ name });
     },
 
     render() {
         return (
             <div className={ block() }>
-                <div className="container">
-                    { this.renderProjects() }
-                </div>
+                <Greeting user={ this.state.user } onSubmit={ this.onNameChange } />
+                <Projects />
             </div>
         );
     }
+
 });
 
 export default ProfileView;

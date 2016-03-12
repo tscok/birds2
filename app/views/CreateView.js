@@ -1,11 +1,13 @@
 import React from 'react';
 import purebem from 'purebem';
 import moment from 'moment';
+import find from 'lodash.find';
 
 import firebaseRef from 'app/firebaseRef';
 
 import ProjectMap from 'app/components/ProjectMap';
 import ToggleButton from 'app/components/ToggleButton';
+import ContentBox from 'app/components/ContentBox';
 
 
 const block = purebem.of('create-view');
@@ -14,34 +16,48 @@ const CreateView = React.createClass({
 
     getInitialState() {
         return {
-            dateEnd: false,
-            dateStart: false,
-            isSubmitting: false,
+            title: '',
+            start: '',
+            end: '',
             options: [
-                { text: 'Public', value: true },
-                { text: 'Private', value: false }
+                { label: 'Public', active: true },
+                { label: 'Private', active: false }
             ],
             sites: [],
-            title: ''
+            isSubmitting: false
         };
     },
 
-    onDateChange(name) {
-        return evt => {
-            const input = evt.target.value;
-            const isValid = moment(input, 'YYYYMMDD', true).isValid();
-            this.setState({ [name]: isValid ? input : false });
-        };
+    isDateValid(path) {
+        return moment(this.state[path], 'YYYYMMDD', true).isValid();
+    },
+    
+    onChange(path) {
+        return evt => this.setState({ [path]: evt.target.value });
+    },
+    
+    onBlur() {
+        // check if dates are valid
+        const valid = this.isDateValid('end') && this.isDateValid('start');
+        console.log('both valid', valid);
+        // check if end > start
+        const start = moment(this.state.start, 'YYYYMMDD');
+        const end =  moment(this.state.end, 'YYYYMMDD');
+        console.log('start < end', start.unix() < end.unix());
+        // display errors
     },
 
-    onFormReset() {
+    onReset() {
         this.form.reset();
-        this.sitesReset();
+        this.onSitesReset();
     },
 
-    onFormSubmit() {
-        const { title, dateStart, dateEnd, sites } = this.state;
-        // ...
+    onSubmit(evt) {
+        evt.preventDefault();
+        const { title, start, end, sites } = this.state;
+        const privacy = find(sites, 'active');
+        
+        console.log(this.state);
     },
 
     onMapClick(marker) {
@@ -71,32 +87,33 @@ const CreateView = React.createClass({
     },
 
     onToggle(index) {
-        this.setState({ options });
         const options = this.state.options.map((item, i) => {
-            item.value = i === index ? true : false;
+            item.active = i === index ? true : false;
             return item;
         });
         this.setState({ options });
     },
 
-    sitesReset() {
+    onSitesReset() {
         const sites = this.state.sites.filter(item => item.setMap(null));
         this.setState({ sites });
     },
 
     renderToggleInfo() {
-        const active = this.state.options.filter(item => item.value === true);
+        const option = find(this.state.options, 'active');
         let info;
 
-        switch (active[0].text) {
+        switch (option.label) {
             case 'Private':
-                info = (<p>Private projects are the one man bands. No one can find your project, so you'll be on your own.</p>);
+                info = (<p>Private projects are the one man bands. No one will find your project, so you are left alone.</p>);
                 break;
             default:
                 info = (<p>Public projects aim at collaboration. Users can find your project and may request to join.</p>);
         }
 
-        return info;
+        return (
+            <div className={ block('info') }>{ info }</div>
+        );
     },
 
     renderSite(item, index) {
@@ -111,24 +128,24 @@ const CreateView = React.createClass({
 
     renderForm() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
-        const { dateEnd, dateStart } = this.state;
+        const { end, start } = this.state;
 
         return (
             <form className={ block('form') } onSubmit={ this.onSubmit } ref={ (form) => this.form = form }>
                 <div className={ block('info') }>
-                    <p>Use the map to locate and mark ringing sites. The GPS coordinates can be used to track individual birds.</p>
+                    <p>Use the map to locate and mark ringing sites. Their coordinates may be used to monitor migratory movements &mdash; in real-time!</p>
                 </div>
                 <label className={ block('group') }>
                     <span className={ block('label') }>Project title</span>
-                    <input type="text" className={ block('input') } onChange={ (evt) => this.setState({ title: evt.target.value }) } />
+                    <input type="text" className={ block('input') } onChange={ this.onChange('title') } />
                 </label>
                 <label className={ block('group') }>
                     <span className={ block('label') }>Start date - YYYYMMDD</span>
-                    <input type="text" className={ block('input') } onChange={ this.onDateChange('dateStart') } />
+                    <input type="text" className={ block('input') } onChange={ this.onChange('start') } />
                 </label>
                 <label className={ block('group') }>
                     <span className={ block('label') }>End date - YYYYMMDD</span>
-                    <input type="text" className={ block('input') } onChange={ this.onDateChange('dateEnd') } />
+                    <input type="text" className={ block('input') } onChange={ this.onChange('end') } onBlur={ this.onBlur } />
                 </label>
                 {
                     [].map.call(this.state.sites, this.renderSite)
@@ -137,12 +154,10 @@ const CreateView = React.createClass({
                     onClick={ this.onToggle }
                     options={ this.state.options }
                     className={ block('toggle-button') } />
-                <div className={ block('info') }>
-                    { this.renderToggleInfo() }
-                </div>
+                { this.renderToggleInfo() }
                 <div className={ block('actions') }>
                     <button type="submit" className={ buttonClass } disabled={ this.state.isSubmitting } onClick={ this.onFormSubmit }>Create</button>
-                    <button type="button" className={ block('button', ['reset']) } onClick={ this.onFormReset }>Reset</button>
+                    <button type="button" className={ block('button', ['reset']) } onClick={ this.onReset }>Reset</button>
                 </div>
             </form>
         );
@@ -155,9 +170,9 @@ const CreateView = React.createClass({
                     <ProjectMap
                         onMapClick={ this.onMapClick }
                         sites={ this.state.sites } />
-                    <div className="box box--border">
+                    <ContentBox background="white" shadow={ true }>
                         { this.renderForm() }
-                    </div>
+                    </ContentBox>
                 </div>
             </div>
         );
