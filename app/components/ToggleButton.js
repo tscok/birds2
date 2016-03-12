@@ -15,11 +15,11 @@ const ToggleButton = React.createClass({
     renderOption(item, index, arr) {
         const first = index === 0;
         const last = index === arr.length - 1;
-        const active = item.value;
+        const { active } = item;
 
         return (
             <div key={ index } className={ block('option', { first, last, active }) } onClick={ () => this.props.onClick(index) }>
-                { item.text }
+                { item.label }
             </div>
         );
     },
@@ -32,9 +32,7 @@ const ToggleButton = React.createClass({
                         [].map.call(this.props.options, this.renderOption)
                     }
                 </div>
-                <div className={ block('description') }>
-                    { this.props.children }
-                </div>
+                { this.props.children }
             </div>
         );
     }
