@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 
 import firebaseRef from 'app/firebaseRef';
 
@@ -26,7 +26,6 @@ function requireAuth(nextState, replace) {
     if (!firebaseRef.getAuth()) {
         replace('/login');
     }
-    console.log('auth ok');
 }
 
 const routes = (
@@ -46,6 +45,8 @@ const routes = (
                 <Route path="/project/:id/rings" component={ RingsView } />
                 <Route path="/project/:id/export" component={ ExportView } />
             </Route>
+            
+            <Redirect from="/project" to="/profile" />
 
             <Route path="*" component={ NotFoundView } />
         </Route>
