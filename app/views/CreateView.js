@@ -1,12 +1,14 @@
 import React from 'react';
 import purebem from 'purebem';
 import moment from 'moment';
+
 import find from 'lodash.find';
+import pick from 'lodash.pick';
 
 import firebaseRef from 'app/firebaseRef';
 
 import ProjectMap from 'app/components/ProjectMap';
-import ToggleButton from 'app/components/ToggleButton';
+import ButtonSwitch from 'app/components/ButtonSwitch';
 import ContentBox from 'app/components/ContentBox';
 
 
@@ -16,100 +18,125 @@ const CreateView = React.createClass({
 
     getInitialState() {
         return {
-            title: '',
-            start: '',
-            end: '',
-            options: [
-                { label: 'Public', active: true },
-                { label: 'Private', active: false }
-            ],
-            sites: [],
-            isSubmitting: false
+            isPublic: true,
+            isSubmitting: false,
+            options: ['Public', 'Private'],
+            sites: []
         };
     },
 
-    isDateValid(path) {
-        return moment(this.state[path], 'YYYYMMDD', true).isValid();
-    },
-    
-    onChange(path) {
-        return evt => this.setState({ [path]: evt.target.value });
-    },
-    
-    onBlur() {
-        // check if dates are valid
-        const valid = this.isDateValid('end') && this.isDateValid('start');
-        console.log('both valid', valid);
-        // check if end > start
-        const start = moment(this.state.start, 'YYYYMMDD');
-        const end =  moment(this.state.end, 'YYYYMMDD');
-        console.log('start < end', start.unix() < end.unix());
-        // display errors
+    isEmpty(string) {
+        return !string || string.trim() === '';
     },
 
-    onReset() {
+    onDateInput(name) {
+        return evt => {
+            const date = moment(evt.target.value, 'YYYYMMDD', true);
+            if (date.isValid()) {
+                this.setState({ [name]: date });
+            }
+        };
+    },
+
+    onTitleInput(evt) {
+        const title = evt.target.value;
+        if (!this.isEmpty(title)) {
+            this.setState({ title });
+        }
+    },
+
+    onFormReset() {
         this.form.reset();
-        this.onSitesReset();
+        this.onSitesClear();
     },
 
-    onSubmit(evt) {
+    onFormSubmit(evt) {
         evt.preventDefault();
-        const { title, start, end, sites } = this.state;
-        const privacy = find(sites, 'active');
-        
-        console.log(this.state);
+
+        let { title, start, end, sites } = this.state;
+
+        console.log('submit');
+
+        // Check title
+        if (this.isEmpty(title)) {
+            this.setState({ error: { title: 'Please fill in a title.' } });
+            return;
+        }
+
+        // Check dates - order
+        if (start >= end) {
+            this.setState({ error: { date: 'The project must start before it can end, silly.' } });
+            return;
+        }
+
+        if (sites.length) {
+            // Filter out sites without a name.
+            sites = sites.filter(site => site.name);
+
+            // Reduce site information.
+            sites = sites.map(site => pick(site, ['latlng', 'name']));
+        }
+
+        // Clear errors
+        this.setState({ error: {} });
+
+        const date = {
+            title,
+            start: start.unix(),
+            end: end.unix(),
+            sites
+        };
+
+        // add project to projects
+        // add projectId to user
+        // ...
     },
 
-    onMapClick(marker) {
+    onSiteAdd(marker) {
         const sites = [ ...this.state.sites, marker ];
         this.setState({ sites });
     },
 
-    onSiteChange(index) {
+    onSiteInput(index) {
         return evt => {
             const { sites } = this.state;
-            sites[index].value = evt.target.value;
+            sites[index].name = evt.target.value;
             this.setState({ sites });
         }
     },
 
     onSiteRemove(index) {
-        return evt => {
-            evt.preventDefault();
-            const sites = this.state.sites.filter((item, i) => {
-                if (i === index) {
-                    item.setMap(null);
-                }
-                return i !== index;
-            });
-            this.setState({ sites });
-        };
+        let { sites } = this.state;
+        sites[index].setMap(null);
+        sites = sites.filter((item, i) => index !== i);
+        this.setState({ sites });
     },
 
-    onToggle(index) {
-        const options = this.state.options.map((item, i) => {
-            item.active = i === index ? true : false;
-            return item;
-        });
-        this.setState({ options });
-    },
-
-    onSitesReset() {
+    onSitesClear() {
         const sites = this.state.sites.filter(item => item.setMap(null));
         this.setState({ sites });
     },
 
-    renderToggleInfo() {
-        const option = find(this.state.options, 'active');
-        let info;
+    onSwitchClick() {
+        this.setState({ isPublic: !this.state.isPublic });
+    },
 
-        switch (option.label) {
-            case 'Private':
-                info = (<p>Private projects are the one man bands. No one will find your project, so you are left alone.</p>);
-                break;
-            default:
-                info = (<p>Public projects aim at collaboration. Users can find your project and may request to join.</p>);
+    renderError(type) {
+        if (!this.state.error || !this.state.error[type]) {
+            return null;
         }
+
+        return (
+            <div className={ block('error') }>
+                <p>{ this.state.error[type] }</p>
+            </div>
+        );
+    },
+
+    renderPrivacyInfo() {
+        const info = this.state.isPublic
+            ? (<p>Public projects aim at collaboration. Users can find your project and may request to join.</p>)
+            : (<p>Private projects aim at privacy. Other users cannot find nor participate in these projects.</p>);
 
         return (
             <div className={ block('info') }>{ info }</div>
@@ -120,55 +147,59 @@ const CreateView = React.createClass({
         return (
             <label className={ block('group') } key={ index }>
                 <span className={ block('label') }>Site name { index + 1 }</span>
-                <input type="text" className={ block('input', ['icon']) } value={ item.value } onChange={ this.onSiteChange(index) } />
-                <i className={ block('icon', ['remove']) } onClick={ this.onSiteRemove(index) } />
+                <input type="text" className={ block('input', ['icon']) } value={ item.name } onInput={ this.onSiteInput(index) } />
+                <i className={ block('icon', ['remove']) } onClick={ () => this.onSiteRemove(index) } />
             </label>
         );
     },
 
     renderForm() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
-        const { end, start } = this.state;
+        const { isSubmitting } = this.state;
 
         return (
-            <form className={ block('form') } onSubmit={ this.onSubmit } ref={ (form) => this.form = form }>
-                <div className={ block('info') }>
-                    <p>Use the map to locate and mark ringing sites. Their coordinates may be used to monitor migratory movements &mdash; in real-time!</p>
-                </div>
+            <form className={ block('form') } onSubmit={ this.onFormSubmit } ref={ (form) => this.form = form }>
                 <label className={ block('group') }>
                     <span className={ block('label') }>Project title</span>
-                    <input type="text" className={ block('input') } onChange={ this.onChange('title') } />
+                    <input type="text" className={ block('input') } onInput={ this.onTitleInput } />
+                    { this.renderError('title') }
                 </label>
                 <label className={ block('group') }>
                     <span className={ block('label') }>Start date - YYYYMMDD</span>
-                    <input type="text" className={ block('input') } onChange={ this.onChange('start') } />
+                    <input type="text" className={ block('input') } onInput={ this.onDateInput('start') } />
                 </label>
                 <label className={ block('group') }>
                     <span className={ block('label') }>End date - YYYYMMDD</span>
-                    <input type="text" className={ block('input') } onChange={ this.onChange('end') } onBlur={ this.onBlur } />
+                    <input type="text" className={ block('input') } onInput={ this.onDateInput('end') } />
+                    { this.renderError('date') }
                 </label>
                 {
                     [].map.call(this.state.sites, this.renderSite)
                 }
-                <ToggleButton
-                    onClick={ this.onToggle }
-                    options={ this.state.options }
-                    className={ block('toggle-button') } />
-                { this.renderToggleInfo() }
+                <div className={ block('info') }>
+                    <p>Use the map to locate and mark your ringing sites. Their coordinates may be used to monitor migratory movements.</p>
+                </div>
+                <ButtonSwitch
+                    isActive={ this.state.isPublic }
+                    className={ block('switch') }
+                    onClick={ this.onSwitchClick }
+                    options={ this.state.options } />
+                { this.renderPrivacyInfo() }
                 <div className={ block('actions') }>
-                    <button type="submit" className={ buttonClass } disabled={ this.state.isSubmitting } onClick={ this.onFormSubmit }>Create</button>
-                    <button type="button" className={ block('button', ['reset']) } onClick={ this.onReset }>Reset</button>
+                    <button type="submit" className={ buttonClass } disabled={ isSubmitting }>Create</button>
+                    <button type="button" className={ block('button', ['reset']) } onClick={ this.onFormReset }>Reset</button>
                 </div>
             </form>
         );
     },
 
     render() {
+        console.log(this.state);
         return (
             <div className={ block() }>
                 <div className="container">
                     <ProjectMap
-                        onMapClick={ this.onMapClick }
+                        onClick={ this.onSiteAdd }
                         sites={ this.state.sites } />
                     <ContentBox background="white" shadow={ true }>
                         { this.renderForm() }

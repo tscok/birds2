@@ -17,7 +17,7 @@ const options = {
 const ProjectMap = React.createClass({
 
     propTypes: {
-        onMapClick: PropTypes.func.isRequired,
+        onClick: PropTypes.func.isRequired,
         sites: PropTypes.array.isRequired
     },
 
@@ -40,10 +40,11 @@ const ProjectMap = React.createClass({
 
     addMarker(location) {
         const marker = new google.maps.Marker({
-            position: location
+            position: location,
+            latlng: location.lat() + ',' + location.lng()
         });
 
-        this.props.onMapClick(marker);
+        this.props.onClick(marker);
     },
 
     render() {
