@@ -1,0 +1,44 @@
+.button-switch {
+    background-color: @color-gray9;
+    position: relative;
+    cursor: pointer;
+
+    &, &__lever {
+        .border-radius(25px);
+    }
+
+    &__lever {
+        width: 50%;
+        height: 50px;
+        border: 1px solid @color-gray8;
+        background-color: @color-white;
+        position: absolute;
+        left: 50%;
+        .transition(left 150ms);
+
+        &--active {
+            left: 0;
+        }
+    }
+
+    &__options {
+        display: flex;
+        position: relative;
+    }
+
+    &__option {
+        flex: 1;
+        text-align: center;
+        line-height: 50px;
+        .user-select;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus &__lever,
+    &:hover &__lever {
+        .box-shadow(0 0 10px rgba(0,0,0,.1));
+    }
+}

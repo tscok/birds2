@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
 
-const block = purebem.of('toggle-button');
+const block = purebem.of('button-radio');
 
-const ToggleButton = React.createClass({
+const ButtonRadio = React.createClass({
 
     propTypes: {
         children: PropTypes.node,
@@ -38,4 +38,4 @@ const ToggleButton = React.createClass({
     }
 });
 
-export default ToggleButton;
+export default ButtonRadio;
