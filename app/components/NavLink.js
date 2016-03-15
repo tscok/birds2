@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import purebem from 'purebem';
 
 
 const NavLink = React.createClass({
+
+    propTypes: {
+        base: PropTypes.string.isRequired
+    },
 
     render() {
         const block = purebem.of(this.props.base);
