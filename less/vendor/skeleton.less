@@ -9,9 +9,8 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 body {
   font-size: 1.6em;
-  line-height: 1.6;
   font-weight: 300;
-  color: @text-color;
+  color: @color-text;
 }
 
 /* Grid
@@ -22,16 +21,125 @@ body {
     }
 }
 
-.button.button-primary[disabled],
-button.button-primary[disabled],
-input[type="submit"].button-primary[disabled],
-input[type="reset"].button-primary[disabled],
-input[type="button"].button-primary[disabled],
-.button.button-primary[disabled]:hover,
-button.button-primary[disabled]:hover,
-input[type="submit"].button-primary[disabled]:hover,
-input[type="reset"].button-primary[disabled]:hover,
-input[type="button"].button-primary[disabled]:hover {
-  background-color: #999;
-  border-color: transparent;
+/* Links
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+a {
+    color: @color-interactive;
+    &:hover {
+        color: darken(@color-interactive--hover, 15%);
+    }
+}
+
+/* Buttons
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+    display: inline-block;
+    height: 50px;
+    min-width: 120px;
+    padding: 0;
+    
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 50px;
+    text-align: center;
+    text-transform: none;
+
+    outline: 0;
+    border-radius: 5px;
+    color: @color-text;
+    background-color: transparent;
+    border: 1px solid @color-grayd;
+
+    &:hover, &:focus {
+        color: @color-text;
+        border-color: @color-gray9;
+    }
+
+    &[disabled], &[disabled]:hover {
+        color: @color-grayc;
+        border-color: @color-grayd;
+    }
+
+    &.button-primary {
+        color: @color-white;
+        background-color: @color-interactive;
+        border: none;
+
+        &:hover, &:focus {
+            color: @color-white;
+            background-color: @color-interactive--hover;
+            border-bottom: 3px solid darken(@color-interactive--hover, 15%);
+        }
+
+        &[disabled], &[disabled]:hover {
+            color: @color-white;
+            background-color: @color-grayc;
+            border: none;
+        }
+    }
+}
+
+/* Forms
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    padding: 0 10px;
+    
+    font-weight: 300;
+    font-size: 1.2em;
+    line-height: 50px;
+    
+    .border-radius(5px);
+    border: 1px solid @color-graye;
+    background-color: @color-white;
+    box-shadow: none;
+    outline: 0;
+
+    &:focus {
+        border-color: @color-interactive;
+    }
+}
+
+label {
+    display: block;
+    font-weight: 400;
+}
+
+/* Spacing
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+button,
+.button {
+    margin-bottom: 0;
+}
+label,
+input,
+textarea,
+select,
+fieldset {
+    margin-bottom: 0;
+}
+form
+.form {
+    margin-bottom: 4rem;
+
+    &__group {
+        margin-bottom: 2rem;
+    }
 }

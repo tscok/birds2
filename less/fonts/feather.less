@@ -27,9 +27,9 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon(@icon) {
+.icon(@icon, @where: before) {
     .feather-icon;
-    &:before {
+    &:@{where} {
         content: @icon;
     }
 }

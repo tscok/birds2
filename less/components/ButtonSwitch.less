@@ -1,5 +1,5 @@
 .button-switch {
-    background-color: @color-gray9;
+    background-color: @color-graye;
     position: relative;
     cursor: pointer;
 
@@ -10,7 +10,7 @@
     &__lever {
         width: 50%;
         height: 50px;
-        border: 1px solid @color-gray8;
+        border: 1px solid @color-grayd;
         background-color: @color-white;
         position: absolute;
         left: 50%;
@@ -39,6 +39,6 @@
 
     &:focus &__lever,
     &:hover &__lever {
-        .box-shadow(0 0 10px rgba(0,0,0,.1));
+        border-color: @color-interactive;
     }
 }
