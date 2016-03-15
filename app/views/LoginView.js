@@ -3,6 +3,8 @@ import purebem from 'purebem';
 
 import firebaseRef from 'app/firebaseRef';
 
+import ContentBox from 'app/components/ContentBox';
+
 
 const block = purebem.of('login');
 
@@ -65,14 +67,14 @@ const LoginView = React.createClass({
         return (
             <div className={ block('password-login') }>
                 <form className={ block('form') } onSubmit={ this.onSubmit }>
-                    <label className={ block('group') }>
-                        <span className={ block('label') }>Email</span>
+                    <div className="form__group">
+                        <label className={ block('label') }>Email</label>
                         <input type="text" className={ block('input') } onChange={ this.onChange } ref={ (ref) => this.email = ref } />
-                    </label>
-                    <label className={ block('group') }>
-                        <span className={ block('label') }>Password</span>
+                    </div>
+                    <div className="form__group">
+                        <label className={ block('label') }>Password</label>
                         <input type="password" className={ block('input') } ref={ (ref) => this.password = ref } />
-                    </label>
+                    </div>
                     <button type="submit" className={ buttonClass } disabled={ this.state.isSubmitting }>Login</button>
                 </form>
                 { this.renderError() }
@@ -82,8 +84,10 @@ const LoginView = React.createClass({
 
     render() {
         return (
-            <div className={ purebem.many(block(), 'container') }>
-                { this.renderPasswordLogin() }
+            <div className={ block() }>
+                <ContentBox background="white" shadow={ true }>
+                    { this.renderPasswordLogin() }
+                </ContentBox>
             </div>
         );
     }

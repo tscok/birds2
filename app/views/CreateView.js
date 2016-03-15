@@ -7,9 +7,10 @@ import pick from 'lodash.pick';
 
 import firebaseRef from 'app/firebaseRef';
 
-import ProjectMap from 'app/components/ProjectMap';
 import ButtonSwitch from 'app/components/ButtonSwitch';
 import ContentBox from 'app/components/ContentBox';
+import InputField from 'app/components/InputField';
+import ProjectMap from 'app/components/ProjectMap';
 
 
 const block = purebem.of('create-view');
@@ -59,33 +60,36 @@ const CreateView = React.createClass({
 
         // Check title
         if (this.isEmpty(title)) {
-            this.setState({ error: { title: 'Please fill in a title.' } });
-            return;
+            return this.setState({ error: { title: 'Please fill in a title.' } });
+        }
+
+        if (!start || !end) {
+            return this.setState({ error: { date: 'Please fill in a start and end date.' } });
         }
 
         // Check dates - order
         if (start >= end) {
-            this.setState({ error: { date: 'The project must start before it can end, silly.' } });
-            return;
+            return this.setState({ error: { date: 'The project must start before it can end, silly.' } });
         }
 
         if (sites.length) {
-            // Filter out sites without a name.
-            sites = sites.filter(site => site.name);
-
-            // Reduce site information.
-            sites = sites.map(site => pick(site, ['latlng', 'name']));
+            // Filter out sites without a name. Reduce site information.
+            sites = sites
+                .filter(site => site.name)
+                .map(site => pick(site, ['latlng', 'name']));
         }
 
         // Clear errors
         this.setState({ error: {} });
 
-        const date = {
+        const projectData = {
             title,
             start: start.unix(),
             end: end.unix(),
-            sites
+            user: firebaseRef.getAuth().uid
         };
+
+        console.log(projectData);
 
         // add project to projects
         // add projectId to user
@@ -127,9 +131,7 @@ const CreateView = React.createClass({
         }
 
         return (
-            <div className={ block('error') }>
-                <p>{ this.state.error[type] }</p>
-            </div>
+            <span className={ block('error') }>{ this.state.error[type] }</span>
         );
     },
 
@@ -145,11 +147,14 @@ const CreateView = React.createClass({
 
     renderSite(item, index) {
         return (
-            <label className={ block('group') } key={ index }>
-                <span className={ block('label') }>Site name { index + 1 }</span>
-                <input type="text" className={ block('input', ['icon']) } value={ item.name } onInput={ this.onSiteInput(index) } />
-                <i className={ block('icon', ['remove']) } onClick={ () => this.onSiteRemove(index) } />
-            </label>
+            <div className="form__group" key={ index }>
+                <label className={ block('label') }>Site name { index + 1 }</label>
+                <InputField
+                    iconClass="icon-cross"
+                    iconClick={ () => this.onSiteRemove(index) }
+                    onInput={ this.onSiteInput(index) }
+                    value={ item.name } />
+            </div>
         );
     },
 
@@ -159,20 +164,20 @@ const CreateView = React.createClass({
 
         return (
             <form className={ block('form') } onSubmit={ this.onFormSubmit } ref={ (form) => this.form = form }>
-                <label className={ block('group') }>
-                    <span className={ block('label') }>Project title</span>
-                    <input type="text" className={ block('input') } onInput={ this.onTitleInput } />
+                <div className="form__group">
+                    <label className={ block('label') }>Project title</label>
+                    <input type="text" onInput={ this.onTitleInput } />
                     { this.renderError('title') }
-                </label>
-                <label className={ block('group') }>
-                    <span className={ block('label') }>Start date - YYYYMMDD</span>
-                    <input type="text" className={ block('input') } onInput={ this.onDateInput('start') } />
-                </label>
-                <label className={ block('group') }>
-                    <span className={ block('label') }>End date - YYYYMMDD</span>
-                    <input type="text" className={ block('input') } onInput={ this.onDateInput('end') } />
+                </div>
+                <div className="form__group">
+                    <label className={ block('label') }>Start date</label>
+                    <input type="text" placeholder="yyyymmdd" onInput={ this.onDateInput('start') } />
+                </div>
+                <div className="form__group">
+                    <label className={ block('label') }>End date</label>
+                    <input type="text" placeholder="yyyymmdd" onInput={ this.onDateInput('end') } />
                     { this.renderError('date') }
-                </label>
+                </div>
                 {
                     [].map.call(this.state.sites, this.renderSite)
                 }
@@ -180,8 +185,8 @@ const CreateView = React.createClass({
                     <p>Use the map to locate and mark your ringing sites. Their coordinates may be used to monitor migratory movements.</p>
                 </div>
                 <ButtonSwitch
-                    isActive={ this.state.isPublic }
                     className={ block('switch') }
+                    isActive={ this.state.isPublic }
                     onClick={ this.onSwitchClick }
                     options={ this.state.options } />
                 { this.renderPrivacyInfo() }
@@ -194,7 +199,6 @@ const CreateView = React.createClass({
     },
 
     render() {
-        console.log(this.state);
         return (
             <div className={ block() }>
                 <div className="container">
