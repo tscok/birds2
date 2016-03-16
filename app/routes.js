@@ -36,8 +36,8 @@ const routes = (
             <Route path="/login" component={ LoginView } onEnter={ logout } />
             
             <Route path="/profile" component={ ProfileView } onEnter={ requireAuth } />
-            <Route path="/create" component={ CreateView } />
-            <Route path="/search" component={ SearchView } />
+            <Route path="/create" component={ CreateView } onEnter={ requireAuth } />
+            <Route path="/search" component={ SearchView } onEnter={ requireAuth } />
 
             <Route path="/project/:id" component={ ProjectView } onEnter={ requireAuth }>
                 <Route path="/project/:id/entry" component={ EntryView } />
