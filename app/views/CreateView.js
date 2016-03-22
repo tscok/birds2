@@ -18,8 +18,8 @@ import ProjectMap from 'app/components/ProjectMap';
 
 
 const ERROR_TITLE = 'Please fill in a title.';
-const ERROR_DATE_FORMAT = 'Please fill in a valid date.';
-const ERROR_DATE_ORDER = 'A project must start before it can end.';
+const ERROR_DATE = 'Please fill in a valid date.';
+const ERROR_END = 'A project must start before it can end.';
 
 const initState = {
     end: '',
@@ -50,13 +50,13 @@ const CreateView = React.createClass({
         return !string || string.trim() === '';
     },
 
-    isValidDate(string) {
-        return moment(string, 'YYYYMMDD', true).isValid();
+    isDate(string) {
+        return !this.isEmpty(string) && moment(string, 'YYYYMMDD', true).isValid();
     },
 
     isValidDateOrder() {
         const { start, end } = this.state;
-        return this.isValidDate(start) && this.isValidDate(end) && start < end;
+        return this.isDate(start) && this.isDate(end) && start < end;
     },
 
     getSites() {
@@ -64,35 +64,25 @@ const CreateView = React.createClass({
     },
 
     getErrors() {
-        const error = {};
-
-        if (this.isEmpty(this.state.title)) {
-            error.title = ERROR_TITLE;
-        }
-        if (!this.isValidDate(this.state.start)) {
-            error.start = ERROR_DATE_FORMAT;
-        }
-        if (!this.isValidDate(this.state.end)) {
-            error.end = ERROR_DATE_FORMAT;
-        }
-        if (!this.isValidDateOrder()) {
-            error.order = ERROR_DATE_ORDER;
-        }
-
-        this.setState({ error });
-        return Object.keys(error).length;
+        return Object.keys(this.state.error).length;
     },
 
-    onBlur(evt) {
-        if (this.isEmpty(evt.target.value)) {
-            return;
-        }
-        this.getErrors();
-    },
+    onInput(name) {
+        return evt => {
+            const { value } = evt.target;
+            const { error } = this.state;
+            
+            switch (name) {
+                case 'title':
+                    error.title = this.isEmpty(value) ? ERROR_TITLE : undefined;
+                    break;
+                default:
+                    error[name] = !this.isDate(value) ? ERROR_DATE : undefined;
+                    error.order = !this.isValidDateOrder() ? ERROR_END : undefined;
+            };
 
-    onInput(evt) {
-        const { name, value } = evt.target;
-        this.setState({ [name]: value });
+            this.setState({ error, [name]: value });
+        };
     },
 
     onReset() {
@@ -177,16 +167,14 @@ const CreateView = React.createClass({
                     <label>Project title</label>
                     <InputField
                         error={ this.state.error.title }
-                        onBlur={ this.onBlur }
-                        onInput={ this.onInput }
+                        onInput={ this.onInput('title') }
                         name="title" />
                 </div>
                 <div className={ form('group') }>
                     <label>Start date</label>
                     <InputField
                         error={ this.state.error.start }
-                        onBlur={ this.onBlur }
-                        onInput={ this.onInput }
+                        onInput={ this.onInput('start') }
                         placeholder="yyyymmdd"
                         name="start" />
                 </div>
@@ -194,8 +182,7 @@ const CreateView = React.createClass({
                     <label>End date</label>
                     <InputField
                         error={ this.state.error.end || this.state.error.order }
-                        onBlur={ this.onBlur }
-                        onInput={ this.onInput }
+                        onInput={ this.onInput('end') }
                         placeholder="yyyymmdd"
                         name="end" />
                 </div>
@@ -220,7 +207,6 @@ const CreateView = React.createClass({
     },
 
     render() {
-        console.log(this.state);
         return (
             <div className={ block() }>
                 <div className="container">
