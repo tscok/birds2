@@ -11,41 +11,76 @@ const InputField = React.createClass({
     propTypes: {
         onInput: PropTypes.func.isRequired,
         // ...
+        error: PropTypes.string,
         iconClass: PropTypes.string,
         iconClick: PropTypes.func,
-        value: PropTypes.string
+        placeholder: PropTypes.string,
+        type: PropTypes.string
     },
 
     getDefaultProps() {
         return {
+            error: '',
             iconClass: '',
             iconClick: noop,
-            value: ''
+            placeholder: '',
+            type: 'text'
         };
     },
 
     renderIcon() {
         const { iconClass, iconClick } = this.props;
 
-        if (iconClass === '') {
-            return null;
-        }
-
         return (
             <i className={ purebem.many(block('icon'), iconClass) } onClick={ iconClick } />
         );
     },
 
-    render() {
-        const { onInput, iconClass, value } = this.props;
-        const icon = iconClass !== '';
+    renderInput() {
+        const { error, iconClass, type, placeholder, onInput } = this.props;
+        const inputClass = purebem.many(
+            block('input', { icon: !!iconClass }),
+            !!error ? 'error' : ''
+        );
 
         return (
+            <input { ...this.props } autoComplete="off" type={ type } className={ inputClass } placeholder={ placeholder } onInput={ onInput } />
+        );
+    },
+
+    renderError() {
+        if (!this.props.error) {
+            return null;
+        }
+
+        return (
+            <div className={ block('error') }>{ this.props.error }</div>
+        );
+    },
+
+    renderWithIcon() {
+        return (
             <div className={ block() }>
-                <input type="text" className={ block('input', { icon }) } value={ value } onInput={ onInput } />
+                { this.renderInput() }
                 { this.renderIcon() }
+                { this.renderError() }
             </div>
         );
+    },
+
+    renderWithoutIcon() {
+        return (
+            <div className={ block() }>
+                { this.renderInput() }
+                { this.renderError() }
+            </div>
+        );
+    },
+
+    render() {
+        return this.props.iconClass === ''
+            ? this.renderWithoutIcon()
+            : this.renderWithIcon();
     }
 
 });

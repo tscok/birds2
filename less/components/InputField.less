@@ -1,8 +1,17 @@
 .input-field {
     position: relative;
 
-    &__input--icon {
-        padding-right: 50px !important;
+    &__input {
+        &--icon {
+            padding-right: 50px !important;
+        }
+        &--error {
+            border-color: @color-red;
+        }
+    }
+
+    &__error {
+        color: @color-red;
     }
 
     &__icon {
@@ -21,5 +30,4 @@
             color: @color-gray6;
         }
     }
-
 }

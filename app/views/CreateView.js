@@ -2,8 +2,12 @@ import React from 'react';
 import purebem from 'purebem';
 import moment from 'moment';
 
+import isNull from 'lodash.isnull';
+import filter from 'lodash.filter';
 import find from 'lodash.find';
 import pick from 'lodash.pick';
+import omit from 'lodash.omit';
+import omitBy from 'lodash.omitby';
 
 import firebaseRef from 'app/firebaseRef';
 
@@ -13,83 +17,98 @@ import InputField from 'app/components/InputField';
 import ProjectMap from 'app/components/ProjectMap';
 
 
+const ERROR_TITLE = 'Please fill in a title.';
+const ERROR_DATE_FORMAT = 'Please fill in a valid date.';
+const ERROR_DATE_ORDER = 'A project must start before it can end.';
+
+const initState = {
+    end: '',
+    error: {},
+    isPublic: true,
+    isSubmitting: false,
+    sites: [],
+    start: '',
+    title: ''
+};
+
+const form = purebem.of('form');
 const block = purebem.of('create-view');
 
 const CreateView = React.createClass({
 
     getInitialState() {
         return {
-            isPublic: true,
-            isSubmitting: false,
-            options: ['Public', 'Private'],
-            sites: []
+            options: ['Public', 'Private']
         };
+    },
+
+    componentWillMount() {
+        this.setState(initState);
     },
 
     isEmpty(string) {
         return !string || string.trim() === '';
     },
 
-    onDateInput(name) {
-        return evt => {
-            const date = moment(evt.target.value, 'YYYYMMDD', true);
-            if (date.isValid()) {
-                this.setState({ [name]: date });
-            }
-        };
+    isValidDate(string) {
+        return moment(string, 'YYYYMMDD', true).isValid();
     },
 
-    onTitleInput(evt) {
-        const title = evt.target.value;
-        if (!this.isEmpty(title)) {
-            this.setState({ title });
+    isValidDateOrder() {
+        const { start, end } = this.state;
+        return this.isValidDate(start) && this.isValidDate(end) && start < end;
+    },
+
+    getSites() {
+        return this.state.sites.filter(site => site.name).map(site => pick(site, ['latlng', 'name']));
+    },
+
+    getErrors() {
+        const error = {};
+
+        if (this.isEmpty(this.state.title)) {
+            error.title = ERROR_TITLE;
         }
+        if (!this.isValidDate(this.state.start)) {
+            error.start = ERROR_DATE_FORMAT;
+        }
+        if (!this.isValidDate(this.state.end)) {
+            error.end = ERROR_DATE_FORMAT;
+        }
+        if (!this.isValidDateOrder()) {
+            error.order = ERROR_DATE_ORDER;
+        }
+
+        this.setState({ error });
+        return Object.keys(error).length;
     },
 
-    onFormReset() {
+    onBlur(evt) {
+        if (this.isEmpty(evt.target.value)) {
+            return;
+        }
+        this.getErrors();
+    },
+
+    onInput(evt) {
+        const { name, value } = evt.target;
+        this.setState({ [name]: value });
+    },
+
+    onReset() {
         this.form.reset();
         this.onSitesClear();
+        this.setState(initState);
     },
 
-    onFormSubmit(evt) {
+    onSubmit(evt) {
         evt.preventDefault();
 
-        let { title, start, end, sites } = this.state;
-
-        console.log('submit');
-
-        // Check title
-        if (this.isEmpty(title)) {
-            return this.setState({ error: { title: 'Please fill in a title.' } });
+        if (this.getErrors() > 0) {
+            return;
         }
 
-        if (!start || !end) {
-            return this.setState({ error: { date: 'Please fill in a start and end date.' } });
-        }
-
-        // Check dates - order
-        if (start >= end) {
-            return this.setState({ error: { date: 'The project must start before it can end, silly.' } });
-        }
-
-        if (sites.length) {
-            // Filter out sites without a name. Reduce site information.
-            sites = sites
-                .filter(site => site.name)
-                .map(site => pick(site, ['latlng', 'name']));
-        }
-
-        // Clear errors
-        this.setState({ error: {} });
-
-        const projectData = {
-            title,
-            start: start.unix(),
-            end: end.unix(),
-            user: firebaseRef.getAuth().uid
-        };
-
-        console.log(projectData);
+        console.log('submit…');
 
         // add project to projects
         // add projectId to user
@@ -125,16 +144,6 @@ const CreateView = React.createClass({
         this.setState({ isPublic: !this.state.isPublic });
     },
 
-    renderError(type) {
-        if (!this.state.error || !this.state.error[type]) {
-            return null;
-        }
-
-        return (
-            <span className={ block('error') }>{ this.state.error[type] }</span>
-        );
-    },
-
     renderPrivacyInfo() {
         const info = this.state.isPublic
             ? (<p>Public projects aim at collaboration. Users can find your project and may request to join.</p>)
@@ -147,7 +156,7 @@ const CreateView = React.createClass({
 
     renderSite(item, index) {
         return (
-            <div className="form__group" key={ index }>
+            <div className={ form('group') } key={ index }>
                 <label className={ block('label') }>Site name { index + 1 }</label>
                 <InputField
                     iconClass="icon-cross"
@@ -163,20 +172,32 @@ const CreateView = React.createClass({
         const { isSubmitting } = this.state;
 
         return (
-            <form className={ block('form') } onSubmit={ this.onFormSubmit } ref={ (form) => this.form = form }>
-                <div className="form__group">
-                    <label className={ block('label') }>Project title</label>
-                    <input type="text" onInput={ this.onTitleInput } />
-                    { this.renderError('title') }
+            <form className={ block('form') } onSubmit={ this.onSubmit } ref={ (form) => this.form = form }>
+                <div className={ form('group') }>
+                    <label>Project title</label>
+                    <InputField
+                        error={ this.state.error.title }
+                        onBlur={ this.onBlur }
+                        onInput={ this.onInput }
+                        name="title" />
                 </div>
-                <div className="form__group">
-                    <label className={ block('label') }>Start date</label>
-                    <input type="text" placeholder="yyyymmdd" onInput={ this.onDateInput('start') } />
+                <div className={ form('group') }>
+                    <label>Start date</label>
+                    <InputField
+                        error={ this.state.error.start }
+                        onBlur={ this.onBlur }
+                        onInput={ this.onInput }
+                        placeholder="yyyymmdd"
+                        name="start" />
                 </div>
-                <div className="form__group">
-                    <label className={ block('label') }>End date</label>
-                    <input type="text" placeholder="yyyymmdd" onInput={ this.onDateInput('end') } />
-                    { this.renderError('date') }
+                <div className={ form('group') }>
+                    <label>End date</label>
+                    <InputField
+                        error={ this.state.error.end || this.state.error.order }
+                        onBlur={ this.onBlur }
+                        onInput={ this.onInput }
+                        placeholder="yyyymmdd"
+                        name="end" />
                 </div>
                 {
                     [].map.call(this.state.sites, this.renderSite)
@@ -192,13 +213,14 @@ const CreateView = React.createClass({
                 { this.renderPrivacyInfo() }
                 <div className={ block('actions') }>
                     <button type="submit" className={ buttonClass } disabled={ isSubmitting }>Create</button>
-                    <button type="button" className={ block('button', ['reset']) } onClick={ this.onFormReset }>Reset</button>
+                    <button type="button" className={ block('button', ['reset']) } onClick={ this.onReset }>Reset</button>
                 </div>
             </form>
         );
     },
 
     render() {
+        console.log(this.state);
         return (
             <div className={ block() }>
                 <div className="container">
