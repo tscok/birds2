@@ -6,7 +6,13 @@ import purebem from 'purebem';
 const NavLink = React.createClass({
 
     propTypes: {
-        base: PropTypes.string.isRequired
+        base: PropTypes.string
+    },
+
+    getDefaultProps() {
+        return {
+            base: ''
+        };
     },
 
     render() {
