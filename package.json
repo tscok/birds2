@@ -6,7 +6,11 @@
   "dependencies": {
     "firebase": "^2.4.1",
     "lodash.assign": "^4.0.6",
+    "lodash.filter": "^4.2.1",
     "lodash.find": "^4.2.0",
+    "lodash.isnull": "^3.0.0",
+    "lodash.omit": "^4.1.0",
+    "lodash.omitby": "^4.2.1",
     "lodash.pick": "^4.1.0",
     "moment": "^2.11.2",
     "purebem": "^0.3.0",
