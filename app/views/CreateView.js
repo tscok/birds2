@@ -8,6 +8,9 @@ import find from 'lodash.find';
 import pick from 'lodash.pick';
 import omit from 'lodash.omit';
 import omitBy from 'lodash.omitby';
+import debounce from 'lodash.debounce';
+import cloneDeep from 'lodash.clonedeep';
+import assign from 'lodash.assign';
 
 import firebaseRef from 'app/firebaseRef';
 
@@ -21,88 +24,98 @@ const ERROR_TITLE = 'Please fill in a title.';
 const ERROR_DATE = 'Please fill in a valid date.';
 const ERROR_END = 'A project must start before it can end.';
 
-const initState = {
-    end: '',
-    error: {},
+const defaultState = {
+    end: {},
+    errors: {},
     isPublic: true,
     isSubmitting: false,
+    options: ['Public', 'Private'],
     sites: [],
-    start: '',
-    title: ''
+    start: {},
+    title: {}
 };
+
+const delayAction = debounce((action) => action(), 500);
 
 const form = purebem.of('form');
 const block = purebem.of('create-view');
 
 const CreateView = React.createClass({
 
-    getInitialState() {
-        return {
-            options: ['Public', 'Private']
-        };
-    },
-
     componentWillMount() {
-        this.setState(initState);
+        this.setState(cloneDeep(defaultState));
     },
 
-    isEmpty(string) {
-        return !string || string.trim() === '';
+    isEmpty(str) {
+        return !str || !str.trim().length;
     },
 
-    isDate(string) {
-        return !this.isEmpty(string) && moment(string, 'YYYYMMDD', true).isValid();
-    },
-
-    isValidDateOrder() {
-        const { start, end } = this.state;
-        return this.isDate(start) && this.isDate(end) && start < end;
+    isDate(str) {
+        return moment(str, 'YYYYMMDD', true).isValid();
     },
 
     getSites() {
         return this.state.sites.filter(site => site.name).map(site => pick(site, ['latlng', 'name']));
     },
 
-    getErrors() {
-        return Object.keys(this.state.error).length;
+    hasErrors(errors) {
+        return Object.keys(omitBy(errors, isNull)).length;
     },
 
-    onInput(name) {
-        return evt => {
-            const { value } = evt.target;
-            const { error } = this.state;
-            
-            switch (name) {
-                case 'title':
-                    error.title = this.isEmpty(value) ? ERROR_TITLE : undefined;
-                    break;
-                default:
-                    error[name] = !this.isDate(value) ? ERROR_DATE : undefined;
-                    error.order = !this.isValidDateOrder() ? ERROR_END : undefined;
-            };
+    validateAll() {
+        let errors = {};
 
-            this.setState({ error, [name]: value });
+        ['title', 'start', 'end'].map(name => {
+            assign(errors, this.validateField(name, this.state[name].value));
+        });
+
+        return errors;
+    },
+
+    validateField(name, value) {
+        const error = {};
+        const { start, end } = this.state;
+
+        switch (name) {
+            case 'title':
+                error[name] = this.isEmpty(value) ? ERROR_TITLE : null;
+                break;
+            default:
+                error[name] = !this.isDate(value) ? ERROR_DATE : null;
+
+                if (this.isDate(start.value) && this.isDate(end.value)) {
+                    error.order = start.value >= end.value ? ERROR_END : null;
+                }
         };
+
+        return error;
+    },
+
+    handleChange(evt) {
+        const { name, value } = evt.target;
+        this.setState({ [name]: { value } });
+
+        delayAction(() => {
+            this.setState({ errors: this.validateField(name, value) });
+        });
     },
 
     onReset() {
         this.form.reset();
         this.onSitesClear();
-        this.setState(initState);
+        this.setState(cloneDeep(defaultState));
     },
 
     onSubmit(evt) {
         evt.preventDefault();
+        const errors = this.validateAll();
 
-        if (this.getErrors() > 0) {
+        if (this.hasErrors(errors)) {
+            this.setState({ errors });
             return;
         }
 
         console.log('submit…');
-
-        // add project to projects
-        // add projectId to user
-        // ...
     },
 
     onSiteAdd(marker) {
@@ -110,7 +123,7 @@ const CreateView = React.createClass({
         this.setState({ sites });
     },
 
-    onSiteInput(index) {
+    onSiteChange(index) {
         return evt => {
             const { sites } = this.state;
             sites[index].name = evt.target.value;
@@ -151,7 +164,7 @@ const CreateView = React.createClass({
                 <InputField
                     iconClass="icon-cross"
                     iconClick={ () => this.onSiteRemove(index) }
-                    onInput={ this.onSiteInput(index) }
+                    onChange={ this.onSiteChange(index) }
                     value={ item.name } />
             </div>
         );
@@ -159,32 +172,38 @@ const CreateView = React.createClass({
 
     renderForm() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
-        const { isSubmitting } = this.state;
+        const { title, start, end, errors, isSubmitting } = this.state;
 
         return (
             <form className={ block('form') } onSubmit={ this.onSubmit } ref={ (form) => this.form = form }>
                 <div className={ form('group') }>
                     <label>Project title</label>
                     <InputField
-                        error={ this.state.error.title }
-                        onInput={ this.onInput('title') }
-                        name="title" />
+                        name="title"
+                        error={ errors.title }
+                        onBlur={ this.handleBlur }
+                        onChange={ this.handleChange }
+                        value={ title.value } />
                 </div>
                 <div className={ form('group') }>
                     <label>Start date</label>
                     <InputField
-                        error={ this.state.error.start }
-                        onInput={ this.onInput('start') }
+                        name="start"
+                        error={ errors.start }
+                        onBlur={ this.handleBlur }
+                        onChange={ this.handleChange }
                         placeholder="yyyymmdd"
-                        name="start" />
+                        value={ start.value } />
                 </div>
                 <div className={ form('group') }>
                     <label>End date</label>
                     <InputField
-                        error={ this.state.error.end || this.state.error.order }
-                        onInput={ this.onInput('end') }
+                        name="end"
+                        error={ errors.end || errors.order }
+                        onBlur={ this.handleBlur }
+                        onChange={ this.handleChange }
                         placeholder="yyyymmdd"
-                        name="end" />
+                        value={ end.value } />
                 </div>
                 {
                     [].map.call(this.state.sites, this.renderSite)
