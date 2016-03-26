@@ -2,6 +2,7 @@
     background-color: @color-graye;
     position: relative;
     cursor: pointer;
+    display: flex;
 
     &, &__lever {
         .border-radius(25px);
@@ -19,11 +20,6 @@
         &--active {
             left: 0;
         }
-    }
-
-    &__options {
-        display: flex;
-        position: relative;
     }
 
     &__option {

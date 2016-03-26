@@ -21,9 +21,11 @@ const ButtonSwitch = React.createClass({
     },
 
     onKeyDown(evt) {
+        evt.preventDefault();
+
         switch (evt.which) {
-            case 13:
-            case 32:
+            case 13: // enter
+            case 32: // space
                 this.props.onClick();
         }
     },
@@ -43,11 +45,9 @@ const ButtonSwitch = React.createClass({
         return (
             <div className={ purebem.many(block(), this.props.className) } tabIndex="0" onClick={ this.props.onClick } onKeyDown={ this.onKeyDown }>
                 <div className={ block('lever', { active }) } />
-                <div className={ block('options') }>
-                    {
-                        [].map.call(this.props.options, this.renderOption)
-                    }
-                </div>
+                {
+                    [].map.call(this.props.options, this.renderOption)
+                }
             </div>
         );
     }
