@@ -33,11 +33,11 @@ const defaultState = {
     sites: [],
     start: {},
     title: {},
-    toggleMapLock: ['Locked', 'Unlocked'],
-    togglePrivacy: ['Public', 'Private']
+    toggleMapLock: ['Unlocked', 'Locked'],
+    togglePrivacy: ['Private', 'Public']
 };
 
-const delayAction = debounce((action) => action(), 500);
+const delayAction = debounce((action) => action(), 300);
 
 const form = purebem.of('form');
 const block = purebem.of('create-view');
@@ -95,10 +95,11 @@ const CreateView = React.createClass({
 
     handleChange(evt) {
         const { name, value } = evt.target;
+        const { errors } = cloneDeep(this.state);
         this.setState({ [name]: { value } });
 
         delayAction(() => {
-            this.setState({ errors: this.validateField(name, value) });
+            this.setState({ errors: assign(errors, this.validateField(name, value)) });
         });
     },
 
