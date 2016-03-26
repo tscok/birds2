@@ -21,11 +21,10 @@ const ButtonSwitch = React.createClass({
     },
 
     onKeyDown(evt) {
-        evt.preventDefault();
-
         switch (evt.which) {
             case 13: // enter
             case 32: // space
+                evt.preventDefault();
                 this.props.onClick();
         }
     },
