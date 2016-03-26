@@ -9,13 +9,14 @@ const block = purebem.of('input-field');
 const InputField = React.createClass({
 
     propTypes: {
-        onInput: PropTypes.func.isRequired,
+        onChange: PropTypes.func.isRequired,
         // ...
         error: PropTypes.string,
         iconClass: PropTypes.string,
         iconClick: PropTypes.func,
         placeholder: PropTypes.string,
-        type: PropTypes.string
+        type: PropTypes.string,
+        value: PropTypes.string
     },
 
     getDefaultProps() {
@@ -24,7 +25,8 @@ const InputField = React.createClass({
             iconClass: '',
             iconClick: noop,
             placeholder: '',
-            type: 'text'
+            type: 'text',
+            value: ''
         };
     },
 
@@ -37,14 +39,21 @@ const InputField = React.createClass({
     },
 
     renderInput() {
-        const { error, iconClass, type, placeholder, onInput } = this.props;
+        const { error, iconClass } = this.props;
+
         const inputClass = purebem.many(
             block('input', { icon: !!iconClass }),
             !!error ? 'error' : ''
         );
 
         return (
-            <input { ...this.props } autoComplete="off" type={ type } className={ inputClass } placeholder={ placeholder } onInput={ onInput } />
+            <input { ...this.props }
+                autoComplete="off"
+                className={ inputClass }
+                name={ this.props.name }
+                onChange={ this.props.onChange }
+                placeholder={ this.props.placeholder }
+                type={ this.props.type } />
         );
     },
 
