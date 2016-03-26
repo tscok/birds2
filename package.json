@@ -4,8 +4,11 @@
   "description": "Simple SPA for bird ringers",
   "main": "index.js",
   "dependencies": {
+    "debounce": "^1.0.0",
     "firebase": "^2.4.1",
     "lodash.assign": "^4.0.6",
+    "lodash.clonedeep": "^4.3.1",
+    "lodash.debounce": "^4.0.3",
     "lodash.filter": "^4.2.1",
     "lodash.find": "^4.2.0",
     "lodash.isnull": "^3.0.0",
