@@ -4,9 +4,7 @@ import moment from 'moment';
 
 import isNull from 'lodash.isnull';
 import filter from 'lodash.filter';
-import find from 'lodash.find';
 import pick from 'lodash.pick';
-import omit from 'lodash.omit';
 import omitBy from 'lodash.omitby';
 import debounce from 'lodash.debounce';
 import cloneDeep from 'lodash.clonedeep';
