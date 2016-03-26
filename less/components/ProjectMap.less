@@ -1,6 +1,20 @@
 .project-map {
     position: relative;
 
+    &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,.25);
+    }
+
+    &--unlocked:after {
+        display: none;
+    }
+
     &__canvas {
         height: 300px;
     }

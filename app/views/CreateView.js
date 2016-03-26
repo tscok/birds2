@@ -27,12 +27,14 @@ const ERROR_END = 'A project must start before it can end.';
 const defaultState = {
     end: {},
     errors: {},
+    isLocked: true,
     isPublic: true,
     isSubmitting: false,
-    options: ['Public', 'Private'],
     sites: [],
     start: {},
-    title: {}
+    title: {},
+    toggleMapLock: ['Locked', 'Unlocked'],
+    togglePrivacy: ['Public', 'Private']
 };
 
 const delayAction = debounce((action) => action(), 500);
@@ -143,8 +145,15 @@ const CreateView = React.createClass({
         this.setState({ sites });
     },
 
-    onSwitchClick() {
-        this.setState({ isPublic: !this.state.isPublic });
+    handleSwitchClick(name) {
+        switch (name) {
+            case 'privacy':
+                this.setState({ isPublic: !this.state.isPublic });
+                break;
+            case 'maplock':
+                this.setState({ isLocked: !this.state.isLocked });
+                break;
+        };
     },
 
     renderPrivacyInfo() {
@@ -208,14 +217,19 @@ const CreateView = React.createClass({
                 {
                     [].map.call(this.state.sites, this.renderSite)
                 }
+                <ButtonSwitch
+                    className={ block('switch', ['maplock']) }
+                    isActive={ this.state.isLocked }
+                    onClick={ () => this.handleSwitchClick('maplock') }
+                    options={ this.state.toggleMapLock } />
                 <div className={ block('info') }>
-                    <p>Use the map to locate and mark your ringing sites. Their coordinates may be used to monitor migratory movements.</p>
+                    <p>Unlock the map to locate and mark your ringing sites. Their coordinates can be used to monitor migratory movements.</p>
                 </div>
                 <ButtonSwitch
-                    className={ block('switch') }
+                    className={ block('switch', ['privacy']) }
                     isActive={ this.state.isPublic }
-                    onClick={ this.onSwitchClick }
-                    options={ this.state.options } />
+                    onClick={ () => this.handleSwitchClick('privacy') }
+                    options={ this.state.togglePrivacy } />
                 { this.renderPrivacyInfo() }
                 <div className={ block('actions') }>
                     <button type="submit" className={ buttonClass } disabled={ isSubmitting }>Create</button>
@@ -231,7 +245,8 @@ const CreateView = React.createClass({
                 <div className="container">
                     <ProjectMap
                         onClick={ this.onSiteAdd }
-                        sites={ this.state.sites } />
+                        sites={ this.state.sites }
+                        unlocked={ !this.state.isLocked } />
                     <ContentBox background="white" shadow={ true }>
                         { this.renderForm() }
                     </ContentBox>

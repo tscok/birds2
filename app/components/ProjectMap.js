@@ -18,7 +18,8 @@ const ProjectMap = React.createClass({
 
     propTypes: {
         onClick: PropTypes.func.isRequired,
-        sites: PropTypes.array.isRequired
+        sites: PropTypes.array.isRequired,
+        unlocked: PropTypes.bool.isRequired
     },
 
     componentDidMount() {
@@ -48,8 +49,9 @@ const ProjectMap = React.createClass({
     },
 
     render() {
+        const { unlocked } = this.props;
         return (
-            <div className={ block() }>
+            <div className={ block({ unlocked }) }>
                 <div className={ block('canvas') } ref={ (canvas) => this.canvas = canvas } />
             </div>
         );
