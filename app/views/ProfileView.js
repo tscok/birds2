@@ -1,11 +1,9 @@
 import React from 'react';
 import purebem from 'purebem';
 import assign from 'lodash.assign';
-
 import promise from 'promise';
 
 import firebaseRef from 'app/firebaseRef';
-import ReactFireMixin from 'reactfire';
 
 import ProjectList from 'app/components/ProjectList';
 
@@ -13,8 +11,6 @@ import ProjectList from 'app/components/ProjectList';
 const block = purebem.of('profile-view');
 
 const ProfileView = React.createClass({
-
-    mixins: [ReactFireMixin],
 
     getInitialState() {
         return {
