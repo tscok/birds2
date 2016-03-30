@@ -42,8 +42,8 @@ const ButtonSwitch = React.createClass({
         const active = this.props.isActive;
 
         return (
-            <div className={ purebem.many(block(), this.props.className) } tabIndex="0" onClick={ this.props.onClick } onKeyDown={ this.onKeyDown }>
-                <div className={ block('lever', { active }) } />
+            <div className={ purebem.many(block({ active }), this.props.className) } tabIndex="0" onClick={ this.props.onClick } onKeyDown={ this.onKeyDown }>
+                <div className={ block('lever') } />
                 {
                     [].map.call(this.props.options, this.renderOption)
                 }

@@ -16,10 +16,6 @@
         position: absolute;
         left: 50%;
         .transition(left 150ms);
-
-        &--active {
-            left: 0;
-        }
     }
 
     &__option {
@@ -27,6 +23,10 @@
         text-align: center;
         line-height: 50px;
         .user-select;
+    }
+
+    &--active &__lever {
+        left: 0;
     }
 
     &:focus {
