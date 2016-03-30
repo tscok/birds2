@@ -9,6 +9,7 @@ import omitBy from 'lodash.omitby';
 import debounce from 'lodash.debounce';
 import cloneDeep from 'lodash.clonedeep';
 import assign from 'lodash.assign';
+import random from 'lodash.random';
 
 import firebaseRef from 'app/firebaseRef';
 
@@ -16,11 +17,12 @@ import ButtonSwitch from 'app/components/ButtonSwitch';
 import ContentBox from 'app/components/ContentBox';
 import InputField from 'app/components/InputField';
 import ProjectMap from 'app/components/ProjectMap';
+import ProjectSites from 'app/components/ProjectSites';
 
 
 const ERROR_TITLE = 'Please fill in a title.';
-const ERROR_DATE = 'Please fill in a valid date.';
-const ERROR_END = 'A project must start before it can end.';
+const ERROR_DATE = 'A valid date follows the pattern YYYYMMDD.';
+const ERROR_END = 'A project must start before it can end, silly.';
 
 const defaultState = {
     end: {},
@@ -54,12 +56,13 @@ const CreateView = React.createClass({
         return moment(str, 'YYYYMMDD', true).isValid();
     },
 
-    getSites() {
-        return this.state.sites.filter(site => site.name).map(site => pick(site, ['latlng', 'name']));
+    hasErrors(errors) {
+        errors = errors || this.state.errors;
+        return Object.keys(omitBy(errors, isNull)).length;
     },
 
-    hasErrors(errors) {
-        return Object.keys(omitBy(errors, isNull)).length;
+    getSites() {
+        return this.state.sites.filter(site => site.name).map(site => pick(site, ['latlng', 'name']));
     },
 
     validateAll() {
@@ -101,13 +104,13 @@ const CreateView = React.createClass({
         });
     },
 
-    onReset() {
+    handleReset() {
         this.form.reset();
-        this.onSitesClear();
+        this.handleSitesClear();
         this.setState(cloneDeep(defaultState));
     },
 
-    onSubmit(evt) {
+    handleSubmit(evt) {
         evt.preventDefault();
         const errors = this.validateAll();
 
@@ -116,35 +119,49 @@ const CreateView = React.createClass({
             return;
         }
 
-        console.log('submit…');
+        const { title, start, end, sites, isPublic } = this.state;
+        const uid = firebaseRef.getAuth().uid;
+        const format = 'YYYYMMDD';
+
+        const data = {
+            created: moment().format(format),
+            title: title.value,
+            start: moment(start.value, format).unix(),
+            end: moment(end.value, format).unix(),
+            public: isPublic,
+            ownerId: uid,
+            luckyNumber: random(0,360)
+        };
+
+        // 1. Add project
+        const projectRef = firebaseRef.child('projects').push(data, this.onComplete('projects'));
+        const pid = projectRef.key();
+
+        // 2. Add sites
+        this.getSites().map(site => {
+            const siteRef = firebaseRef.child('sites').push(assign(site, { projectId: pid, ownerId: uid }), this.onComplete('sites'));
+            const sid = siteRef.key();
+
+            // 2.1 Update project/sites
+            firebaseRef.child(`projects/${pid}/sites/${sid}`).set(true);
+        });
+        
+        // 3. Update user with ownership
+        firebaseRef.child(`users/${uid}/projects/${pid}`).set(true, this.onComplete('users'));
+
+        // 4. Set membership in memberships/project
+        firebaseRef.child(`memberships/${pid}/member/${uid}`).set(true, this.onComplete('memberships'));
+
+        console.log('all done…');
     },
 
-    onSiteAdd(marker) {
-        const sites = [ ...this.state.sites, marker ];
-        this.setState({ sites });
+    onComplete(store) {
+        return (error) => {
+            console.log('Saving data to',store, error ? error : 'OK');
+        };
     },
 
-    onSiteChange(index) {
-        return evt => {
-            const { sites } = this.state;
-            sites[index].name = evt.target.value;
-            this.setState({ sites });
-        }
-    },
-
-    onSiteRemove(index) {
-        let { sites } = this.state;
-        sites[index].setMap(null);
-        sites = sites.filter((item, i) => index !== i);
-        this.setState({ sites });
-    },
-
-    onSitesClear() {
-        const sites = this.state.sites.filter(item => item.setMap(null));
-        this.setState({ sites });
-    },
-
-    handleSwitchClick(name) {
+    handleSwitch(name) {
         switch (name) {
             case 'privacy':
                 this.setState({ isPublic: !this.state.isPublic });
@@ -155,25 +172,49 @@ const CreateView = React.createClass({
         };
     },
 
+    handleSiteAdd(marker) {
+        const sites = [ ...this.state.sites, marker ];
+        this.setState({ sites });
+    },
+
+    handleSiteChange(index) {
+        return evt => {
+            const { sites } = this.state;
+            sites[index].name = evt.target.value;
+            this.setState({ sites });
+        }
+    },
+
+    handleSiteRemove(index) {
+        let { sites } = this.state;
+        sites[index].setMap(null);
+        sites.splice(index, 1);
+        this.setState({ sites });
+    },
+
+    handleSitesClear() {
+        const sites = filter(this.state.sites, (item) => item.setMap(null));
+        this.setState({ sites });
+    },
+
     renderPrivacyInfo() {
         const info = this.state.isPublic
             ? (<p>Public projects aim at collaboration. Users can find your project and may request to join.</p>)
-            : (<p>Private projects aim at privacy. Other users cannot find nor participate in these projects.</p>);
+            : (<p>Private projects aim at privacy. Other users cannot find nor participate in private projects.</p>);
 
         return (
-            <div className={ block('info') }>{ info }</div>
+            <div className={ block('body') }>{ info }</div>
         );
     },
 
-    renderSite(item, index) {
+    renderErrorInfo() {
+        if (!this.hasErrors()) {
+            return null;
+        }
+
         return (
-            <div className={ form('group') } key={ index }>
-                <label className={ block('label') }>Site name { index + 1 }</label>
-                <InputField
-                    iconClass="icon-cross"
-                    iconClick={ () => this.onSiteRemove(index) }
-                    onChange={ this.onSiteChange(index) }
-                    value={ item.name } />
+            <div className={ block('body', ['error']) }>
+                <p>Please correct any errors to proceed.</p>
             </div>
         );
     },
@@ -183,7 +224,7 @@ const CreateView = React.createClass({
         const { title, start, end, errors, isSubmitting } = this.state;
 
         return (
-            <form className={ block('form') } onSubmit={ this.onSubmit } ref={ (form) => this.form = form }>
+            <form className={ block('form') } onSubmit={ this.handleSubmit } ref={ (form) => this.form = form }>
                 <div className={ form('group') }>
                     <label>Project title</label>
                     <InputField
@@ -213,26 +254,28 @@ const CreateView = React.createClass({
                         placeholder="yyyymmdd"
                         value={ end.value } />
                 </div>
-                {
-                    [].map.call(this.state.sites, this.renderSite)
-                }
+                <ProjectSites
+                    sites={ this.state.sites }
+                    onChange={ (i) => this.handleSiteChange(i) }
+                    onRemove={ (i) => this.handleSiteRemove(i) } />
                 <ButtonSwitch
                     className={ block('switch', ['maplock']) }
                     isActive={ this.state.isLocked }
-                    onClick={ () => this.handleSwitchClick('maplock') }
+                    onClick={ () => this.handleSwitch('maplock') }
                     options={ this.state.toggleMapLock } />
-                <div className={ block('info') }>
-                    <p>Unlock the map to locate and mark your ringing sites. Their coordinates can be used to monitor migratory movements.</p>
+                <div className={ block('body') }>
+                    <p>Unlock the map to locate and mark your ringing sites. Geolocation data may be used for statistics.</p>
                 </div>
                 <ButtonSwitch
                     className={ block('switch', ['privacy']) }
                     isActive={ this.state.isPublic }
-                    onClick={ () => this.handleSwitchClick('privacy') }
+                    onClick={ () => this.handleSwitch('privacy') }
                     options={ this.state.togglePrivacy } />
                 { this.renderPrivacyInfo() }
+                { this.renderErrorInfo() }
                 <div className={ block('actions') }>
                     <button type="submit" className={ buttonClass } disabled={ isSubmitting }>Create</button>
-                    <button type="button" className={ block('button', ['reset']) } onClick={ this.onReset }>Reset</button>
+                    <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
                 </div>
             </form>
         );
@@ -243,7 +286,7 @@ const CreateView = React.createClass({
             <div className={ block() }>
                 <div className="container">
                     <ProjectMap
-                        onClick={ this.onSiteAdd }
+                        onClick={ this.handleSiteAdd }
                         sites={ this.state.sites }
                         unlocked={ !this.state.isLocked } />
                     <ContentBox background="white" shadow={ true }>
