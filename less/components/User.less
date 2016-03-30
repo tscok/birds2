@@ -45,13 +45,20 @@
         top: 70px;
         left: 0;
         width: 100%;
+        padding: 10px;
         background-color: @color-white;
+        box-shadow: 0 4px 12px -4px rgba(0,0,0,.1);
     }
 
     &__link {
         display: block;
         line-height: 40px;
         padding: 0 15px;
+
+        &, &:hover {
+            color: inherit;
+            text-decoration: none;
+        }
 
         &:hover {
             background-color: @color-grayf9;

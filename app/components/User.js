@@ -38,7 +38,7 @@ const User = React.createClass({
         return (
             <nav className={ block('links') }>
                 <NavLink base={ block('link') } to="/profile">Profile</NavLink>
-                <NavLink base={ block('link') } to="/login">Logout</NavLink>
+                <NavLink base={ block('link', ['logout']) } to="/login">Logout</NavLink>
             </nav>
         );
     },
