@@ -17,6 +17,16 @@
     transition: @parameter;
 }
 
+.transition (@parameter1, @parameter2) {
+    -webkit-transition: @parameter1, @parameter2;
+    transition: @parameter1, @parameter2;
+}
+
+.transition (@parameter1, @parameter2, @parameter3) {
+    -webkit-transition: @parameter1, @parameter2, @parameter3;
+    transition: @parameter1, @parameter2, @parameter3;
+}
+
 .transform (@parameters) {
     -webkit-transform: @parameters;
     -ms-transform: @parameters;
