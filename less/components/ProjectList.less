@@ -1,0 +1,74 @@
+.project-list {
+
+    @size: 40px;
+
+    &__empty {
+        text-align: center;
+    }
+
+    &__row {
+        display: flex;
+        line-height: @size;
+        padding: 10px 0;
+        border-bottom: 1px solid @color-graye;
+
+        &--last {
+            border-bottom: 0;
+        }
+
+        &--header {
+            line-height: @size / 2;
+        }
+
+        &:not(&--header):hover {
+            cursor: pointer;
+            background-color: @color-grayf9;
+        }
+    }
+
+    &__col {
+        margin: 0 10px;
+
+        &--avatar {
+            width: @size;
+            height: @size;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: @color-white;
+            font-size: 20px;
+        }
+
+        &--title {
+            flex: 1;
+            font-weight: 400;
+        }
+
+        &--status {
+            min-width: 80px;
+            font-weight: 400;
+            font-size: 14px;
+            text-align: center;
+            // color: @color-gray9;
+        }
+        // &--status&--pending {
+        //     color: @color-yellow-dark;
+        // }
+        // &--status&--ongoing {
+        //     color: @color-green-dark;
+        // }
+        // &--status&--finished {
+        //     color: @color-red-dark;
+        // }
+    }
+
+    &__row--header &__col {
+        font-weight: 400;
+        font-size: 14px;
+        color: @color-gray9;
+    }
+    &__row--header &__col--avatar {
+        height: 0;
+    }
+}
