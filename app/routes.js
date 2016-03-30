@@ -39,12 +39,11 @@ const routes = (
             <Route path="/create" component={ CreateView } onEnter={ requireAuth } />
             <Route path="/search" component={ SearchView } onEnter={ requireAuth } />
 
-            <Route path="/project/:id" component={ ProjectView } onEnter={ requireAuth }>
-                <Route path="/project/:id/entry" component={ EntryView } />
-                <Route path="/project/:id/members" component={ MembersView } />
-                <Route path="/project/:id/rings" component={ RingsView } />
-                <Route path="/project/:id/export" component={ ExportView } />
-            </Route>
+            <Route path="/project/:id" component={ ProjectView } onEnter={ requireAuth } />
+            <Route path="/project/:id/entry" component={ EntryView } onEnter={ requireAuth } />
+            <Route path="/project/:id/members" component={ MembersView } onEnter={ requireAuth } />
+            <Route path="/project/:id/rings" component={ RingsView } onEnter={ requireAuth } />
+            <Route path="/project/:id/export" component={ ExportView } onEnter={ requireAuth } />
             
             <Redirect from="/project" to="/profile" />
 
