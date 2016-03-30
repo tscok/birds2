@@ -32,9 +32,6 @@ const ProjectMap = React.createClass({
 
     componentDidUpdate() {
         this.props.sites.map((site, index) => {
-            if (!site.map) {
-                site.setMap(this.map);
-            }
             site.setLabel(`${index + 1}`);
         });
     },
@@ -42,7 +39,8 @@ const ProjectMap = React.createClass({
     addMarker(location) {
         const marker = new google.maps.Marker({
             position: location,
-            latlng: location.lat() + ',' + location.lng()
+            latlng: location.lat() + ',' + location.lng(),
+            map: this.map
         });
 
         this.props.onClick(marker);
