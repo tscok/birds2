@@ -16,8 +16,10 @@ import firebaseRef from 'app/firebaseRef';
 import ButtonSwitch from 'app/components/ButtonSwitch';
 import ContentBox from 'app/components/ContentBox';
 import InputField from 'app/components/InputField';
+import Modal from 'app/components/Modal';
 import ProjectMap from 'app/components/ProjectMap';
 import ProjectSites from 'app/components/ProjectSites';
+import ProjectSuccess from 'app/components/ProjectSuccess';
 
 
 const ERROR_TITLE = 'Please fill in a title.';
@@ -30,7 +32,16 @@ const defaultState = {
     isLocked: true,
     isPublic: true,
     isSubmitting: false,
+    // project: {
+    //     dateEnd: {},
+    //     dateStart: {},
+    //     id: '',
+    //     sites: [],
+    //     title: '',
+    // }
+    projectId: '',
     sites: [],
+    showSuccess: false,
     start: {},
     title: {},
     toggleMapLock: ['Unlocked', 'Locked'],
@@ -46,6 +57,7 @@ const CreateView = React.createClass({
 
     componentWillMount() {
         this.setState(cloneDeep(defaultState));
+        this.uid = firebaseRef.getAuth().uid;
     },
 
     isEmpty(str) {
@@ -120,45 +132,49 @@ const CreateView = React.createClass({
         }
 
         const { title, start, end, sites, isPublic } = this.state;
-        const uid = firebaseRef.getAuth().uid;
         const format = 'YYYYMMDD';
 
         const data = {
-            created: moment().format(format),
+            created: moment().unix(),
             title: title.value,
             start: moment(start.value, format).unix(),
             end: moment(end.value, format).unix(),
             public: isPublic,
-            ownerId: uid,
+            ownerId: this.uid,
             luckyNumber: random(0,360)
         };
 
-        // 1. Add project
-        const projectRef = firebaseRef.child('projects').push(data, this.onComplete('projects'));
-        const pid = projectRef.key();
-
-        // 2. Add sites
-        this.getSites().map(site => {
-            const siteRef = firebaseRef.child('sites').push(assign(site, { projectId: pid, ownerId: uid }), this.onComplete('sites'));
-            const sid = siteRef.key();
-
-            // 2.1 Update project/sites
-            firebaseRef.child(`projects/${pid}/sites/${sid}`).set(true);
-        });
-        
-        // 3. Update user with ownership
-        firebaseRef.child(`users/${uid}/projects/${pid}`).set(true, this.onComplete('users'));
-
-        // 4. Set membership in memberships/project
-        firebaseRef.child(`memberships/${pid}/member/${uid}`).set(true, this.onComplete('memberships'));
-
-        console.log('all done…');
+        // Add project
+        this.projectRef = firebaseRef.child('projects').push(data, this.onComplete);
     },
 
-    onComplete(store) {
-        return (error) => {
-            console.log('Saving data to',store, error ? error : 'OK');
-        };
+    onComplete(error) {
+        if (error) {
+            console.log('Oh snap! An error occurred…');
+            return;
+        }
+
+        // Get project ID
+        const pid = this.projectRef.key();
+
+        // Add sites
+        this.getSites().map((site, index) => {
+            const newSite = assign(site, { projectId: pid, ownerId: this.uid });
+            const siteRef = firebaseRef.child('sites').push(newSite);
+            const sid = siteRef.key();
+
+            // Update project/sites
+            firebaseRef.child(`projects/${pid}/sites/${sid}`).set(true);
+        });
+
+        // Update user with ownership
+        firebaseRef.child(`users/${this.uid}/projects/${pid}`).set(true);
+
+        // Set membership in memberships/project
+        firebaseRef.child(`memberships/${pid}/member/${this.uid}`).set(true);
+
+        // Display Success state
+        this.setState({ showSuccess: true, projectId: pid });
     },
 
     handleSwitch(name) {
@@ -197,6 +213,11 @@ const CreateView = React.createClass({
         this.setState({ sites });
     },
 
+    handleModalClose() {
+        this.handleReset();
+        window.scrollTo(0,0);
+    },
+
     renderPrivacyInfo() {
         const info = this.state.isPublic
             ? (<p>Public projects aim at collaboration. Users can find your project and may request to join.</p>)
@@ -222,6 +243,7 @@ const CreateView = React.createClass({
     renderForm() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
         const { title, start, end, errors, isSubmitting } = this.state;
+        const hasErrors = this.hasErrors();
 
         return (
             <form className={ block('form') } onSubmit={ this.handleSubmit } ref={ (form) => this.form = form }>
@@ -274,10 +296,24 @@ const CreateView = React.createClass({
                 { this.renderPrivacyInfo() }
                 { this.renderErrorInfo() }
                 <div className={ block('actions') }>
-                    <button type="submit" className={ buttonClass } disabled={ isSubmitting }>Create</button>
+                    <button type="submit" className={ buttonClass } disabled={ hasErrors || isSubmitting }>Create</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
                 </div>
             </form>
+        );
+    },
+
+    renderSuccess() {
+        if (!this.state.showSuccess) {
+            return null;
+        }
+
+        return (
+            <Modal>
+                <ProjectSuccess
+                    projectId={ this.state.projectId }
+                    onClose={ this.handleModalClose } />
+            </Modal>
         );
     },
 
@@ -293,6 +329,7 @@ const CreateView = React.createClass({
                         { this.renderForm() }
                     </ContentBox>
                 </div>
+                { this.renderSuccess() }
             </div>
         );
     }
