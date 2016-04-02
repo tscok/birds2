@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 import purebem from 'purebem';
 import onclickoutside from 'react-onclickoutside';
 
