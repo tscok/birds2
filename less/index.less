@@ -24,9 +24,11 @@
 @import "components/ContentBox";
 @import "components/Greeting";
 @import "components/InputField";
+@import "components/Modal";
 @import "components/Navigation";
 @import "components/ProjectList";
 @import "components/ProjectMap";
+@import "components/ProjectSuccess";
 @import "components/User";
 
 // Basic styling
@@ -36,4 +38,31 @@
 
 body {
     background-color: @color-grayf9;
+
+    &:after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        z-index: @z-index-base;
+        background-color: rgba(0,0,0,.5);
+        .transition(opacity .35s, height .1s .35s, width .1s .35s);
+    }
+
+    &.overlay {
+        // position: fixed;
+        width: 100%;
+        overflow: hidden;
+        overflow-y: scroll;
+
+        &:after {
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            .transition(opacity .35s);
+        }
+    }
 }
