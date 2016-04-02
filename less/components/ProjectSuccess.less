@@ -1,0 +1,45 @@
+.project-success {
+    width: 100%;
+    max-width: 450px;
+    background-color: @color-white;
+    box-shadow: 0 10px 50px rgba(0,0,0,.25);
+
+    &__header {
+        font-size: 48px;
+        text-align: center;
+        color: @color-white;
+        background-color: @color-green;
+        padding: 40px 40px 20px;
+    }
+
+    &__icon {
+        .icon(@icon-check);
+        padding: 10px;
+        border-radius: 100%;
+        border: 3px solid;
+    }
+
+    &__title {
+        font-weight: 400;
+    }
+
+    &__body {
+        padding: 40px;
+        text-align: center;
+    }
+
+    &__body-copy {
+        margin-bottom: 40px;
+    }
+
+    &__button {
+        display: block;
+        width: 100%;
+        margin-top: 15px;
+
+        &--primary {
+            background-color: @color-green !important;
+            border-color: @color-green-dark !important;
+        }
+    }
+}
