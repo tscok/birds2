@@ -13,11 +13,11 @@ const ProjectList = React.createClass({
 
     propTypes: {
         projects: PropTypes.array.isRequired,
-        isLoading: PropTypes.bool.isRequired
+        members: PropTypes.array.isRequired
     },
 
     contextTypes: {
-        router: PropTypes.object
+        router: PropTypes.object.isRequired
     },
 
     handleClick(id) {
@@ -32,7 +32,7 @@ const ProjectList = React.createClass({
 
     getStatus(start, end) {
         const now = moment().format('YYYYMMDD');
-        return now > start ? ( now < end ? 'Ongoing' : 'Finished' ) : 'Pending';
+        return now > start ? ( now < end ? 'Ongoing' : 'Closed' ) : 'Pending';
     },
 
     renderEmpty() {
@@ -47,20 +47,33 @@ const ProjectList = React.createClass({
         );
     },
 
-    renderProject(project, index) {
-        let { projectId, title, start, end, sites, luckyNumber } = project;
+    renderPending(index) {
+        const { pendingCount } = this.props.members[index];
+
+        if (pendingCount === 0) {
+            return null;
+        }
+
+        return (
+            <span className={ block('pending') }>{ pendingCount }</span>
+        );
+    },
+
+    renderProject(data, index) {
+        const { title, start, end, luckyNumber, projectId } = data;
+        const { memberCount } = this.props.members[index];
 
         const first = index === 0;
         const last = this.props.projects.length - 1 === index;
-        const status = this.getStatus(start, end);
 
         return (
             <div key={ index } className={ block('row', { first, last }) } onClick={ () => this.handleClick(projectId) }>
-                <div className={ block('col', ['avatar']) } style={ this.getColor(luckyNumber) }>{ project.title.substring(0,1) }</div>
-                <div className={ block('col', ['title']) }>{ project.title }</div>
-                <div className={ block('col', ['status']) }>You</div>
-                <div className={ block('col', ['status']) }>1</div>
-                <div className={ block('col', ['status'], { status: status.toLowerCase() }) }>{ status }</div>
+                <div className={ block('col', ['avatar']) }>
+                    <div className={ block('avatar') } style={ this.getColor(luckyNumber) }>{ title.substring(0,1) }</div>
+                </div>
+                <div className={ block('col', ['title']) }>{ title }</div>
+                <div className={ block('col', ['members']) }>{ memberCount }{ this.renderPending(index) }</div>
+                <div className={ block('col', ['status'], { status: status.toLowerCase() }) }>{ this.getStatus(start, end) }</div>
             </div>
         );
     },
@@ -71,8 +84,7 @@ const ProjectList = React.createClass({
                 <div className={ block('row', ['header']) }>
                     <div className={ block('col', ['header', 'avatar']) }></div>
                     <div className={ block('col', ['header', 'title']) }>Title</div>
-                    <div className={ block('col', ['header', 'status'])}>Owner</div>
-                    <div className={ block('col', ['header', 'status'])}>Members</div>
+                    <div className={ block('col', ['header', 'members'])}>Members</div>
                     <div className={ block('col', ['header', 'status'])}>Status</div>
                 </div>
                 {
@@ -82,22 +94,20 @@ const ProjectList = React.createClass({
         );
     },
 
-    renderContent() {
-        if (this.props.isLoading) {
-            return <Spinner />;
+    render() {
+        if (!this.props.projects.length || !this.props.members.length) {
+            return null;
         }
 
-        return this.props.projects.length > 0
-            ? this.renderProjects()
-            : this.renderEmpty();
-    },
-
-    render() {
         return (
             <div className={ block() }>
                 <div className="container">
                     <ContentBox title="Projects" background="white" shadow={ true }>
-                        { this.renderContent() }
+                        {
+                            this.props.projects.length > 0
+                                ? this.renderProjects()
+                                : this.renderEmpty()
+                        }
                     </ContentBox>
                 </div>
             </div>
