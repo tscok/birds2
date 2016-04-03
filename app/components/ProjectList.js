@@ -30,11 +30,6 @@ const ProjectList = React.createClass({
         );
     },
 
-    getStatus(start, end) {
-        const now = moment().unix();
-        return now > start ? ( now < end ? 'Active' : 'Ended' ) : 'Pending';
-    },
-
     renderPending(project) {
         if (project.ownerId !== this.props.userId || project.members.pending === 0) {
             return null;
@@ -46,11 +41,10 @@ const ProjectList = React.createClass({
     },
 
     renderProject(project, index) {
-        const { id, title, start, end, members } = project;
+        const { id, title, start, end, members, status } = project;
 
         const first = index === 0;
         const last = this.props.projects.length - 1 === index;
-        const status = this.getStatus(start, end);
 
         return (
             <div key={ index } className={ block('row', { first, last }) } onClick={ () => this.handleClick(id) }>
@@ -63,6 +57,10 @@ const ProjectList = React.createClass({
     },
 
     renderProjects() {
+        this.props.projects.sort((a, b) => {
+            return a.status.localeCompare(b.status);
+        });
+
         return (
             <div>
                 <div className={ block('row', ['header']) }>

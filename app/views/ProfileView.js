@@ -5,6 +5,8 @@ import promise from 'promise';
 
 import firebaseRef from 'app/firebaseRef';
 
+import { getStatus } from 'app/utils';
+
 import NavLink from 'app/components/NavLink';
 import ProjectList from 'app/components/ProjectList';
 import Spinner from 'app/components/Spinner';
@@ -60,12 +62,13 @@ const ProfileView = React.createClass({
     getProject(pid) {
         return new promise((resolve, reject) => {
             this.projectsRef.child(pid).once('value', (snap) => {
-                const data = snap.val();
-                data.id = pid;
+                const project = snap.val();
+                project.id = pid;
+                project.status = getStatus(project.start, project.end);
 
                 this.getMembers(pid).then(result => {
-                    data.members = result;
-                    resolve(data);
+                    project.members = result;
+                    resolve(project);
                 });
             });
         });
