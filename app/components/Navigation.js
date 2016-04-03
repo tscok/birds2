@@ -67,13 +67,11 @@ const Navigation = React.createClass({
 
         return (
             <nav className={ block('links', ['project']) }>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}` }>Dashboard</NavLink>
+                <NavLink baseClass={ block('link') } to={ `/project/${id}` }>Project</NavLink>
                 <NavLink baseClass={ block('link') } to={ `/project/${id}/entry` }>New Entry</NavLink>
-            {/*
                 <NavLink baseClass={ block('link') } to={ `/project/${id}/members` }>Members</NavLink>
                 <NavLink baseClass={ block('link') } to={ `/project/${id}/rings` }>Rings</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/export` }>Export Data</NavLink>
-            */}
+                <NavLink baseClass={ block('link') } to={ `/project/${id}/export` }>Data</NavLink>
             </nav>
         );
     },
