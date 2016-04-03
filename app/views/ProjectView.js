@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
+import promise from 'promise';
 
 import firebaseRef from 'app/firebaseRef';
 
@@ -29,18 +30,25 @@ const ProjectView = React.createClass({
         const uid = firebaseRef.getAuth().uid;
         const pid = this.props.params.id;
 
-        this.validateMembership(pid, uid);
+        this.membersRef = firebaseRef.child(`members/${pid}/active/${uid}`);
+        this.projectRef = firebaseRef.child(`projects/${this.props.params.id}`);
 
-        firebaseRef.child(`projects/${this.props.params.id}`).once('value', (snap) => {
-            this.setState({ project: snap.val(), isLoading: false });
+        this.userAuth().then(() => {
+            this.projectRef.once('value', (snap) => {
+                this.setState({ project: snap.val(), isLoading: false });
+            });
         });
     },
 
-    validateMembership(pid, uid) {
-        firebaseRef.child(`memberships/${pid}/member/${uid}`).once('value', (snap) => {
-            if (snap.val() !== true) {
-                this.context.router.push('/profile');
-            }
+    userAuth() {
+        return new promise((resolve, reject) => {
+            this.membersRef.once('value', (snap) => {
+                if (!snap.exists()) {
+                    this.context.router.push('/profile');
+                    return;
+                }
+                resolve();
+            });
         });
     },
 

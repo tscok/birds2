@@ -32,13 +32,6 @@ const defaultState = {
     isLocked: true,
     isPublic: true,
     isSubmitting: false,
-    // project: {
-    //     dateEnd: {},
-    //     dateStart: {},
-    //     id: '',
-    //     sites: [],
-    //     title: '',
-    // }
     projectId: '',
     sites: [],
     showSuccess: false,
@@ -171,7 +164,7 @@ const CreateView = React.createClass({
         firebaseRef.child(`users/${this.uid}/projects/${pid}`).set(true);
 
         // Set membership in memberships/project
-        firebaseRef.child(`memberships/${pid}/member/${this.uid}`).set(true);
+        firebaseRef.child(`members/${pid}/active/${this.uid}`).set(true);
 
         // Display Success state
         this.setState({ showSuccess: true, projectId: pid });
@@ -296,7 +289,7 @@ const CreateView = React.createClass({
                 { this.renderPrivacyInfo() }
                 { this.renderErrorInfo() }
                 <div className={ block('actions') }>
-                    <button type="submit" className={ buttonClass } disabled={ hasErrors || isSubmitting }>Create</button>
+                    <button type="submit" className={ buttonClass } disabled={ hasErrors || isSubmitting }>Create Project</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
                 </div>
             </form>

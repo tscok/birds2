@@ -6,10 +6,17 @@
     user-select: none;
 }
 
-.animation (@name, @duration: 250ms, @delay: 0, @ease: ease) {
-    -webkit-animation: @name @duration @delay @ease;
-    -moz-animation: @name @duration @delay @ease;
-    -ms-animation: @name @duration @delay @ease;
+.animation (@parameter) {
+    -webkit-animation: @parameter;
+    -moz-animation: @parameter;
+    -ms-animation: @parameter;
+}
+
+.keyframes (@name, @rules) {
+    @-webkit-keyframes @name { @rules(); }
+    @-moz-keyframes @name { @rules(); }
+    @-o-keyframes @name { @rules(); }
+    @keyframes @name { @rules(); }
 }
 
 .transition (@parameter) {

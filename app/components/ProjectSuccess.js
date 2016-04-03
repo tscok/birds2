@@ -31,10 +31,10 @@ const ProjectSuccess = React.createClass({
             <div className={ block() }>
                 <div className={ block('header') }>
                     <i className={ block('icon') } />
-                    <div className={ block('title') }>Good Job!</div>
+                    {/*<div className={ block('title') }>Good Job!</div>*/}
                 </div>
                 <div className={ block('body') }>
-                    <p className={ block('body-copy') }><strong>You just created a project.</strong><br />How would you like to proceed?</p>
+                    <p className={ block('body-copy') }><strong>The project was successfully created!</strong><br />How would you like to proceed?</p>
                     <button className={ primary } onClick={ this.handleReroute }>Go to project</button>
                     <button className={ block('button') } onClick={ this.props.onClose }>Create another</button>
                 </div>

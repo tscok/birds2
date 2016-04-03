@@ -3,8 +3,6 @@ import purebem from 'purebem';
 import moment from 'moment';
 
 import ContentBox from 'app/components/ContentBox';
-import NavLink from 'app/components/NavLink';
-import Spinner from 'app/components/Spinner';
 
 
 const block = purebem.of('project-list');
@@ -13,7 +11,7 @@ const ProjectList = React.createClass({
 
     propTypes: {
         projects: PropTypes.array.isRequired,
-        members: PropTypes.array.isRequired
+        userId: PropTypes.string.isRequired
     },
 
     contextTypes: {
@@ -24,56 +22,42 @@ const ProjectList = React.createClass({
         this.context.router.push(`project/${id}`);
     },
 
-    getColor(luckyNumber) {
-        return {
-            backgroundColor: `hsl(${luckyNumber}, 85%, 65%)`
-        };
+    getAvatar(title, status) {
+        const letter = title.substring(0,1);
+        status = status.toLowerCase();
+        return (
+            <div className={ block('avatar', { status }) }>{ letter }</div>
+        );
     },
 
     getStatus(start, end) {
-        const now = moment().format('YYYYMMDD');
-        return now > start ? ( now < end ? 'Ongoing' : 'Closed' ) : 'Pending';
+        const now = moment().unix();
+        return now > start ? ( now < end ? 'Active' : 'Ended' ) : 'Pending';
     },
 
-    renderEmpty() {
-        if (this.props.projects.length) {
+    renderPending(project) {
+        if (project.ownerId !== this.props.userId || project.members.pending === 0) {
             return null;
         }
 
         return (
-            <div className={ block('empty') }>
-                <p>You are not in any projects yet.<br />You can either <NavLink to="/create">Create</NavLink> one or <NavLink to="/search">Search</NavLink> for projects to join.</p>
-            </div>
+            <span className={ block('pending') }>{ project.members.pending }</span>
         );
     },
 
-    renderPending(index) {
-        const { pendingCount } = this.props.members[index];
-
-        if (pendingCount === 0) {
-            return null;
-        }
-
-        return (
-            <span className={ block('pending') }>{ pendingCount }</span>
-        );
-    },
-
-    renderProject(data, index) {
-        const { title, start, end, luckyNumber, projectId } = data;
-        const { memberCount } = this.props.members[index];
+    renderProject(project, index) {
+        const { id, title, start, end, members } = project;
 
         const first = index === 0;
         const last = this.props.projects.length - 1 === index;
+        const status = this.getStatus(start, end);
 
         return (
-            <div key={ index } className={ block('row', { first, last }) } onClick={ () => this.handleClick(projectId) }>
-                <div className={ block('col', ['avatar']) }>
-                    <div className={ block('avatar') } style={ this.getColor(luckyNumber) }>{ title.substring(0,1) }</div>
-                </div>
+            <div key={ index } className={ block('row', { first, last }) } onClick={ () => this.handleClick(id) }>
+                <div className={ block('col', ['avatar']) }>{ this.getAvatar(title, status) }</div>
                 <div className={ block('col', ['title']) }>{ title }</div>
-                <div className={ block('col', ['members']) }>{ memberCount }{ this.renderPending(index) }</div>
-                <div className={ block('col', ['status'], { status: status.toLowerCase() }) }>{ this.getStatus(start, end) }</div>
+                <div className={ block('col', ['members']) }>{ members.active }{ this.renderPending(project) }</div>
+                <div className={ block('col', ['status']) }>{ status }</div>
             </div>
         );
     },
@@ -95,7 +79,7 @@ const ProjectList = React.createClass({
     },
 
     render() {
-        if (!this.props.projects.length || !this.props.members.length) {
+        if (!this.props.projects.length) {
             return null;
         }
 
@@ -103,11 +87,7 @@ const ProjectList = React.createClass({
             <div className={ block() }>
                 <div className="container">
                     <ContentBox title="Projects" background="white" shadow={ true }>
-                        {
-                            this.props.projects.length > 0
-                                ? this.renderProjects()
-                                : this.renderEmpty()
-                        }
+                        { this.renderProjects() }
                     </ContentBox>
                 </div>
             </div>
