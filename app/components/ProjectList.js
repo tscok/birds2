@@ -51,7 +51,7 @@ const ProjectList = React.createClass({
                 <div className={ block('col', ['avatar']) }>{ this.getAvatar(title, status) }</div>
                 <div className={ block('col', ['title']) }>{ title }</div>
                 <div className={ block('col', ['members']) }>{ members.active }{ this.renderPending(project) }</div>
-                <div className={ block('col', ['status']) }>{ status }</div>
+                <div className={ block('col', ['status'], { status: status.toLowerCase() }) }>{ status }</div>
             </div>
         );
     },
