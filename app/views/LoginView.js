@@ -4,6 +4,7 @@ import purebem from 'purebem';
 import firebaseRef from 'app/firebaseRef';
 
 import ContentBox from 'app/components/ContentBox';
+import Spinner from 'app/components/Spinner';
 
 
 const block = purebem.of('login');
@@ -61,6 +62,14 @@ const LoginView = React.createClass({
         );
     },
 
+    renderSpinner() {
+        if (!this.state.isSubmitting) {
+            return null;
+        }
+
+        return <Spinner />;
+    },
+
     renderPasswordLogin() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
 
@@ -77,6 +86,7 @@ const LoginView = React.createClass({
                     </div>
                     <button type="submit" className={ buttonClass } disabled={ this.state.isSubmitting }>Login</button>
                 </form>
+                { this.renderSpinner() }
                 { this.renderError() }
             </div>
         );
