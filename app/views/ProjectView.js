@@ -57,10 +57,6 @@ const ProjectView = React.createClass({
     },
 
     renderStatus() {
-        if (this.state.isLoading) {
-            return <Spinner />
-        }
-
         const { title, start, end } = this.state.project;
         const status = getStatus(start, end).toLowerCase();
 
@@ -88,19 +84,24 @@ const ProjectView = React.createClass({
     renderCharts() {
         return (
             <div className={ block('charts')}>
-                <div className={ block('chart') }></div>
-                <div className={ block('chart') }></div>
+                <div className="container">
+                    <div className="one-third column">[chart]</div>
+                    <div className="one-third column">[chart]</div>
+                    <div className="one-third column">[chart]</div>
+                </div>
             </div>
         );
     },
 
     render() {
+        if (this.state.isLoading) {
+            return <Spinner />
+        }
+
         return (
             <div className={ block() }>
-                <div className="container">
-                    { this.renderStatus() }
-                    { this.renderCharts() }
-                </div>
+                { this.renderStatus() }
+                { this.renderCharts() }
             </div>
         );
     }
