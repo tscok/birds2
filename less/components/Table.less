@@ -1,0 +1,38 @@
+.table {
+
+    @size: 40px;
+
+    &__row {
+        display: flex;
+        padding: 10px;
+        line-height: @size;
+        border-bottom: 1px solid @color-graye;
+
+        &--last {
+            border-bottom: 0;
+        }
+
+        &--header {
+            line-height: @size / 2;
+        }
+
+        &--body:hover {
+            cursor: pointer;
+            background-color: @color-grayf9;
+        }
+    }
+
+    &__col {
+        min-width: 80px;
+
+        &--avatar {
+            min-width: 0;
+            width: @size;
+        }
+
+        &--title {
+            flex: 1;
+        }
+    }
+
+}
