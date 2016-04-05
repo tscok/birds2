@@ -13,6 +13,7 @@ import InputField from 'app/components/InputField';
 import Spinner from 'app/components/Spinner';
 import TableCol from 'app/components/TableCol';
 import TableRow from 'app/components/TableRow';
+import ViewHeader from 'app/components/ViewHeader';
 
 
 const block = purebem.of('search-view');
@@ -94,7 +95,7 @@ const SearchView = React.createClass({
         }
 
         return (
-            <div>
+            <div className="container">
                 <TableRow header={ true }>
                     <TableCol header={ true } name="avatar" value="Avatar" />
                     <TableCol header={ true } name="title" value="Title" />
@@ -113,30 +114,27 @@ const SearchView = React.createClass({
             return null;
         }
 
-        return <Spinner />;
+        return (
+            <div className={ block('spinner') }>
+                <Spinner />
+            </div>
+        );
     },
 
     render() {
         return (
             <div className={ block() }>
-                <div className={ block('intro') }>
-                    <div className={ block('title') }>Find &amp; Join</div>
-                    <div className={ block('body') }>
-                        <p>Here you can search for existing projects to join.</p>
-                        <InputField
-                            autoFocus={ true }
-                            iconClass="icon-search"
-                            iconClick={ this.handleSearch }
-                            onChange={ this.handleChange }
-                            value={ this.state.needle } />
-                    </div>
-                </div>
-                <div className={ block('spinner') }>
-                    { this.renderSpinner() }
-                </div>
-                <div className="container">
-                    { this.renderResults() }
-                </div>
+                <ViewHeader title="Find &amp; Join">
+                    <p>Here you can search for existing projects to join.</p>
+                    <InputField
+                        autoFocus={ true }
+                        iconClass="icon-search"
+                        iconClick={ this.handleSearch }
+                        onChange={ this.handleChange }
+                        value={ this.state.needle } />
+                </ViewHeader>
+                { this.renderSpinner() }
+                { this.renderResults() }
             </div>
         );
     }

@@ -10,6 +10,7 @@ import { getStatus } from 'app/utils';
 import NavLink from 'app/components/NavLink';
 import ProjectList from 'app/components/ProjectList';
 import Spinner from 'app/components/Spinner';
+import ViewHeader from 'app/components/ViewHeader';
 
 
 const block = purebem.of('profile-view');
@@ -95,16 +96,13 @@ const ProfileView = React.createClass({
         const search = purebem.many(block('button', ['search']), 'button');
 
         return (
-            <div className={ block('empty') }>
-                <div className={ block('title') }>Getting started</div>
-                <div className={ block('body') }>
-                    <p>This page will show your projects, the ones you contribute to and those you have requested to join.</p>
-                    <div className={ block('actions') }>
-                        <NavLink to="/create" baseClass={ create } activeClass={ false }>Create a project</NavLink>
-                        <NavLink to="/search" baseClass={ search } activeClass={ false }>Find &amp; Join projects</NavLink>
-                    </div>
+            <ViewHeader title="Getting Started">
+                <p>This page will show your projects, the ones you contribute to and those you have requested to join.</p>
+                <div className={ block('actions') }>
+                    <NavLink to="/create" baseClass={ create } activeClass={ false }>Create a project</NavLink>
+                    <NavLink to="/search" baseClass={ search } activeClass={ false }>Find &amp; Join projects</NavLink>
                 </div>
-            </div>
+            </ViewHeader>
         );
     },
 

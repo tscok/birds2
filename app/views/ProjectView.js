@@ -9,6 +9,7 @@ import { getStatus } from 'app/utils';
 
 import ContentBox from 'app/components/ContentBox';
 import Spinner from 'app/components/Spinner';
+import ViewHeader from 'app/components/ViewHeader';
 
 
 const block = purebem.of('project-view');
@@ -60,25 +61,20 @@ const ProjectView = React.createClass({
         const { title, start, end } = this.state.project;
         const status = getStatus(start, end).toLowerCase();
 
-        let statusText;
+        let body;
 
         switch (status) {
             case 'active':
-                statusText = (<p>This project will end { moment.unix(end).format('MMMM D, YYYY') }.</p>);
+                body = (<p>This project will end { moment.unix(end).format('MMMM D, YYYY') }.</p>);
                 break;
             case 'pending':
-                statusText = (<p>This project will start { moment.unix(start).format('MMMM D, YYYY') }.</p>);
+                body = (<p>This project will start { moment.unix(start).format('MMMM D, YYYY') }.</p>);
                 break;
             default:
-                statusText = (<p>This project ended { moment.unix(end).format('MMMM D, YYYY') }.</p>);
+                body = (<p>This project ended { moment.unix(end).format('MMMM D, YYYY') }.</p>);
         };
 
-        return (
-            <div className={ block('status') }>
-                <div className={ block('title') }>{ title }</div>
-                <div className={ block('body', { status }) }>{ statusText }</div>
-            </div>
-        );
+        return (<ViewHeader title={ title }>{ body }</ViewHeader>);
     },
 
     renderCharts() {
