@@ -1,8 +1,13 @@
 .login {
+    padding-top: 100px;
 
     .content-box {
         max-width: 440px;
-        margin: 100px auto 0;
+        margin: 0 auto;
+    }
+
+    .spinner {
+        margin: 0 auto;
     }
 
     &__button {
@@ -11,5 +16,10 @@
             display: block;
             margin-top: 3rem;
         }
+    }
+
+    &__error {
+        text-align: center;
+        color: @color-red-dark;
     }
 }

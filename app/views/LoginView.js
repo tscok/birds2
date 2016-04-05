@@ -4,6 +4,7 @@ import purebem from 'purebem';
 import firebaseRef from 'app/firebaseRef';
 
 import ContentBox from 'app/components/ContentBox';
+import InputField from 'app/components/InputField';
 import Spinner from 'app/components/Spinner';
 
 
@@ -17,7 +18,9 @@ const LoginView = React.createClass({
 
     getInitialState() {
         return {
-            isSubmitting: false
+            email: '',
+            isSubmitting: false,
+            password: ''
         };
     },
 
@@ -34,10 +37,9 @@ const LoginView = React.createClass({
 
     onSubmit(evt) {
         evt.preventDefault();
-        const email = this.email.value;
-        const password = this.password.value;
+        const { email, password } = this.state;
 
-        this.setState({ isSubmitting: !this.state.isSubmitting });
+        this.setState({ isSubmitting: !this.state.isSubmitting, error: '' });
 
         firebaseRef.authWithPassword(
             { email, password },
@@ -46,8 +48,9 @@ const LoginView = React.createClass({
         );
     },
 
-    onChange() {
-        this.setState({ error: '' });
+    onChange(evt) {
+        const { name, value } = evt.target;
+        this.setState({ [name]: value, error: '' });
     },
 
     renderError() {
@@ -75,14 +78,21 @@ const LoginView = React.createClass({
 
         return (
             <div className={ block('password-login') }>
-                <form className={ block('form') } onSubmit={ this.onSubmit }>
+                <form onSubmit={ this.onSubmit }>
                     <div className="form__group">
-                        <label className={ block('label') }>Email</label>
-                        <input type="text" className={ block('input') } onChange={ this.onChange } ref={ (ref) => this.email = ref } />
+                        <label>Email</label>
+                        <InputField
+                            name="email"
+                            onChange={ this.onChange }
+                            value={ this.state.email } />
                     </div>
                     <div className="form__group">
-                        <label className={ block('label') }>Password</label>
-                        <input type="password" className={ block('input') } ref={ (ref) => this.password = ref } />
+                        <label>Password</label>
+                        <InputField
+                            name="password"
+                            onChange={ this.onChange }
+                            type="password"
+                            value={ this.state.password } />
                     </div>
                     <button type="submit" className={ buttonClass } disabled={ this.state.isSubmitting }>Login</button>
                 </form>
