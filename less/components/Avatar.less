@@ -1,0 +1,23 @@
+.avatar {
+
+    @size: 40px;
+
+    width: @size;
+    height: @size;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: @color-grayc;
+    color: @color-white;
+    font-size: 20px;
+
+    &--active {
+        background-color: @color-green;
+    }
+
+    &--pending {
+        background-color: @color-yellow;
+    }
+
+}

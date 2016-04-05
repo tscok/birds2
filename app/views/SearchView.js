@@ -8,6 +8,7 @@ import {
 
 import firebaseRef from 'app/firebaseRef';
 
+import Avatar from 'app/components/Avatar';
 import ContentBox from 'app/components/ContentBox';
 import InputField from 'app/components/InputField';
 import Spinner from 'app/components/Spinner';
@@ -79,7 +80,11 @@ const SearchView = React.createClass({
 
         return (
             <TableRow key={ index } first={ first } last={ last }>
-                <TableCol name="avatar" value="Avatar" />
+                <TableCol name="avatar">
+                    <Avatar
+                        name={ result.title }
+                        status={ getStatus(result.start, result.end) } />
+                </TableCol>
                 <TableCol name="title" value={ result.title } />
                 <TableCol name="status" value={ getStatus(result.start, result.end) } />
                 <TableCol name="join">
