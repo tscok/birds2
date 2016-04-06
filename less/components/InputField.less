@@ -15,20 +15,30 @@
         margin: 5px 0;
     }
 
-    &__icon {
+    &__icon,
+    &__spinner {
+        width: 50px;
+        height: 50px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 50px;
-        height: 50px;
-        cursor: pointer;
+
         position: absolute;
         right: 0;
         top: 0;
+    }
+
+    &__icon {
+        cursor: pointer;
         color: @color-grayc;
 
         &:hover {
             color: @color-gray6;
         }
+    }
+
+    &__spinner {
+        margin: 0;
     }
 }

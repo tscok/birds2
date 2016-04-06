@@ -3,6 +3,8 @@ import purebem from 'purebem';
 
 import noop from 'app/noop';
 
+import Spinner from './Spinner';
+
 
 const block = purebem.of('input-field');
 
@@ -14,6 +16,7 @@ const InputField = React.createClass({
         error: PropTypes.string,
         iconClass: PropTypes.string,
         iconClick: PropTypes.func,
+        isLoading: PropTypes.bool,
         placeholder: PropTypes.string,
         type: PropTypes.string,
         value: PropTypes.string
@@ -24,13 +27,30 @@ const InputField = React.createClass({
             error: '',
             iconClass: '',
             iconClick: noop,
+            isLoading: false,
             placeholder: '',
             type: 'text',
             value: ''
         };
     },
 
+    renderLoading() {
+        if (!this.props.isLoading) {
+            return null;
+        }
+
+        return (
+            <div className={ block('spinner') }>
+                <Spinner type="circle" />
+            </div>
+        );
+    },
+
     renderIcon() {
+        if (this.props.isLoading) {
+            return null;
+        }
+
         const { iconClass, iconClick } = this.props;
 
         return (
@@ -72,6 +92,7 @@ const InputField = React.createClass({
             <div className={ block() }>
                 { this.renderInput() }
                 { this.renderIcon() }
+                { this.renderLoading() }
                 { this.renderError() }
             </div>
         );
