@@ -13,6 +13,11 @@ import random from 'lodash.random';
 
 import firebaseRef from 'app/firebaseRef';
 
+import {
+    isDate,
+    isEmpty
+} from 'app/utils';
+
 import ButtonSwitch from 'app/components/ButtonSwitch';
 import ContentBox from 'app/components/ContentBox';
 import InputField from 'app/components/InputField';
@@ -53,14 +58,6 @@ const CreateView = React.createClass({
         this.uid = firebaseRef.getAuth().uid;
     },
 
-    isEmpty(str) {
-        return !str || !str.trim().length;
-    },
-
-    isDate(str) {
-        return moment(str, 'YYYYMMDD', true).isValid();
-    },
-
     hasErrors(errors) {
         errors = errors || this.state.errors;
         return Object.keys(omitBy(errors, isNull)).length;
@@ -86,12 +83,12 @@ const CreateView = React.createClass({
 
         switch (name) {
             case 'title':
-                error[name] = this.isEmpty(value) ? ERROR_TITLE : null;
+                error[name] = isEmpty(value) ? ERROR_TITLE : null;
                 break;
             default:
-                error[name] = !this.isDate(value) ? ERROR_DATE : null;
+                error[name] = !isDate(value) ? ERROR_DATE : null;
 
-                if (this.isDate(start.value) && this.isDate(end.value)) {
+                if (isDate(start.value) && isDate(end.value)) {
                     error.order = start.value >= end.value ? ERROR_END : null;
                 }
         };

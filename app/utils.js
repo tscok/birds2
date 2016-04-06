@@ -9,7 +9,17 @@ function getStatus(start, end) {
     return now > start ? ( now < end ? 'Active' : 'Ended' ) : 'Pending';
 };
 
+function isEmpty(string) {
+    return string === '' || string.trim().length === 0;
+};
+
+function isDate(string, format='YYYYMMDD') {
+    return moment(string, format, true).isValid();
+};
+
 export {
+    delayAction,
     getStatus,
-    delayAction
+    isDate,
+    isEmpty
 };
