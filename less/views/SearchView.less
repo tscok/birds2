@@ -1,21 +1,17 @@
 .search-view {
 
-    &__intro {
-        max-width: 500px;
-        margin: 0 auto;
-        text-align: center;
+    &__button {
+        min-width: 0;
+        height: 40px;
+        line-height: 40px;
+        padding: 0 20px;
     }
 
-    &__title {
-        font-size: 5rem;
+    .table__col--header {
+        &.table__col--avatar,
+        &.table__col--join {
+            visibility: hidden;
+        }
     }
 
-    &__body {
-        font-size: 2rem;
-    }
-
-    .table__row--body:hover {
-        cursor: default;
-        background: none;
-    }
 }

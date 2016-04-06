@@ -1,9 +1,11 @@
 import React from 'react';
 import purebem from 'purebem';
+import promise from 'promise';
 
 import {
     delayAction,
-    getStatus
+    getStatus,
+    isEmpty
 } from 'app/utils';
 
 import firebaseRef from 'app/firebaseRef';
@@ -11,7 +13,6 @@ import firebaseRef from 'app/firebaseRef';
 import Avatar from 'app/components/Avatar';
 import ContentBox from 'app/components/ContentBox';
 import InputField from 'app/components/InputField';
-import Spinner from 'app/components/Spinner';
 import TableCol from 'app/components/TableCol';
 import TableRow from 'app/components/TableRow';
 import ViewHeader from 'app/components/ViewHeader';
@@ -35,46 +36,45 @@ const SearchView = React.createClass({
         this.results = [];
     },
 
-    getMatch(obj) {
+    getMatch(project) {
         const pattern = new RegExp(this.state.needle, 'i');
-        const sample = obj['title'];
-
-        if (sample.length && pattern.test(sample)) {
-            this.results.push(obj);
-            // const { results } = this.state;
-            // results.push(obj);
-            // this.setState({ results, isLoading: false });
-        }
+        const sample = project['title'];
+        return sample.length && pattern.test(sample);
     },
 
     handleSearch() {
+        if (isEmpty(this.state.needle)) {
+            return [];
+        }
+
         this.projectsRef.once('value', (snap) => {
             snap.forEach((child) => {
-                this.getMatch(child.val());
+                const project = child.val();
+
+                if (this.getMatch(project)) {
+                    this.results.push(project);
+                }
             });
 
             this.setState({ results: this.results, isLoading: false });
-
             this.results.length = 0;
         });
     },
 
     handleChange(evt) {
-        const needle = evt.target.value;
-        this.setState({ needle });
-
-        if (needle === '') {
-            this.setState({ results: [] });
-            return;
-        }
+        const { value } = evt.target;
+        this.setState({ needle: value, isLoading: !isEmpty(value) });
 
         delayAction(() => {
-            this.setState({ results: [], isLoading: true });
-            this.handleSearch()
+            this.handleSearch();
         });
     },
 
     renderResult(result, index, results) {
+        // if (!result) {
+        //     return null;
+        // }
+
         const first = index === 0;
         const last = results.length - 1 === index;
 
@@ -88,14 +88,14 @@ const SearchView = React.createClass({
                 <TableCol name="title" value={ result.title } />
                 <TableCol name="status" value={ getStatus(result.start, result.end) } />
                 <TableCol name="join">
-                    <button>Join</button>
+                    <button type="button" className={ block('button') }>Join</button>
                 </TableCol>
             </TableRow>
         );
     },
 
     renderResults() {
-        if (!this.state.results.length) {
+        if (!this.state.results.length && isEmpty(this.state.needle)) {
             return null;
         }
 
@@ -114,18 +114,6 @@ const SearchView = React.createClass({
         );
     },
 
-    renderSpinner() {
-        if (!this.state.isLoading) {
-            return null;
-        }
-
-        return (
-            <div className={ block('spinner') }>
-                <Spinner />
-            </div>
-        );
-    },
-
     render() {
         return (
             <div className={ block() }>
@@ -135,10 +123,10 @@ const SearchView = React.createClass({
                         autoFocus={ true }
                         iconClass="icon-search"
                         iconClick={ this.handleSearch }
+                        isLoading={ this.state.isLoading }
                         onChange={ this.handleChange }
                         value={ this.state.needle } />
                 </ViewHeader>
-                { this.renderSpinner() }
                 { this.renderResults() }
             </div>
         );
