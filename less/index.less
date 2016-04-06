@@ -54,7 +54,7 @@ body {
         opacity: 0;
         z-index: @z-index-base;
         background-color: @color-overlay;
-        .transition(opacity .35s, height .1s .35s, width .1s .35s);
+        .transition(opacity @timing-normal, height @timing-fast @timing-normal, width @timing-fast @timing-normal);
     }
 
     &.overlay {
@@ -67,7 +67,7 @@ body {
             width: 100%;
             height: 100%;
             opacity: 1;
-            .transition(opacity .35s);
+            .transition(opacity @timing-normal);
         }
     }
 }

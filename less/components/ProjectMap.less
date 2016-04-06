@@ -14,7 +14,7 @@
             top: 0;
             left: 0;
             background-image: repeating-linear-gradient(-45deg, transparent, transparent 25px, rgba(255,255,255,.25) 25px, rgba(255,255,255,.25) 50px);
-            .transition(opacity .35s);
+            .transition(opacity @timing-slow);
         }
     }
 
@@ -22,7 +22,7 @@
         width: 0;
         height: 0;
         opacity: 0;
-        .transition(opacity .35s, height .1s .35s, width .1s .35s);
+        .transition(opacity @timing-slow, height @timing-fast @timing-slow, width @timing-fast @timing-slow);
     }
 
     &__reset {
