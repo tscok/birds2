@@ -33,15 +33,26 @@
         }
 
         &--title {
-            flex: 1;
             font-weight: 400;
+        }
+
+        &--title,
+        &--owner {
+            flex: 1;
             .ellipsis;
         }
 
+        &--owner,
         &--members,
         &--status {
             font-size: 14px;
         }
+    }
+
+    &__row--header &__col {
+        font-weight: 400;
+        font-size: 14px;
+        color: @color-gray9;
     }
 
 }

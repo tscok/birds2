@@ -9,17 +9,29 @@ function getStatus(start, end) {
     return now > start ? ( now < end ? 'Active' : 'Ended' ) : 'Pending';
 };
 
-function isEmpty(string) {
-    return string === '' || string.trim().length === 0;
+function isEmpty(str) {
+    return str === '' || str.trim().length === 0;
 };
 
-function isDate(string, format='YYYYMMDD') {
-    return moment(string, format, true).isValid();
+function isDate(str, format='YYYYMMDD') {
+    return moment(str, format, true).isValid();
+};
+
+function capitalize(str) {
+    return str[0].toUpperCase() + str.substr(1);
+};
+
+function sortByKey(arr, key) {
+    return arr.sort((a, b) => {
+        return a[key].localeCompare(b[key]);
+    });
 };
 
 export {
+    capitalize,
     delayAction,
     getStatus,
     isDate,
-    isEmpty
+    isEmpty,
+    sortByKey
 };

@@ -9,7 +9,6 @@ import omitBy from 'lodash.omitby';
 import debounce from 'lodash.debounce';
 import cloneDeep from 'lodash.clonedeep';
 import assign from 'lodash.assign';
-import random from 'lodash.random';
 
 import firebaseRef from 'app/firebaseRef';
 
@@ -64,7 +63,7 @@ const CreateView = React.createClass({
     },
 
     getSites() {
-        return this.state.sites.filter(site => site.name).map(site => pick(site, ['latlng', 'name']));
+        return filter(this.state.sites, (site) => site.name).map(site => pick(site, ['latlng', 'name']));
     },
 
     validateAll() {
@@ -124,18 +123,17 @@ const CreateView = React.createClass({
         const { title, start, end, sites, isPublic } = this.state;
         const format = 'YYYYMMDD';
 
-        const data = {
-            created: moment().unix(),
-            title: title.value,
-            start: moment(start.value, format).unix(),
-            end: moment(end.value, format).unix(),
-            public: isPublic,
+        this.project = {
+            dateCreated: moment().unix(),
+            dateEnd: moment(end.value, format).unix(),
+            dateStart: moment(start.value, format).unix(),
+            isPublic,
             ownerId: this.uid,
-            luckyNumber: random(0,360)
+            title: title.value
         };
 
         // Add project
-        this.projectRef = firebaseRef.child('projects').push(data, this.onComplete);
+        this.projectRef = firebaseRef.child('projects').push(this.project, this.onComplete);
     },
 
     onComplete(error) {
@@ -149,7 +147,7 @@ const CreateView = React.createClass({
 
         // Add sites
         this.getSites().map((site, index) => {
-            const newSite = assign(site, { projectId: pid, ownerId: this.uid });
+            const newSite = assign(site, this.project, { projectId: pid });
             const siteRef = firebaseRef.child('sites').push(newSite);
             const sid = siteRef.key();
 

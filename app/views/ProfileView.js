@@ -65,7 +65,7 @@ const ProfileView = React.createClass({
             this.projectsRef.child(pid).once('value', (snap) => {
                 const project = snap.val();
                 project.id = pid;
-                project.status = getStatus(project.start, project.end);
+                project.status = getStatus(project.dateStart, project.dateEnd);
 
                 this.getMembers(pid).then(result => {
                     project.members = result;

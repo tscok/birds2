@@ -58,20 +58,20 @@ const ProjectView = React.createClass({
     },
 
     renderStatus() {
-        const { title, start, end } = this.state.project;
-        const status = getStatus(start, end).toLowerCase();
+        const { title, dateStart, dateEnd } = this.state.project;
+        const status = getStatus(dateStart, dateEnd).toLowerCase();
 
         let body;
 
         switch (status) {
             case 'active':
-                body = (<p>This project will end { moment.unix(end).format('MMMM D, YYYY') }.</p>);
+                body = (<p>This project will end { moment.unix(dateEnd).format('MMMM D, YYYY') }.</p>);
                 break;
             case 'pending':
-                body = (<p>This project will start { moment.unix(start).format('MMMM D, YYYY') }.</p>);
+                body = (<p>This project will start { moment.unix(dateStart).format('MMMM D, YYYY') }.</p>);
                 break;
             default:
-                body = (<p>This project ended { moment.unix(end).format('MMMM D, YYYY') }.</p>);
+                body = (<p>This project ended { moment.unix(dateEnd).format('MMMM D, YYYY') }.</p>);
         };
 
         return (<ViewHeader title={ title }>{ body }</ViewHeader>);
