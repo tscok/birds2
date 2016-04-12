@@ -30,7 +30,7 @@ const ERROR_TITLE = 'Please fill in a title.';
 const ERROR_DATE = 'A valid date follows the pattern YYYYMMDD.';
 const ERROR_END = 'A project must start before it can end, silly.';
 
-const defaultState = {
+const initialState = {
     end: {},
     errors: {},
     isLocked: true,
@@ -53,7 +53,7 @@ const block = purebem.of('create-view');
 const CreateView = React.createClass({
 
     componentWillMount() {
-        this.setState(cloneDeep(defaultState));
+        this.setState(cloneDeep(initialState));
         this.uid = firebaseRef.getAuth().uid;
     },
 
@@ -108,7 +108,7 @@ const CreateView = React.createClass({
     handleReset() {
         this.form.reset();
         this.handleSitesClear();
-        this.setState(cloneDeep(defaultState));
+        this.setState(cloneDeep(initialState));
     },
 
     handleSubmit(evt) {
@@ -147,12 +147,12 @@ const CreateView = React.createClass({
 
         // Add sites
         this.getSites().map((site, index) => {
-            const newSite = assign(site, this.project, { projectId: pid });
+            const newSite = assign(site, { ownerId: this.uid, projectId: pid });
             const siteRef = firebaseRef.child('sites').push(newSite);
-            const sid = siteRef.key();
+            const siteId = siteRef.key();
 
             // Update project/sites
-            firebaseRef.child(`projects/${pid}/sites/${sid}`).set(true);
+            this.projectRef.child('sites').push(assign(site, { siteId }));
         });
 
         // Update user with ownership
@@ -313,7 +313,7 @@ const CreateView = React.createClass({
                         onClick={ this.handleSiteAdd }
                         sites={ this.state.sites }
                         unlocked={ !this.state.isLocked } />
-                    <ContentBox background="white" shadow={ true }>
+                    <ContentBox>
                         { this.renderForm() }
                     </ContentBox>
                 </div>
