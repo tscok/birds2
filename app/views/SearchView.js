@@ -1,9 +1,11 @@
 import React from 'react';
 import purebem from 'purebem';
 import promise from 'promise';
+import moment from 'moment';
 
 import filter from 'lodash.filter';
 import uniqBy from 'lodash.uniqby';
+import forEach from 'lodash.foreach';
 
 import {
     delayAction,
@@ -36,9 +38,6 @@ const SearchView = React.createClass({
 
     componentWillMount() {
         this.projectsRef = firebaseRef.child('projects').orderByChild('isPublic').equalTo(true);
-        this.sitesRef = firebaseRef.child('sites').orderByChild('isPublic').equalTo(true);
-        this.projects = [],
-        this.sites = [];
     },
 
     getMatch(sample) {
@@ -46,41 +45,56 @@ const SearchView = React.createClass({
         return pattern.test(sample);
     },
 
-    getList(snap, key) {
+    getList(snap) {
         let arr = [], obj = {};
         snap.forEach(child => {
             obj = child.val();
-            if (this.getMatch(obj[key])) {
-                obj.projectId = obj.projectId || child.key();
-                obj.status = getStatus(obj.dateStart, obj.dateEnd);
+            obj.status = getStatus(obj.dateStart, obj.dateEnd);
+            obj.projectId = child.key();
+
+            if (this.getMatch(obj.title)) {
                 arr.push(obj);
+            }
+            
+            if (!!obj.sites) {
+                forEach(obj.sites, site => {
+                    if (this.getMatch(site.name)) {
+                        arr.push(obj);
+                    }
+                });
             }
         });
         return arr;
     },
 
     handleSearch() {
-        this.projectsRef.once('value', (snap) => {
-            this.projects = this.getList(snap, 'title');
-            this.setState({ results: this.projects.concat(this.sites), isLoading: false });
+        let results = [];
+
+        if (isEmpty(this.state.needle)) {
+            this.setState({ results, isLoading: false });
+            return;
+        }
+
+        const a = moment();
+        const projects = new promise((resolve, reject) => {
+            this.projectsRef.once('value', (snap) => {
+                resolve(this.getList(snap));
+            });
         });
 
-        this.sitesRef.once('value', (snap) => {
-            this.sites = this.getList(snap, 'name');
-            this.setState({ results: this.projects.concat(this.sites), isLoading: false });
+        projects.then(list => {
+            const b = moment();
+            const loadTime = b.diff(a, 'seconds', true);
+            results = uniqBy(list, 'projectId');
+            sortByKey(results, 'status');
+            this.setState({ results, loadTime, isLoading: false });
         });
     },
 
     handleChange(evt) {
-        const { value } = evt.target;
-        this.setState({ needle: value, isLoading: !isEmpty(value) });
-
-        this.projects.length = 0;
-        this.sites.length = 0;
-
-        delayAction(() => {
-            this.handleSearch();
-        });
+        const needle = evt.target.value;
+        this.setState({ needle, isLoading: !isEmpty(needle) });
+        delayAction(() => this.handleSearch());
     },
 
     renderResult(result, index, results) {
@@ -107,16 +121,12 @@ const SearchView = React.createClass({
     },
 
     renderResults() {
-        if (this.state.results.length === 0 || isEmpty(this.state.needle)) {
+        if (this.state.results.length === 0) {
             return null;
         }
 
-        const results = uniqBy(this.state.results, 'projectId');
-
-        sortByKey(results, 'status');
-
         return (
-            <div className={ block('results') }>
+            <ContentBox className={ block('results') }>
                 <TableRow header={ true }>
                     <TableCol header={ true } name="avatar" value="Avatar" />
                     <TableCol header={ true } name="title" value="Title" />
@@ -125,9 +135,22 @@ const SearchView = React.createClass({
                     <TableCol header={ true } name="join" value="Join" />
                 </TableRow>
                 {
-                    [].map.call(results, this.renderResult)
+                    [].map.call(this.state.results, this.renderResult)
                 }
-            </div>
+            </ContentBox>
+        );
+    },
+
+    renderMeta() {
+        const count = this.state.results.length;
+        const match = count > 1 ? 'results' : 'result';
+
+        if (count === 0) {
+            return null;
+        }
+
+        return (
+            <div className={ block('info') }>{ count } { match } ({ this.state.loadTime } seconds).</div>
         );
     },
 
@@ -137,9 +160,7 @@ const SearchView = React.createClass({
         }
 
         return (
-            <div className={ block('empty') }>
-                <p>Nothing matched: <strong>{ this.state.needle }</strong></p>
-            </div>
+            <div className={ block('info') }>Nothing matched: <strong>{ this.state.needle }</strong></div>
         );
     },
 
@@ -158,6 +179,7 @@ const SearchView = React.createClass({
                             placeholder="Project title, site name, etc."
                             value={ this.state.needle } />
                         { this.renderEmpty() }
+                        { this.renderMeta() }
                     </ViewHeader>
                     { this.renderResults() }
                 </div>

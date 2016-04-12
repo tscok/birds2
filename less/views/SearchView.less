@@ -1,9 +1,10 @@
 .search-view {
 
-    &__empty {
-        margin: 10px;
-        font-style: italic;
+    &__info {
+        font-size: 14px;
         text-align: left;
+        padding-left: 12px;
+        margin-top: 5px;
     }
 
     &__button {
@@ -18,6 +19,11 @@
         &.table__col--join {
             visibility: hidden;
         }
+    }
+
+    .table__row--body:hover {
+        background-color: transparent;
+        cursor: default;
     }
 
 }
