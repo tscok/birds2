@@ -47,7 +47,7 @@ const User = React.createClass({
         const { visible } = this.state;
 
         return (
-            <div className={ block() } onClick={ () => this.toggleLinks(!visible) }>
+            <div className={ block({ active: visible }) } onClick={ () => this.toggleLinks(!visible) }>
                 <img className={ block('avatar') } src={ profileImageURL } />
                 <div className={ block('name') }>{ email }</div>
                 { this.renderLinks() }
