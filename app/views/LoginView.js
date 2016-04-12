@@ -105,7 +105,7 @@ const LoginView = React.createClass({
     render() {
         return (
             <div className={ block() }>
-                <ContentBox background="white" shadow={ true }>
+                <ContentBox>
                     { this.renderPasswordLogin() }
                 </ContentBox>
             </div>

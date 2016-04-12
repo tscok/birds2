@@ -84,7 +84,7 @@ const ProjectList = React.createClass({
         return (
             <div className={ block() }>
                 <div className="container">
-                    <ContentBox title="Projects" background="white" shadow={ true }>
+                    <ContentBox title="Projects">
                         { this.renderProjects() }
                     </ContentBox>
                 </div>

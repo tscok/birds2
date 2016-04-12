@@ -2,7 +2,7 @@ import moment from 'moment';
 import debounce from 'lodash.debounce';
 
 
-const delayAction = debounce((action) => action(), 300);
+const delayAction = debounce(action => action(), 300);
 
 function getStatus(start, end) {
     const now = moment().unix();
