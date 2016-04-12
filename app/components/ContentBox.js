@@ -9,15 +9,13 @@ const ContentBox = React.createClass({
     propTypes: {
         children: PropTypes.node.isRequired,
         // ...
-        background: PropTypes.string,
-        shadow: PropTypes.bool,
+        filled: PropTypes.bool,
         title: PropTypes.string
     },
 
     getDefaultProps() {
         return {
-            background: '',
-            shadow: false,
+            filled: true,
             title: ''
         };
     },
@@ -33,10 +31,10 @@ const ContentBox = React.createClass({
     },
 
     render() {
-        const { background, shadow, title } = this.props;
+        const { filled, title } = this.props;
 
         return (
-            <div className={ block({ background, shadow }) }>
+            <div className={ block({ filled }) }>
                 { this.renderTitle() }
                 { this.props.children }
             </div>
