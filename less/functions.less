@@ -68,3 +68,19 @@
     overflow: hidden;
     white-space: nowrap;
 }
+
+.clearfix () {
+    &:before, &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+.tablet-layout (@styles) {
+    @media screen and (min-width: @responsive-size-tablet) {
+        @styles();
+    }
+}
