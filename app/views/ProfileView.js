@@ -5,7 +5,7 @@ import promise from 'promise';
 
 import firebaseRef from 'app/firebaseRef';
 
-import { getStatus } from 'app/utils';
+import { getStatus, sortByKey } from 'app/utils';
 
 import NavLink from 'app/components/NavLink';
 import ProjectList from 'app/components/ProjectList';
@@ -54,6 +54,7 @@ const ProfileView = React.createClass({
                 projects.push(result);
 
                 if (projects.length === total) {
+                    sortByKey(projects, 'status');
                     this.setState({ projects, isLoading: false });
                 }
             });

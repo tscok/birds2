@@ -16,11 +16,8 @@ import {
 
 import firebaseRef from 'app/firebaseRef';
 
-import Avatar from 'app/components/Avatar';
 import ContentBox from 'app/components/ContentBox';
 import InputField from 'app/components/InputField';
-import TableCol from 'app/components/TableCol';
-import TableRow from 'app/components/TableRow';
 import ViewHeader from 'app/components/ViewHeader';
 
 
@@ -97,47 +94,16 @@ const SearchView = React.createClass({
         delayAction(() => this.handleSearch());
     },
 
-    renderResult(result, index, results) {
-        const first = index === 0;
-        const last = results.length - 1 === index;
-
-        const button = (<button type="button" className={ block('button') }>Join</button>);
-
-        return (
-            <TableRow key={ index } first={ first } last={ last }>
-                <TableCol name="avatar">
-                    <Avatar
-                        name={ result.title }
-                        status={ result.status } />
-                </TableCol>
-                <TableCol name="title" value={ result.title } />
-                <TableCol name="owner" value={ result.ownerId } />
-                <TableCol name="status" value={ result.status } />
-                <TableCol name="join">
-                    { result.status !== 'Ended' ? button : null }
-                </TableCol>
-            </TableRow>
-        );
-    },
-
     renderResults() {
-        if (this.state.results.length === 0) {
+        const data = this.state.results;
+        const headers = ['avatar', 'title', 'ownerId', 'status', 'join'];
+
+        if (data.length === 0) {
             return null;
         }
 
         return (
-            <ContentBox className={ block('results') }>
-                <TableRow header={ true }>
-                    <TableCol header={ true } name="avatar" value="Avatar" />
-                    <TableCol header={ true } name="title" value="Title" />
-                    <TableCol header={ true } name="owner" value="Owner" />
-                    <TableCol header={ true } name="status" value="Status" />
-                    <TableCol header={ true } name="join" value="Join" />
-                </TableRow>
-                {
-                    [].map.call(this.state.results, this.renderResult)
-                }
-            </ContentBox>
+            <ContentBox className={ block('results') }>[results]</ContentBox>
         );
     },
 
