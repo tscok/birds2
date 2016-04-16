@@ -1,23 +1,69 @@
 .avatar {
+    @large: 40px;
+    @small: 15px;
 
-    @size: 40px;
-
-    width: @size;
-    height: @size;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: @color-grayc;
-    color: @color-white;
-    font-size: 20px;
 
-    &--active {
-        background-color: @color-green;
+    &__badge {
+        width: @large;
+        height: @large;
+        border-radius: 50%;
+        background-color: @color-grayc;
+        overflow: hidden;
+
+        &--active {
+            background-color: @color-green;
+        }
+        &--coming {
+            background-color: @color-yellow;
+        }
     }
 
-    &--pending {
-        background-color: @color-yellow;
+    &__letter {
+        display: none;
+        font-size: 20px;
+        color: @color-white;
+        position: relative;
     }
 
+    &__portrait {
+        width: 100%;
+    }
+
+    &--status {
+        height: 30px;
+    }
+
+    &--status &__badge {
+        width: @small;
+        height: @small;
+    }
 }
+
+.tablet-layout({
+
+    .avatar {
+        @large: 40px;
+
+        width: @large;
+        position: relative;
+
+        &__letter {
+            display: block;
+        }
+
+        &--status {
+            height: @large;
+        }
+
+        &--status &__badge {
+            width: @large;
+            height: @large;
+            position: absolute;
+            left: 0;
+        }
+    }
+
+});
