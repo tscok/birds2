@@ -26,6 +26,7 @@
         line-height: @size;
         margin-left: 10px;
         padding-right: 15px;
+        position: relative;
         display: none;
 
         &:after {
@@ -36,9 +37,9 @@
             border-width: 5px;
             border-style: solid;
             border-color: @color-black transparent transparent;
-            position: relative;
-            top: -2px;
-            right: -10px;
+            position: absolute;
+            bottom: 12px;
+            right: 0;
         }
 
         @media (min-width: @responsive-size-tablet) {

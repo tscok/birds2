@@ -3,6 +3,7 @@ import purebem from 'purebem';
 import onclickoutside from 'react-onclickoutside';
 
 import NavLink from './NavLink';
+import Avatar from './Avatar';
 
 
 const block = purebem.of('user');
@@ -29,7 +30,7 @@ const User = React.createClass({
         this.toggleLinks(false);
     },
 
-    renderLinks() {
+    renderDropdown() {
         if (!this.state.visible) {
             return null;
         }
@@ -48,9 +49,9 @@ const User = React.createClass({
 
         return (
             <div className={ block({ active: visible }) } onClick={ () => this.toggleLinks(!visible) }>
-                <img className={ block('avatar') } src={ profileImageURL } />
+                <Avatar className={ block('avatar') } url={ profileImageURL } />
                 <div className={ block('name') }>{ email }</div>
-                { this.renderLinks() }
+                { this.renderDropdown() }
             </div>
         );
     }
