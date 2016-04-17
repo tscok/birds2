@@ -2,13 +2,15 @@
     @large: 40px;
     @small: 15px;
 
+    height: 30px;
+
     display: flex;
     align-items: center;
     justify-content: center;
 
     &__badge {
-        width: @large;
-        height: @large;
+        width: @small;
+        height: @small;
         border-radius: 50%;
         background-color: @color-grayc;
         overflow: hidden;
@@ -16,6 +18,7 @@
         &--active {
             background-color: @color-green;
         }
+
         &--coming {
             background-color: @color-yellow;
         }
@@ -28,17 +31,16 @@
         position: relative;
     }
 
-    &__portrait {
+    &__image {
         width: 100%;
     }
 
-    &--status {
-        height: 30px;
+    &--url {
+        height: auto;
     }
-
-    &--status &__badge {
-        width: @small;
-        height: @small;
+    &--url &__badge {
+        width: @large;
+        height: @large;
     }
 }
 
@@ -48,21 +50,18 @@
         @large: 40px;
 
         width: @large;
+        height: @large;
         position: relative;
 
-        &__letter {
-            display: block;
-        }
-
-        &--status {
-            height: @large;
-        }
-
-        &--status &__badge {
+        &__badge {
             width: @large;
             height: @large;
             position: absolute;
             left: 0;
+        }
+
+        &__letter {
+            display: block;
         }
     }
 

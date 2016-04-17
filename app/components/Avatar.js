@@ -38,16 +38,16 @@ const Avatar = React.createClass({
         }
 
         return (
-            <img className={ block('portrait') } src={ this.props.url } />
+            <img className={ block('image') } src={ this.props.url } />
         );
     },
 
     render() {
-        let { status } = this.props;
+        let { status, url } = this.props;
 
         return (
-            <div className={ block({ status: !!status }) }>
-                <div className={ block('badge', { status: !!status && status.toLowerCase() }) }>
+            <div className={ block({ url: !!url }) }>
+                <div className={ block('badge', { status }) }>
                     { this.renderImage() }
                 </div>
                 { this.renderLetter() }
