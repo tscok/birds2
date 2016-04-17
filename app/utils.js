@@ -6,7 +6,7 @@ const delayAction = debounce(action => action(), 300);
 
 function getStatus(start, end) {
     const now = moment().unix();
-    return now > start ? ( now < end ? 'Active' : 'Ended' ) : 'Coming';
+    return now > start ? ( now < end ? 'active' : 'ended' ) : 'coming';
 };
 
 function isEmpty(str) {
