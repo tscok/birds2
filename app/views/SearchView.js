@@ -19,6 +19,7 @@ import firebaseRef from 'app/firebaseRef';
 import ContentBox from 'app/components/ContentBox';
 import InputField from 'app/components/InputField';
 import ViewHeader from 'app/components/ViewHeader';
+import Table from 'app/components/Table';
 
 
 const block = purebem.of('search-view');
@@ -47,7 +48,7 @@ const SearchView = React.createClass({
         snap.forEach(child => {
             obj = child.val();
             obj.status = getStatus(obj.dateStart, obj.dateEnd);
-            obj.projectId = child.key();
+            obj.id = child.key();
 
             if (this.getMatch(obj.title)) {
                 arr.push(obj);
@@ -82,7 +83,7 @@ const SearchView = React.createClass({
         projects.then(list => {
             const b = moment();
             const loadTime = b.diff(a, 'seconds', true);
-            results = uniqBy(list, 'projectId');
+            results = uniqBy(list, 'id');
             sortByKey(results, 'status');
             this.setState({ results, loadTime, isLoading: false });
         });
@@ -103,7 +104,11 @@ const SearchView = React.createClass({
         }
 
         return (
-            <ContentBox className={ block('results') }>[results]</ContentBox>
+            <ContentBox className={ block('results') }>
+                <Table
+                    data={ data }
+                    headers={ headers } />
+            </ContentBox>
         );
     },
 
