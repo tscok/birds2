@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
+import noop from 'app/noop';
+
 import TableRow from './TableRow';
 
 
@@ -11,14 +13,20 @@ const Table = React.createClass({
     propTypes: {
         data: PropTypes.array.isRequired,
         headers: PropTypes.array.isRequired,
-        onClick: PropTypes.func.isRequired
+        onClick: PropTypes.func
+    },
+
+    getDefaultProps() {
+        return {
+            onClick: noop
+        };
     },
 
     renderHeader() {
         return (
             <TableRow
                 headers={ this.props.headers }
-                isHeader={ true } />
+                type="header" />
         );
     },
 
@@ -33,7 +41,8 @@ const Table = React.createClass({
                 isFirst={ isFirst }
                 isLast={ isLast }
                 key={ index }
-                onClick={ this.props.onClick } />
+                onClick={ this.props.onClick }
+                type="body" />
         );
     },
 

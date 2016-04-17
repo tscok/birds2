@@ -3,7 +3,6 @@ import purebem from 'purebem';
 
 import noop from 'app/noop';
 
-import Avatar from './Avatar';
 import TableCol from './TableCol';
 
 
@@ -13,10 +12,10 @@ const TableRow = React.createClass({
 
     propTypes: {
         headers: PropTypes.array.isRequired,
+        type: PropTypes.string.isRequired,
         // ...
         data: PropTypes.object,
         isFirst: PropTypes.bool,
-        isHeader: PropTypes.bool,
         isLast: PropTypes.bool,
         onClick: PropTypes.func
     },
@@ -24,49 +23,34 @@ const TableRow = React.createClass({
     getDefaultProps() {
         return {
             data: null,
-            isHeader: false,
             onClick: noop
         };
     },
 
     handleClick() {
-        if (this.props.isHeader || !this.props.data) {
+        if (!this.props.data) {
             return;
         }
-
         this.props.onClick(this.props.data.id);
     },
-
-    renderAvatar(label) {
-        const { data } = this.props;
-
-        if (!data || label !== 'avatar') {
-            return null;
-        }
-
-        return (
-            <Avatar name={ data.title } status={ data.status } />
-        );
-    },
     
-    renderColumn(label, index,  headers) {
-        const { data } = this.props;
-        const value = data ? data[label] : label;
-        const status = data && label === 'status' ? data['status'] : '';
-
+    renderColumn(label, index, headers) {
         const isFirst = index === 0;
         const isLast = index === headers.length - 1;
 
         return (
-            <TableCol key={ index } label={ label } value={ value } isFirst={ isFirst } isLast={ isLast } status={ status }>
-                { this.renderAvatar(label) }
-            </TableCol>
+            <TableCol
+                data={ this.props.data }
+                isFirst={ isFirst }
+                isLast={ isLast }
+                key={ index }
+                label={ label }
+            />
         );
     },
 
     render() {
-        const { data, isFirst, isLast, isHeader, onClick } = this.props;
-        const type = isHeader ? 'header' : 'body';
+        const { data, isFirst, isLast, onClick, type } = this.props;
 
         return (
             <div className={ block('row', { type, first: isFirst, last: isLast }) } onClick={ this.handleClick }>

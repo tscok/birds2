@@ -3,6 +3,9 @@ import purebem from 'purebem';
 
 import { capitalize } from 'app/utils';
 
+import Avatar from './Avatar';
+import Join from './Join';
+
 
 const block = purebem.of('table');
 
@@ -11,51 +14,44 @@ const TableCol = React.createClass({
     propTypes: {
         label: PropTypes.string.isRequired,
         // ...
-        children: PropTypes.node,
+        data: PropTypes.object,
         isFirst: PropTypes.bool,
-        isLast: PropTypes.bool,
-        status: PropTypes.string,
-        value: PropTypes.string
+        isLast: PropTypes.bool
     },
 
     getDefaultProps() {
         return {
-            children: null,
+            data: null,
             isFirst: false,
-            isLast: false,
-            status: null,
-            value: null
+            isLast: false
         };
     },
 
-    renderLabel() {
-        if (this.props.children) {
+    renderAvatar(data, label) {
+        if (!data || label !== 'avatar') {
             return null;
         }
-        return (
-            <div className={ block('label') }>{ capitalize(this.props.label) }</div>
-        );
+        return (<Avatar name={ data.title } status={ data.status } />);
     },
 
-    renderValue() {
-        if (this.props.children) {
+    renderJoin(data, label) {
+        if (!data || label !== 'join') {
             return null;
         }
-        return (
-            <div className={ block('value') }>{ capitalize(this.props.value) }</div>
-        );
+        return (<Join data={ data } />);
     },
 
     render() {
-        const { label, isFirst, isLast, status } = this.props;
-
-        console.log(status);
+        const { data, isFirst, isLast, label } = this.props;
+        const status = data ? data.status : null;
+        const value = data && data[label] ? data[label] : label;
 
         return (
             <div className={ block('col', { label, status, first: isFirst, last: isLast }) }>
-                { this.renderLabel() }
-                { this.renderValue() }
-                { this.props.children }
+                <div className={ block('label') }>{ label }</div>
+                <div className={ block('value') }>{ value }</div>
+                { this.renderAvatar(data, label) }
+                { this.renderJoin(data, label) }
             </div>
         );
     }
