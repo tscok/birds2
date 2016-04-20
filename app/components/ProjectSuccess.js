@@ -1,13 +1,10 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
-import onclickoutside from 'react-onclickoutside';
 
 
 const block = purebem.of('project-success');
 
 const ProjectSuccess = React.createClass({
-
-    mixins: [onclickoutside],
 
     contextTypes: {
         router: PropTypes.object.isRequired
@@ -22,10 +19,6 @@ const ProjectSuccess = React.createClass({
         return {
             projectId: ''
         };
-    },
-
-    handleClickOutside() {
-        this.props.onClose();
     },
 
     handleReroute() {

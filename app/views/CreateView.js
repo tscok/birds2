@@ -18,6 +18,7 @@ import {
 } from 'app/utils';
 
 import ButtonSwitch from 'app/components/ButtonSwitch';
+import ClickOutside from 'app/components/ClickOutside';
 import ContentBox from 'app/components/ContentBox';
 import InputField from 'app/components/InputField';
 import Modal from 'app/components/Modal';
@@ -298,9 +299,11 @@ const CreateView = React.createClass({
 
         return (
             <Modal>
-                <ProjectSuccess
-                    projectId={ this.state.projectId }
-                    onClose={ this.handleModalClose } />
+                <ClickOutside onClick={ this.handleModalClose }>
+                    <ProjectSuccess
+                        projectId={ this.state.projectId }
+                        onClose={ this.handleModalClose } />
+                </ClickOutside>
             </Modal>
         );
     },

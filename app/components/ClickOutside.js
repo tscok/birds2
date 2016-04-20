@@ -2,9 +2,7 @@ import React, { PropTypes } from 'react';
 import onClickOutside from 'react-onclickoutside';
 
 
-const ClickOutside = React.createClass({
-
-    mixins: [onClickOutside],
+const ClickOutside = onClickOutside(React.createClass({
 
     propTypes: {
         children: PropTypes.node.isRequired,
@@ -19,6 +17,6 @@ const ClickOutside = React.createClass({
         return this.props.children;
     }
 
-});
+}));
 
 export default ClickOutside;

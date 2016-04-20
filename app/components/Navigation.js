@@ -23,7 +23,8 @@ const Navigation = React.createClass({
 
     getInitialState() {
         return {
-            isMenuOpen: false
+            isMenuExpanded: false,
+            isUserExpanded: false
         };
     },
 
@@ -38,16 +39,13 @@ const Navigation = React.createClass({
 
         return match === true && !!id;
     },
-
-    handleCloseMenu() {
-        if (!this.state.isMenuOpen) {
-            return;
-        }
-        this.setState({ isMenuOpen: !this.state.isMenuOpen });
+    
+    handleMenuToggle(expanded) {
+        this.setState({ isMenuExpanded: expanded });
     },
 
-    handleOpenMenu() {
-        this.setState({ isMenuOpen: !this.state.isMenuOpen });
+    handleUserToggle(expanded) {
+        this.setState({ isUserExpanded: expanded });
     },
 
     renderUser() {
@@ -58,7 +56,13 @@ const Navigation = React.createClass({
         const authData = firebaseRef.getAuth();
         const userData = authData[authData.provider];
 
-        return <User data={ userData } />;
+        return (
+            <ClickOutside onClick={ () => this.handleUserToggle(false) }>
+                <User data={ userData }
+                      isExpanded={ this.state.isUserExpanded }
+                      onClick={ this.handleUserToggle } />
+            </ClickOutside>
+        );
     },
 
     renderProfileNav() {
@@ -95,17 +99,19 @@ const Navigation = React.createClass({
 
     renderBurger() {
         return (
-            <div className={ block('burger') } onClick={ this.handleOpenMenu }>
+            <div className={ block('burger') } onClick={ () => this.handleMenuToggle(true) }>
                 <div className={ block('burger-bar') } />
             </div>
         );
     },
 
     render() {
+        const { isMenuExpanded } = this.state;
+
         return (
-            <header className={ block({ open: this.state.isMenuOpen }) }>
+            <header className={ block({ open: isMenuExpanded }) }>
                 { this.renderBurger() }
-                <ClickOutside onClick={ this.handleCloseMenu }>
+                <ClickOutside onClick={ () => this.handleMenuToggle(false) }>
                     <div className={ block('content') }>
                         { this.renderProfileNav() }
                         { this.renderProjectNav() }
