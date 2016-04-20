@@ -1,12 +1,72 @@
 .navigation {
-    display: flex;
+    height: 70px;
     padding: 0 20px;
     background-color: @color-white;
+
+    &__burger {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+    }
+    &__burger-bar {
+        &, &:before, &:after {
+            height: 3px;
+            width: 30px;
+            background: @color-gray3;
+            position: relative;
+            border-radius: 1px;
+        }
+        &:before, &:after {
+            content: "";
+            display: block;
+        }
+        &:before {
+            top: -8px;
+        }
+        &:after {
+            top: 5px;
+        }
+    }
+
+    &__logo {
+        width: 40px;
+        height: 40px;
+        background: @color-black;
+        border-radius: 100%;
+        transform: translateX(-50%);
+        left: 50%;
+        position: relative;
+        top: 10px;
+    }
+
+    &__content {
+        display: none;
+    }
+
+    &--open &__content {
+        display: flex;
+        width: 300px;
+        flex-direction: column-reverse;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: @z-index-top;
+        background-color: @color-white;
+    }
 
     &__links {
         flex: 1;
         display: flex;
         line-height: 70px;
+        flex-direction: column;
     }
 
     &__link {
@@ -30,3 +90,17 @@
         }
     }
 }
+
+.desktop-layout({
+
+    .navigation {
+        &__burger {
+            display: none;
+        }
+
+        &__content {
+            display: flex;
+        }
+    }
+
+});

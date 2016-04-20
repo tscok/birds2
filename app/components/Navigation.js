@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 import purebem from 'purebem';
 
 import firebaseRef from 'app/firebaseRef';
 
+import ClickOutside from './ClickOutside';
 import NavLink from './NavLink';
 import User from './User';
 
@@ -21,6 +21,12 @@ const Navigation = React.createClass({
         params: PropTypes.object.isRequired
     },
 
+    getInitialState() {
+        return {
+            isMenuOpen: false
+        };
+    },
+
     isLoggedIn() {
         return firebaseRef.getAuth() !== null;
     },
@@ -31,6 +37,17 @@ const Navigation = React.createClass({
         const { id } = this.props.params;
 
         return match === true && !!id;
+    },
+
+    handleCloseMenu() {
+        if (!this.state.isMenuOpen) {
+            return;
+        }
+        this.setState({ isMenuOpen: !this.state.isMenuOpen });
+    },
+
+    handleOpenMenu() {
+        this.setState({ isMenuOpen: !this.state.isMenuOpen });
     },
 
     renderUser() {
@@ -51,9 +68,9 @@ const Navigation = React.createClass({
 
         return (
             <nav className={ block('links', ['profile']) }>
-                <NavLink baseClass={ block('link') } to="/profile">Profile</NavLink>
-                <NavLink baseClass={ block('link') } to="/create">Create</NavLink>
-                <NavLink baseClass={ block('link') } to="/search">Search</NavLink>
+                <NavLink baseClass={ block('link', ['profile']) } to="/profile">Home</NavLink>
+                <NavLink baseClass={ block('link', ['create']) } to="/create">Create</NavLink>
+                <NavLink baseClass={ block('link', ['search']) } to="/search">Find</NavLink>
             </nav>
         );
     },
@@ -67,21 +84,34 @@ const Navigation = React.createClass({
 
         return (
             <nav className={ block('links', ['project']) }>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}` }>Project</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/entry` }>New Entry</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/members` }>Members</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/rings` }>Rings</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/export` }>Data</NavLink>
+                <NavLink baseClass={ block('link', ['project']) } to={ `/project/${id}` }>Dashboard</NavLink>
+                <NavLink baseClass={ block('link', ['entry']) } to={ `/project/${id}/entry` }>Add Bird</NavLink>
+                <NavLink baseClass={ block('link', ['members']) } to={ `/project/${id}/members` }>Members</NavLink>
+                <NavLink baseClass={ block('link', ['rings']) } to={ `/project/${id}/rings` }>Rings</NavLink>
+                <NavLink baseClass={ block('link', ['data']) } to={ `/project/${id}/export` }>Data</NavLink>
             </nav>
+        );
+    },
+
+    renderBurger() {
+        return (
+            <div className={ block('burger') } onClick={ this.handleOpenMenu }>
+                <div className={ block('burger-bar') } />
+            </div>
         );
     },
 
     render() {
         return (
-            <header className={ block() }>
-                { this.renderProfileNav() }
-                { this.renderProjectNav() }
-                { this.renderUser() }
+            <header className={ block({ open: this.state.isMenuOpen }) }>
+                { this.renderBurger() }
+                <ClickOutside onClick={ this.handleCloseMenu }>
+                    <div className={ block('content') }>
+                        { this.renderProfileNav() }
+                        { this.renderProjectNav() }
+                        { this.renderUser() }
+                    </div>
+                </ClickOutside>
             </header>
         );
     }

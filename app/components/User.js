@@ -27,6 +27,10 @@ const User = React.createClass({
     },
 
     handleClickOutside() {
+        if (!this.state.visible) {
+            return;
+        }
+        console.log('click outside User');
         this.toggleLinks(false);
     },
 
@@ -37,7 +41,7 @@ const User = React.createClass({
 
         return (
             <nav className={ block('links') }>
-                <NavLink baseClass={ block('link') } to="/profile">Profile</NavLink>
+                <NavLink baseClass={ block('link') } to="/profile">Home</NavLink>
                 <NavLink baseClass={ block('link', ['logout']) } to="/login">Logout</NavLink>
             </nav>
         );
