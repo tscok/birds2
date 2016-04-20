@@ -28,6 +28,12 @@ const Navigation = React.createClass({
         };
     },
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.location.pathname !== this.props.location.pathname) {
+            this.handleMenuToggle(false);
+        }
+    },
+
     isLoggedIn() {
         return firebaseRef.getAuth() !== null;
     },
