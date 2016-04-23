@@ -3,6 +3,11 @@ import purebem from 'purebem';
 
 import firebaseRef from 'app/firebaseRef';
 
+import {
+    overlayAdd,
+    overlayRemove
+} from 'app/utils';
+
 import ClickOutside from './ClickOutside';
 import NavLink from './NavLink';
 import User from './User';
@@ -47,6 +52,14 @@ const Navigation = React.createClass({
     },
     
     handleMenuToggle(expanded) {
+        switch (expanded) {
+            case true:
+                overlayAdd();
+                break;
+            default:
+                overlayRemove();
+        };
+        
         this.setState({ isMenuExpanded: expanded });
     },
 
@@ -104,6 +117,10 @@ const Navigation = React.createClass({
     },
 
     renderBurger() {
+        if (!this.isLoggedIn()) {
+            return null;
+        }
+
         return (
             <div className={ block('burger') } onClick={ () => this.handleMenuToggle(true) }>
                 <div className={ block('burger-bar') } />
@@ -113,9 +130,10 @@ const Navigation = React.createClass({
 
     render() {
         const { isMenuExpanded } = this.state;
+        const isMenuActive = this.isLoggedIn();
 
         return (
-            <header className={ block({ open: isMenuExpanded }) }>
+            <header className={ block({ 'active': isMenuActive, 'expanded': isMenuExpanded }) }>
                 { this.renderBurger() }
                 <ClickOutside onClick={ () => this.handleMenuToggle(false) }>
                     <div className={ block('content') }>
