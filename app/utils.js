@@ -27,11 +27,21 @@ function sortByKey(arr, key) {
     });
 };
 
+function overlayAdd() {
+    document.querySelector('body').className = 'overlay';
+};
+
+function overlayRemove() {
+    document.querySelector('body').removeAttribute('class');
+};
+
 export {
     capitalize,
     delayAction,
     getStatus,
     isDate,
     isEmpty,
+    overlayAdd,
+    overlayRemove,
     sortByKey
 };
