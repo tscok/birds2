@@ -1,7 +1,7 @@
 import moment from 'moment';
 import debounce from 'lodash.debounce';
 
-
+const body = document.querySelector('body');
 const delayAction = debounce(action => action(), 300);
 
 function getStatus(start, end) {
@@ -28,11 +28,14 @@ function sortByKey(arr, key) {
 };
 
 function overlayAdd() {
-    document.querySelector('body').className = 'overlay';
+    const lockScroll = document.body.clientHeight >= document.documentElement.clientHeight;
+    body.className = 'overlay';
+    body.style.overflowY = lockScroll ? 'scroll' : '';
 };
 
 function overlayRemove() {
-    document.querySelector('body').removeAttribute('class');
+    body.removeAttribute('class');
+    body.removeAttribute('style');
 };
 
 export {
