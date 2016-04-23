@@ -4,15 +4,6 @@ import ReactDOM from 'react-dom';
 
 
 const block = purebem.of('project-map');
-const handol = new google.maps.LatLng(63.25847135123485, 12.447509765625)
-const options = {
-    zoom: 3,
-    center: handol,
-    mapTypeId: google.maps.MapTypeId.TERRAIN,
-    streetViewControl: false,
-    zoomControl: false,
-    scaleControl: false
-}
 
 const ProjectMap = React.createClass({
 
@@ -23,6 +14,16 @@ const ProjectMap = React.createClass({
     },
 
     componentDidMount() {
+        const handol = new google.maps.LatLng(63.25847135123485, 12.447509765625)
+        const options = {
+            zoom: 3,
+            center: handol,
+            mapTypeId: google.maps.MapTypeId.TERRAIN,
+            streetViewControl: false,
+            zoomControl: false,
+            scaleControl: false
+        }
+
         this.map = new google.maps.Map(this.canvas, options);
 
         google.maps.event.addListener(this.map, 'click', evt => {
