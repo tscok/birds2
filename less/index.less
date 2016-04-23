@@ -42,6 +42,12 @@
     box-sizing: border-box;
 }
 
+html, body {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+}
+
 body {
     background-color: @color-grayf9;
 
@@ -59,7 +65,7 @@ body {
     }
 
     &.overlay {
-        // position: fixed;
+        position: fixed;
         width: 100%;
         overflow: hidden;
         overflow-y: scroll;
@@ -72,3 +78,18 @@ body {
         }
     }
 }
+
+.desktop-layout({
+
+    body {
+        &.overlay {
+            position: static;
+            overflow: inherit;
+            
+            &:after {
+                display: none;
+            }
+        }
+    }
+
+});
