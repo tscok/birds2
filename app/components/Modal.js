@@ -1,6 +1,11 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
+import {
+    overlayAdd,
+    overlayRemove
+} from 'app/utils';
+
 
 const block = purebem.of('modal');
 
@@ -11,12 +16,11 @@ const Modal = React.createClass({
     },
 
     componentWillMount() {
-        this.body = document.querySelector('body');
-        this.body.className = 'overlay';
+        overlayAdd();
     },
 
     componentWillUnmount() {
-        this.body.removeAttribute('class');
+        overlayRemove();
     },
 
     render() {
