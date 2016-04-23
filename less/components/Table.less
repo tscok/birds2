@@ -8,10 +8,12 @@
         padding: 10px;
         font-size: 14px;
         line-height: 30px;
-        border-bottom: 1px solid @color-graye;
+        margin-bottom: 10px;
+        border: 1px solid @color-graye;
+        .border-radius(2px);
 
         &--last {
-            border-bottom: 0;
+            margin-bottom: 0;
         }
 
         &--header {
@@ -85,6 +87,13 @@
     .table {
         &__row {
             display: flex;
+            margin: 0;
+            border: none;
+            border-bottom: 1px solid @color-graye;
+
+            &--last {
+                border-bottom: 0;
+            }
             
             &--body {
                 line-height: 40px;
