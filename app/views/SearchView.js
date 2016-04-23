@@ -29,6 +29,7 @@ const SearchView = React.createClass({
     getInitialState() {
         return {
             isLoading: false,
+            loadTime: 0,
             needle: '',
             results: []
         };
@@ -112,26 +113,18 @@ const SearchView = React.createClass({
         );
     },
 
-    renderMeta() {
-        const count = this.state.results.length;
-        const match = count > 1 ? 'results' : 'result';
+    renderInfo() {
+        const { isLoading, loadTime, needle, results } = this.state;
+        const count = results.length;
+        const wording = count !== 1 ? 'results' : 'result';
+        
 
-        if (count === 0) {
+        if (isEmpty(needle) && !isLoading && !count || isLoading && !count) {
             return null;
         }
 
         return (
-            <div className={ block('info') }>{ count } { match } ({ this.state.loadTime } seconds).</div>
-        );
-    },
-
-    renderEmpty() {
-        if (this.state.results.length || isEmpty(this.state.needle) || this.state.isLoading) {
-            return null;
-        }
-
-        return (
-            <div className={ block('info') }>Nothing matched: <strong>{ this.state.needle }</strong></div>
+            <span>{ count } { wording } ({ loadTime } seconds).</span>
         );
     },
 
@@ -149,8 +142,9 @@ const SearchView = React.createClass({
                             onChange={ this.handleChange }
                             placeholder="Project title, site name, etc."
                             value={ this.state.needle } />
-                        { this.renderEmpty() }
-                        { this.renderMeta() }
+                        <div className={ block('info') }>
+                            { this.renderInfo() }
+                        </div>
                     </ViewHeader>
                     { this.renderResults() }
                 </div>
