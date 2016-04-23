@@ -91,9 +91,9 @@ const Navigation = React.createClass({
 
         return (
             <nav className={ block('links', ['profile']) }>
-                <NavLink baseClass={ block('link', ['profile']) } to="/profile">Home</NavLink>
-                <NavLink baseClass={ block('link', ['create']) } to="/create">Create</NavLink>
-                <NavLink baseClass={ block('link', ['search']) } to="/search">Find</NavLink>
+                <NavLink baseClass={ block('link') } to="/profile">Home</NavLink>
+                <NavLink baseClass={ block('link') } to="/create">Create</NavLink>
+                <NavLink baseClass={ block('link') } to="/search">Find</NavLink>
             </nav>
         );
     },
@@ -107,11 +107,11 @@ const Navigation = React.createClass({
 
         return (
             <nav className={ block('links', ['project']) }>
-                <NavLink baseClass={ block('link', ['project']) } to={ `/project/${id}` }>Dashboard</NavLink>
-                <NavLink baseClass={ block('link', ['entry']) } to={ `/project/${id}/entry` }>Add Bird</NavLink>
-                <NavLink baseClass={ block('link', ['members']) } to={ `/project/${id}/members` }>Members</NavLink>
-                <NavLink baseClass={ block('link', ['rings']) } to={ `/project/${id}/rings` }>Rings</NavLink>
-                <NavLink baseClass={ block('link', ['data']) } to={ `/project/${id}/export` }>Data</NavLink>
+                <NavLink baseClass={ block('link') } to={ `/project/${id}` }>Dashboard</NavLink>
+                <NavLink baseClass={ block('link') } to={ `/project/${id}/entry` }>Add Bird</NavLink>
+                <NavLink baseClass={ block('link') } to={ `/project/${id}/members` }>Members</NavLink>
+                <NavLink baseClass={ block('link') } to={ `/project/${id}/rings` }>Rings</NavLink>
+                <NavLink baseClass={ block('link') } to={ `/project/${id}/export` }>Data</NavLink>
             </nav>
         );
     },
