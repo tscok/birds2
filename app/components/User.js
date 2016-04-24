@@ -29,13 +29,13 @@ const User = React.createClass({
     },
 
     render() {
-        const { profileImageURL, email } = this.props.data;
+        const { displayName, email, profileImageURL } = this.props.data;
         const { isExpanded } = this.props;
 
         return (
             <div className={ block({ active: isExpanded }) } onClick={ () => this.props.onClick(!isExpanded) }>
                 <Avatar className={ block('avatar') } url={ profileImageURL } />
-                <div className={ block('name') }>{ email }</div>
+                <div className={ block('name') }>{ displayName || email }</div>
                 { this.renderDropdown() }
             </div>
         );
