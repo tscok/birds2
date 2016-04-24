@@ -122,8 +122,8 @@ const Navigation = React.createClass({
         }
 
         return (
-            <div className={ block('burger') } onClick={ () => this.handleMenuToggle(true) }>
-                <div className={ block('burger-bar') } />
+            <div className={ block('toggle') } onClick={ () => this.handleMenuToggle(true) }>
+                <div className={ block('burger') } />
             </div>
         );
     },
