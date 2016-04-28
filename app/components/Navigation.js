@@ -91,7 +91,7 @@ const Navigation = React.createClass({
 
         return (
             <nav className={ block('links', ['profile']) }>
-                <NavLink baseClass={ block('link') } to="/profile">Home</NavLink>
+                <NavLink baseClass={ block('link') } to="/profile">My Profile</NavLink>
                 <NavLink baseClass={ block('link') } to="/create">Create</NavLink>
                 <NavLink baseClass={ block('link') } to="/search">Find</NavLink>
             </nav>

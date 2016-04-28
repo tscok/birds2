@@ -107,10 +107,15 @@
             display: none;
         }
 
+        &__content {
+            z-index: 0;
+        }
+
         &--active &__content {
             flex-direction: row;
             position: relative;
             width: auto;
+            height: auto;
             opacity: 1;
             .transform(translateX(0));
             .transition(none);
