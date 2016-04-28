@@ -54,7 +54,7 @@ const Navigation = React.createClass({
     handleMenuToggle(expanded) {
         switch (expanded) {
             case true:
-                overlayAdd();
+                overlayAdd('navigation');
                 break;
             default:
                 overlayRemove();

@@ -1,5 +1,6 @@
 import moment from 'moment';
 import debounce from 'lodash.debounce';
+import purebem from 'purebem';
 
 const body = document.querySelector('body');
 const delayAction = debounce(action => action(), 300);
@@ -27,9 +28,10 @@ function sortByKey(arr, key) {
     });
 };
 
-function overlayAdd() {
+function overlayAdd(modifier='') {
+    const block = purebem.of('overlay');
     const lockScroll = document.body.clientHeight >= document.documentElement.clientHeight;
-    body.className = 'overlay';
+    body.className = block({ modifier });
     body.style.overflowY = lockScroll ? 'scroll' : '';
 };
 
