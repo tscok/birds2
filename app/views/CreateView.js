@@ -55,7 +55,13 @@ const CreateView = React.createClass({
 
     componentWillMount() {
         this.setState(cloneDeep(initialState));
-        this.uid = firebaseRef.getAuth().uid;
+        const authData = firebaseRef.getAuth();
+        const provider = authData[authData.provider];
+
+        this.user = {
+            id: authData.uid,
+            name: provider.displayName
+        };
     },
 
     hasErrors(errors) {
@@ -129,7 +135,8 @@ const CreateView = React.createClass({
             dateEnd: moment(end.value, format).unix(),
             dateStart: moment(start.value, format).unix(),
             isPublic,
-            ownerId: this.uid,
+            ownerId: this.user.id,
+            ownerName: this.user.name,
             title: title.value
         };
 
@@ -148,7 +155,7 @@ const CreateView = React.createClass({
 
         // Add sites
         this.getSites().map((site, index) => {
-            const newSite = assign(site, { ownerId: this.uid, projectId: pid });
+            const newSite = assign(cloneDeep(site), { ownerId: this.user.id, projectId: pid });
             const siteRef = firebaseRef.child('sites').push(newSite);
             const siteId = siteRef.key();
 
@@ -157,10 +164,10 @@ const CreateView = React.createClass({
         });
 
         // Update user with ownership
-        firebaseRef.child(`users/${this.uid}/projects/${pid}`).set(true);
+        firebaseRef.child(`users/${this.user.id}/owner/${pid}`).set(true);
 
         // Set membership in memberships/project
-        firebaseRef.child(`members/${pid}/active/${this.uid}`).set(true);
+        firebaseRef.child(`members/${pid}/active/${this.user.id}`).set(true);
 
         // Display Success state
         this.setState({ showSuccess: true, projectId: pid });
@@ -217,7 +224,7 @@ const CreateView = React.createClass({
         );
     },
 
-    renderErrorInfo() {
+    renderError() {
         if (!this.hasErrors()) {
             return null;
         }
@@ -283,7 +290,7 @@ const CreateView = React.createClass({
                     onClick={ () => this.handleSwitch('privacy') }
                     options={ this.state.togglePrivacy } />
                 { this.renderPrivacyInfo() }
-                { this.renderErrorInfo() }
+                { this.renderError() }
                 <div className={ block('actions') }>
                     <button type="submit" className={ buttonClass } disabled={ hasErrors || isSubmitting }>Create Project</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
