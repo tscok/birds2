@@ -131,12 +131,15 @@ const CreateView = React.createClass({
         const format = 'YYYYMMDD';
 
         this.project = {
-            dateCreated: moment().unix(),
-            dateEnd: moment(end.value, format).unix(),
-            dateStart: moment(start.value, format).unix(),
+            date: {
+                end: moment(end.value, format).unix(),
+                start: moment(start.value, format).unix()
+            },
             isPublic,
-            ownerId: this.user.id,
-            ownerName: this.user.name,
+            owner: {
+                id: this.user.id,
+                name: this.user.name
+            },
             title: title.value
         };
 
@@ -155,19 +158,26 @@ const CreateView = React.createClass({
 
         // Add sites
         this.getSites().map((site, index) => {
-            const newSite = assign(cloneDeep(site), { ownerId: this.user.id, projectId: pid });
-            const siteRef = firebaseRef.child('sites').push(newSite);
-            const siteId = siteRef.key();
+            // const newSite = assign(cloneDeep(site), { ownerId: this.user.id, projectId: pid });
+            // const siteRef = firebaseRef.child('sites').push(newSite);
+            // const siteId = siteRef.key();
 
             // Update project/sites
-            this.projectRef.child('sites').push(assign(site, { siteId }));
+            this.projectRef.child('sites').push(site);
         });
 
         // Update user with ownership
-        firebaseRef.child(`users/${this.user.id}/owner/${pid}`).set(true);
+        firebaseRef.child(`users/${this.user.id}/owner/`).push({
+            id: pid,
+            title: this.project.title
+        });
 
         // Set membership in memberships/project
-        firebaseRef.child(`members/${pid}/active/${this.user.id}`).set(true);
+        firebaseRef.child(`members/${pid}/active/`).push({
+            id: this.user.id,
+            name: this.user.name,
+            role: 'owner'
+        });
 
         // Display Success state
         this.setState({ showSuccess: true, projectId: pid });
