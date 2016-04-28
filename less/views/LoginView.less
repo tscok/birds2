@@ -15,7 +15,11 @@
         margin-top: 3rem;
 
         &--facebook {
-            background-color: #3b5998;
+            background-color: @color-facebook;
+
+            &:hover, &:focus, &:active {
+                background-color: darken(@color-facebook, 10%);
+            }
         }
     }
 
