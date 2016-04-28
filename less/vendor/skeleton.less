@@ -75,18 +75,19 @@ input[type="button"] {
     &.button-primary {
         font-weight: 600;
         color: @color-white;
-        background-color: @color-interactive;
+        background-color: @color-green;
         border: none;
+        .transition(background-color @timing-normal);
 
         &:hover, &:focus {
-            background-color: @color-interactive--hover;
-            border-bottom: 3px solid darken(@color-interactive--hover, 15%);
+            background-color: @color-green-dark;
+            // border-bottom: 3px solid darken(@color-interactive--hover, 15%);
         }
 
         &:active {
-            background-color: @color-interactive--hover;
-            .box-shadow(inset 0 2px 1px darken(@color-interactive--hover, 15%));
-            border: none;
+            background-color: @color-green-dark;
+            // .box-shadow(inset 0 2px 1px darken(@color-interactive--hover, 15%));
+            // border: none;
         }
 
         &[disabled], &[disabled]:hover {
