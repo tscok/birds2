@@ -98,7 +98,7 @@ const SearchView = React.createClass({
 
     renderResults() {
         const data = this.state.results;
-        const headers = ['avatar', 'title', 'ownerId', 'status', 'join'];
+        const headers = ['avatar', 'title', 'ownerName', 'status', 'join'];
 
         if (data.length === 0) {
             return null;
