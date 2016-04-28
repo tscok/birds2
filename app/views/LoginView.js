@@ -29,7 +29,6 @@ const LoginView = React.createClass({
         return new promise((resolve, reject) => {
             firebaseRef.authWithPassword(userData, (error, authData) => {
                 if (error) reject(error);
-                else resolve(authData);
             });
         });
     },
@@ -39,7 +38,7 @@ const LoginView = React.createClass({
             firebaseRef.authWithOAuthPopup(provider, (error, authData) => {
                 if (error) reject(error);
                 else resolve(authData);
-            })
+            });
         });
     },
 
@@ -125,7 +124,7 @@ const LoginView = React.createClass({
         const buttonClass = purebem.many(block('button', ['facebook']), 'button-primary');
         return (
             <div className={ block('social-login') }>
-                <button type="button" className={ buttonClass } onClick={ () => this.handleSocialClick('facebook') }>Login with Facebook</button>
+                <button type="button" className={ buttonClass } onClick={ () => this.handleSocialClick('facebook') }>Continue with Facebook</button>
             </div>
         );
     },
