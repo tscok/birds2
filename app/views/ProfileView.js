@@ -102,7 +102,7 @@ const ProfileView = React.createClass({
         const search = purebem.many(block('button', ['search']), 'button');
 
         return (
-            <ViewHeader title="Getting Started">
+            <ViewHeader title="My Profile">
                 <p>This page will show your projects, the ones you contribute to and those you have requested to join.</p>
                 <div className={ block('actions') }>
                     <NavLink to="/create" baseClass={ create } activeClass={ false }>Create a project</NavLink>

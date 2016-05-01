@@ -7,8 +7,15 @@ const block = purebem.of('view-header');
 const ViewHeader = React.createClass({
 
     propTypes: {
-        children: PropTypes.node.isRequired,
-        title: PropTypes.string.isRequired
+        title: PropTypes.string.isRequired,
+        // ...
+        children: PropTypes.node
+    },
+
+    getDefaultProps() {
+        return {
+            children: null
+        };
     },
 
     render() {

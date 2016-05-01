@@ -81,13 +81,10 @@ input[type="button"] {
 
         &:hover, &:focus {
             background-color: @color-green-dark;
-            // border-bottom: 3px solid darken(@color-interactive--hover, 15%);
         }
 
         &:active {
             background-color: @color-green-dark;
-            // .box-shadow(inset 0 2px 1px darken(@color-interactive--hover, 15%));
-            // border: none;
         }
 
         &[disabled], &[disabled]:hover {
@@ -137,6 +134,11 @@ select {
 label {
     display: block;
     font-weight: 400;
+
+    > .label-body {
+        font-size: .75em;
+        color: @color-gray9;
+    }
 }
 
 /* Spacing

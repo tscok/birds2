@@ -135,8 +135,8 @@ const SearchView = React.createClass({
         return (
             <div className={ block() }>
                 <div className="container">
-                    <ViewHeader title="Find &amp; Join">
-                        <p>Here you can search for projects to join.</p>
+                    <ViewHeader title="Find Projects">
+                        <p>Find public projects by title, site or user.</p>
                         <InputField
                             autoFocus={ true }
                             iconClass="icon-search"
