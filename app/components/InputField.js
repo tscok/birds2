@@ -3,7 +3,9 @@ import purebem from 'purebem';
 
 import noop from 'app/noop';
 
-import Spinner from './Spinner';
+import {
+    Spinner
+} from 'app/components';
 
 
 const block = purebem.of('input-field');

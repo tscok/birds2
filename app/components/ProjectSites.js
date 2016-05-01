@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 
-import InputField from './InputField';
+import {
+    InputField
+} from 'app/components';
 
 
 const ProjectSites = React.createClass({

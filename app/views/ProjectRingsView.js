@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const RingsView = React.createClass({
+const ProjectRingsView = React.createClass({
     render() {
         return (
             <h1>Rings</h1>
@@ -9,4 +9,4 @@ const RingsView = React.createClass({
     }
 });
 
-export default RingsView;
+export default ProjectRingsView;

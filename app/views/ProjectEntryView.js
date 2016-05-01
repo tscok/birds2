@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const EntryView = React.createClass({
+const ProjectEntryView = React.createClass({
     render() {
         return (
             <h1>Entry</h1>
@@ -9,4 +9,4 @@ const EntryView = React.createClass({
     }
 });
 
-export default EntryView;
+export default ProjectEntryView;

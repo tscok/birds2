@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import Navigation from 'app/components/Navigation';
+import {
+    Navigation
+} from 'app/components';
 
 
-const block = purebem.of('app');
+const block = purebem.of('app-view');
 
-const App = React.createClass({
+const AppView = React.createClass({
 
     propTypes: {
         children: PropTypes.node
@@ -25,4 +27,4 @@ const App = React.createClass({
 
 });
 
-export default App;
+export default AppView;

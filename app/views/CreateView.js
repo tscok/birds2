@@ -17,14 +17,16 @@ import {
     isEmpty
 } from 'app/utils';
 
-import ButtonSwitch from 'app/components/ButtonSwitch';
-import ClickOutside from 'app/components/ClickOutside';
-import ContentBox from 'app/components/ContentBox';
-import InputField from 'app/components/InputField';
-import Modal from 'app/components/Modal';
-import ProjectMap from 'app/components/ProjectMap';
-import ProjectSites from 'app/components/ProjectSites';
-import ProjectSuccess from 'app/components/ProjectSuccess';
+import {
+    ButtonSwitch,
+    ClickOutside,
+    ContentBox,
+    InputField,
+    ModalContainer,
+    ProjectMap,
+    ProjectSites,
+    ProjectSuccess
+} from 'app/components';
 
 
 const ERROR_TITLE = 'Please fill in a title.';
@@ -58,10 +60,14 @@ const CreateView = React.createClass({
         const authData = firebaseRef.getAuth();
         const provider = authData[authData.provider];
 
-        this.user = {
+        this.owner = {
             id: authData.uid,
-            name: provider.displayName
+            name: provider.displayName,
+            avatar: provider.profileImageRul,
+            role: 'owner'
         };
+
+        console.log(this.owner);
     },
 
     hasErrors(errors) {
@@ -137,11 +143,13 @@ const CreateView = React.createClass({
             },
             isPublic,
             owner: {
-                id: this.user.id,
-                name: this.user.name
+                id: this.owner.id,
+                name: this.owner.name
             },
             title: title.value
         };
+
+        console.log(this.getSites());
 
         // Add project
         this.projectRef = firebaseRef.child('projects').push(this.project, this.onComplete);
@@ -149,38 +157,29 @@ const CreateView = React.createClass({
 
     onComplete(error) {
         if (error) {
-            console.log('Oh snap! An error occurred…');
-            return;
+            console.log('Oh snap! An error occurred…', error);
+        } else {
+            console.log('success!');
+            // Get project ID
+            const pid = this.projectRef.key();
+
+            // Add sites to project
+            this.getSites().map((site, index) => {
+                this.projectRef.child('sites').push(site);
+            });
+
+            // Update user with ownership
+            firebaseRef.child(`users/${this.owner.id}/owner/`).push({
+                id: pid,
+                title: this.project.title
+            });
+
+            // Set membership in memberships/project
+            firebaseRef.child(`members/${pid}/active/`).push(this.owner);
+
+            // Display Success state
+            this.setState({ showSuccess: true, projectId: pid });
         }
-
-        // Get project ID
-        const pid = this.projectRef.key();
-
-        // Add sites
-        this.getSites().map((site, index) => {
-            // const newSite = assign(cloneDeep(site), { ownerId: this.user.id, projectId: pid });
-            // const siteRef = firebaseRef.child('sites').push(newSite);
-            // const siteId = siteRef.key();
-
-            // Update project/sites
-            this.projectRef.child('sites').push(site);
-        });
-
-        // Update user with ownership
-        firebaseRef.child(`users/${this.user.id}/owner/`).push({
-            id: pid,
-            title: this.project.title
-        });
-
-        // Set membership in memberships/project
-        firebaseRef.child(`members/${pid}/active/`).push({
-            id: this.user.id,
-            name: this.user.name,
-            role: 'owner'
-        });
-
-        // Display Success state
-        this.setState({ showSuccess: true, projectId: pid });
     },
 
     handleSwitch(name) {
@@ -263,7 +262,7 @@ const CreateView = React.createClass({
                         value={ title.value } />
                 </div>
                 <div className={ form('group') }>
-                    <label>Start date</label>
+                    <label>Start date <span className="label-body">Test</span></label>
                     <InputField
                         name="start"
                         error={ errors.start }
@@ -313,7 +312,6 @@ const CreateView = React.createClass({
         if (!this.state.showSuccess) {
             return null;
         }
-
         return (
             <Modal>
                 <ClickOutside onClick={ this.handleModalClose }>

@@ -7,9 +7,11 @@ import firebaseRef from 'app/firebaseRef';
 
 import { getStatus } from 'app/utils';
 
-import ContentBox from 'app/components/ContentBox';
-import Spinner from 'app/components/Spinner';
-import ViewHeader from 'app/components/ViewHeader';
+import {
+    ContentBox,
+    Spinner,
+    ViewHeader
+} from 'app/components';
 
 
 const block = purebem.of('project-view');

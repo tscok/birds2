@@ -3,7 +3,9 @@ import purebem from 'purebem';
 
 import noop from 'app/noop';
 
-import TableCol from './TableCol';
+import {
+    TableCol
+} from 'app/components';
 
 
 const block = purebem.of('table');

@@ -2,8 +2,10 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 import moment from 'moment';
 
-import ContentBox from './ContentBox';
-import Table from './Table';
+import {
+    ContentBox,
+    Table
+} from 'app/components';
 
 
 const block = purebem.of('project-list');

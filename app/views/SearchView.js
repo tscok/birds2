@@ -3,6 +3,8 @@ import purebem from 'purebem';
 import promise from 'promise';
 import moment from 'moment';
 
+import firebaseRef from 'app/firebaseRef';
+
 import filter from 'lodash.filter';
 import uniqBy from 'lodash.uniqby';
 import forEach from 'lodash.foreach';
@@ -14,12 +16,12 @@ import {
     sortByKey
 } from 'app/utils';
 
-import firebaseRef from 'app/firebaseRef';
-
-import ContentBox from 'app/components/ContentBox';
-import InputField from 'app/components/InputField';
-import ViewHeader from 'app/components/ViewHeader';
-import Table from 'app/components/Table';
+import {
+    ContentBox,
+    InputField,
+    ViewHeader,
+    Table
+} from 'app/components';
 
 
 const block = purebem.of('search-view');

@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const MembersView = React.createClass({
+const ProjectMembersView = React.createClass({
     render() {
         return (
             <h1>Members</h1>
@@ -9,4 +9,4 @@ const MembersView = React.createClass({
     }
 });
 
-export default MembersView;
+export default ProjectMembersView;

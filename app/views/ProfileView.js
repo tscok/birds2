@@ -7,10 +7,12 @@ import firebaseRef from 'app/firebaseRef';
 
 import { getStatus, sortByKey } from 'app/utils';
 
-import NavLink from 'app/components/NavLink';
-import ProjectList from 'app/components/ProjectList';
-import Spinner from 'app/components/Spinner';
-import ViewHeader from 'app/components/ViewHeader';
+import {
+    NavLink,
+    ProjectList,
+    Spinner,
+    ViewHeader
+} from 'app/components';
 
 
 const block = purebem.of('profile-view');

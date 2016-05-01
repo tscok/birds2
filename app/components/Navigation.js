@@ -8,9 +8,11 @@ import {
     overlayRemove
 } from 'app/utils';
 
-import ClickOutside from './ClickOutside';
-import NavLink from './NavLink';
-import User from './User';
+import {
+    ClickOutside,
+    NavLink,
+    User
+} from 'app/components';
 
 
 const block = purebem.of('navigation');

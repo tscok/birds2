@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import Avatar from './Avatar';
-import NavLink from './NavLink';
+import {
+    Avatar,
+    NavLink
+} from 'app/components';
 
 
 const block = purebem.of('user');

@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
 
-const block = purebem.of('join');
+const block = purebem.of('join-button');
 
-const Join = React.createClass({
+const JoinButton = React.createClass({
 
     propTypes: {
         data: PropTypes.object.isRequired
@@ -22,4 +22,4 @@ const Join = React.createClass({
 
 });
 
-export default Join;
+export default JoinButton;

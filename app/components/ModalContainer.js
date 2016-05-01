@@ -7,9 +7,9 @@ import {
 } from 'app/utils';
 
 
-const block = purebem.of('modal');
+const block = purebem.of('modal-container');
 
-const Modal = React.createClass({
+const ModalContainer = React.createClass({
 
     propTypes: {
         children: PropTypes.node
@@ -33,4 +33,4 @@ const Modal = React.createClass({
 
 });
 
-export default Modal;
+export default ModalContainer;

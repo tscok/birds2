@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const ExportView = React.createClass({
+const ProjectExportView = React.createClass({
     render() {
         return (
             <h1>Export</h1>
@@ -9,4 +9,4 @@ const ExportView = React.createClass({
     }
 });
 
-export default ExportView;
+export default ProjectExportView;

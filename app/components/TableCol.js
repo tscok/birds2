@@ -3,8 +3,10 @@ import purebem from 'purebem';
 
 import { capitalize } from 'app/utils';
 
-import Avatar from './Avatar';
-import Join from './Join';
+import {
+    Avatar,
+    JoinButton
+} from 'app/components';
 
 
 const block = purebem.of('table');

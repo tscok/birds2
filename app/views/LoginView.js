@@ -4,12 +4,14 @@ import promise from 'promise';
 
 import firebaseRef from 'app/firebaseRef';
 
-import ContentBox from 'app/components/ContentBox';
-import InputField from 'app/components/InputField';
-import Spinner from 'app/components/Spinner';
+import {
+    ContentBox,
+    InputField,
+    Spinner
+} from 'app/components';
 
 
-const block = purebem.of('login');
+const block = purebem.of('login-view');
 
 const LoginView = React.createClass({
 
