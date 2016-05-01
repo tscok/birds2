@@ -1,11 +1,14 @@
 import React from 'react';
 import purebem from 'purebem';
-import assign from 'lodash.assign';
 import promise from 'promise';
 
-import firebaseRef from 'app/firebaseRef';
+import { assign } from 'app/lodash';
 
-import { getStatus, sortByKey } from 'app/utils';
+import {
+    firebaseRef,
+    getStatus,
+    sortByKey
+} from 'app/utils';
 
 import {
     NavLink,

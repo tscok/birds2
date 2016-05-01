@@ -1,9 +1,15 @@
 import moment from 'moment';
-import debounce from 'lodash.debounce';
 import purebem from 'purebem';
+import Firebase from 'firebase';
+import { debounce } from './lodash';
+
 
 const body = document.querySelector('body');
 const delayAction = debounce(action => action(), 300);
+const firebaseRef = new Firebase('https://birds.firebaseio.com');
+
+
+function noop(){};
 
 function getStatus(start, end) {
     const now = moment().unix();
@@ -40,12 +46,15 @@ function overlayRemove() {
     body.removeAttribute('style');
 };
 
+
 export {
     capitalize,
     delayAction,
+    firebaseRef,
     getStatus,
     isDate,
     isEmpty,
+    noop,
     overlayAdd,
     overlayRemove,
     sortByKey

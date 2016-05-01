@@ -3,14 +3,15 @@ import purebem from 'purebem';
 import promise from 'promise';
 import moment from 'moment';
 
-import firebaseRef from 'app/firebaseRef';
-
-import filter from 'lodash.filter';
-import uniqBy from 'lodash.uniqby';
-import forEach from 'lodash.foreach';
+import {
+    filter,
+    uniqBy,
+    forEach
+} from 'app/lodash';
 
 import {
     delayAction,
+    firebaseRef,
     getStatus,
     isEmpty,
     sortByKey

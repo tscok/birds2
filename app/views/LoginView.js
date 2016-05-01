@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 import promise from 'promise';
 
-import firebaseRef from 'app/firebaseRef';
+import { firebaseRef } from 'app/utils';
 
 import {
     ContentBox,

@@ -2,17 +2,16 @@ import React from 'react';
 import purebem from 'purebem';
 import moment from 'moment';
 
-import isNull from 'lodash.isnull';
-import filter from 'lodash.filter';
-import pick from 'lodash.pick';
-import omitBy from 'lodash.omitby';
-import debounce from 'lodash.debounce';
-import cloneDeep from 'lodash.clonedeep';
-import assign from 'lodash.assign';
-
-import firebaseRef from 'app/firebaseRef';
+import {
+    assign,
+    cloneDeep,
+    isNull,
+    omitBy
+} from 'app/lodash';
 
 import {
+    delayAction,
+    firebaseRef,
     isDate,
     isEmpty
 } from 'app/utils';
@@ -23,8 +22,6 @@ import {
     ContentBox,
     InputField,
     ModalContainer,
-    ProjectMap,
-    ProjectSites,
     ProjectSuccess
 } from 'app/components';
 
@@ -48,8 +45,6 @@ const initialState = {
     togglePrivacy: ['Private', 'Public']
 };
 
-const delayAction = debounce((action) => action(), 300);
-
 const form = purebem.of('form');
 const block = purebem.of('create-view');
 
@@ -66,17 +61,11 @@ const CreateView = React.createClass({
             avatar: provider.profileImageRul,
             role: 'owner'
         };
-
-        console.log(this.owner);
     },
 
     hasErrors(errors) {
         errors = errors || this.state.errors;
         return Object.keys(omitBy(errors, isNull)).length;
-    },
-
-    getSites() {
-        return filter(this.state.sites, (site) => site.name).map(site => pick(site, ['latlng', 'name']));
     },
 
     validateAll() {
@@ -108,7 +97,7 @@ const CreateView = React.createClass({
         return error;
     },
 
-    handleChange(evt) {
+    handleInputChange(evt) {
         const { name, value } = evt.target;
         const { errors } = cloneDeep(this.state);
         this.setState({ [name]: { value } });
@@ -120,7 +109,6 @@ const CreateView = React.createClass({
 
     handleReset() {
         this.form.reset();
-        this.handleSitesClear();
         this.setState(cloneDeep(initialState));
     },
 
@@ -182,40 +170,8 @@ const CreateView = React.createClass({
         }
     },
 
-    handleSwitch(name) {
-        switch (name) {
-            case 'privacy':
-                this.setState({ isPublic: !this.state.isPublic });
-                break;
-            case 'maplock':
-                this.setState({ isLocked: !this.state.isLocked });
-                break;
-        };
-    },
-
-    handleSiteAdd(marker) {
-        const sites = [ ...this.state.sites, marker ];
-        this.setState({ sites });
-    },
-
-    handleSiteChange(index) {
-        return evt => {
-            const { sites } = this.state;
-            sites[index].name = evt.target.value;
-            this.setState({ sites });
-        }
-    },
-
-    handleSiteRemove(index) {
-        let { sites } = this.state;
-        sites[index].setMap(null);
-        sites.splice(index, 1);
-        this.setState({ sites });
-    },
-
-    handleSitesClear() {
-        const sites = filter(this.state.sites, (item) => item.setMap(null));
-        this.setState({ sites });
+    handleSwitchClick() {
+        this.setState({ isPublic: !this.state.isPublic });
     },
 
     handleModalClose() {
@@ -258,7 +214,7 @@ const CreateView = React.createClass({
                         name="title"
                         error={ errors.title }
                         onBlur={ this.handleBlur }
-                        onChange={ this.handleChange }
+                        onChange={ this.handleInputChange }
                         value={ title.value } />
                 </div>
                 <div className={ form('group') }>
@@ -267,7 +223,7 @@ const CreateView = React.createClass({
                         name="start"
                         error={ errors.start }
                         onBlur={ this.handleBlur }
-                        onChange={ this.handleChange }
+                        onChange={ this.handleInputChange }
                         placeholder="yyyymmdd"
                         value={ start.value } />
                 </div>
@@ -277,26 +233,14 @@ const CreateView = React.createClass({
                         name="end"
                         error={ errors.end || errors.order }
                         onBlur={ this.handleBlur }
-                        onChange={ this.handleChange }
+                        onChange={ this.handleInputChange }
                         placeholder="yyyymmdd"
                         value={ end.value } />
-                </div>
-                <ProjectSites
-                    sites={ this.state.sites }
-                    onChange={ (i) => this.handleSiteChange(i) }
-                    onRemove={ (i) => this.handleSiteRemove(i) } />
-                <ButtonSwitch
-                    className={ block('switch', ['maplock']) }
-                    isActive={ this.state.isLocked }
-                    onClick={ () => this.handleSwitch('maplock') }
-                    options={ this.state.toggleMapLock } />
-                <div className={ block('body') }>
-                    <p>Unlock the map to locate and mark your ringing sites. Geolocation data may be used for statistics.</p>
                 </div>
                 <ButtonSwitch
                     className={ block('switch', ['privacy']) }
                     isActive={ this.state.isPublic }
-                    onClick={ () => this.handleSwitch('privacy') }
+                    onClick={ this.handleSwitchClick }
                     options={ this.state.togglePrivacy } />
                 { this.renderPrivacyInfo() }
                 { this.renderError() }
@@ -327,10 +271,6 @@ const CreateView = React.createClass({
         return (
             <div className={ block() }>
                 <div className="container">
-                    <ProjectMap
-                        onClick={ this.handleSiteAdd }
-                        sites={ this.state.sites }
-                        unlocked={ !this.state.isLocked } />
                     <ContentBox>
                         { this.renderForm() }
                     </ContentBox>

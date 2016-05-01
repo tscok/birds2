@@ -1,11 +1,8 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import noop from 'app/noop';
-
-import {
-    TableRow
-} from 'app/components';
+import { noop } from 'app/utils';
+import { TableRow } from 'app/components';
 
 
 const block = purebem.of('table');

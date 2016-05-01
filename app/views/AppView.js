@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import {
-    Navigation
-} from 'app/components';
+import { Navigation } from 'app/components';
 
 
 const block = purebem.of('app-view');

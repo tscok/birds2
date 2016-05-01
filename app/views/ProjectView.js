@@ -3,9 +3,10 @@ import purebem from 'purebem';
 import promise from 'promise';
 import moment from 'moment';
 
-import firebaseRef from 'app/firebaseRef';
-
-import { getStatus } from 'app/utils';
+import {
+    firebaseRef,
+    getStatus
+} from 'app/utils';
 
 import {
     ContentBox,

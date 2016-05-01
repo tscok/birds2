@@ -1,11 +1,8 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import noop from 'app/noop';
-
-import {
-    Spinner
-} from 'app/components';
+import { noop } from 'app/utils';
+import { Spinner } from 'app/components';
 
 
 const block = purebem.of('input-field');

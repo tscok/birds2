@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import firebaseRef from 'app/firebaseRef';
-
 import {
+    firebaseRef,
     overlayAdd,
     overlayRemove
 } from 'app/utils';

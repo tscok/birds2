@@ -8,9 +8,9 @@ const block = purebem.of('project-map');
 const ProjectMap = React.createClass({
 
     propTypes: {
+        enabled: PropTypes.bool.isRequired,
         onClick: PropTypes.func.isRequired,
-        sites: PropTypes.array.isRequired,
-        unlocked: PropTypes.bool.isRequired
+        places: PropTypes.array.isRequired
     },
 
     componentDidMount() {
@@ -32,7 +32,7 @@ const ProjectMap = React.createClass({
     },
 
     componentDidUpdate() {
-        this.props.sites.map((site, index) => {
+        this.props.places.map((site, index) => {
             site.setLabel(`${index + 1}`);
         });
     },
@@ -48,9 +48,9 @@ const ProjectMap = React.createClass({
     },
 
     render() {
-        const { unlocked } = this.props;
+        const { enabled } = this.props;
         return (
-            <div className={ block({ unlocked }) }>
+            <div className={ block({ enabled }) }>
                 <div className={ block('canvas') } ref={ (canvas) => this.canvas = canvas } />
             </div>
         );

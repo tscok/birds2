@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
 
-import firebaseRef from 'app/firebaseRef';
+import { firebaseRef } from 'app/utils';
 
 import {
     AppView,
