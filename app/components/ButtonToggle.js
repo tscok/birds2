@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
 
-const block = purebem.of('button-switch');
+const block = purebem.of('button-toggle');
 
-const ButtonSwitch = React.createClass({
+const ButtonToggle = React.createClass({
 
     propTypes: {
         isActive: PropTypes.bool.isRequired,
@@ -16,7 +16,7 @@ const ButtonSwitch = React.createClass({
 
     getDefaultProps() {
         return {
-            className: ''
+            className: null
         };
     },
 
@@ -30,19 +30,21 @@ const ButtonSwitch = React.createClass({
     },
 
     renderOption(option, index) {
-        const first = index === 0;
-        const last = index !== 0;
+        const type = index === 0 ? 'on' : 'off';
+        const state = this.props.isActive ? 'on' : 'off';
+        const active = type === state;
 
         return (
-            <div key={ index } className={ block('option', { first, last }) }>{ option }</div>
+            <div key={ index } className={ block('option', { type, active }) }>{ option }</div>
         );
     },
 
     render() {
         const active = this.props.isActive;
+        const classNames = purebem.many(block({ active }), this.props.className);
 
         return (
-            <div className={ purebem.many(block({ active }), this.props.className) } tabIndex="0" onClick={ this.props.onClick } onKeyDown={ this.onKeyDown }>
+            <div className={ classNames } onClick={ this.props.onClick } onKeyDown={ this.onKeyDown } tabIndex="0">
                 <div className={ block('lever') } />
                 {
                     [].map.call(this.props.options, this.renderOption)
@@ -52,4 +54,4 @@ const ButtonSwitch = React.createClass({
     }
 });
 
-export default ButtonSwitch;
+export default ButtonToggle;

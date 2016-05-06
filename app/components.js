@@ -1,6 +1,6 @@
 import Avatar from './components/Avatar';
 import ButtonRadio from './components/ButtonRadio';
-import ButtonSwitch from './components/ButtonSwitch';
+import ButtonToggle from './components/ButtonToggle';
 import ClickOutside from './components/ClickOutside';
 import ContentBox from './components/ContentBox';
 import InputField from './components/InputField';
@@ -23,7 +23,7 @@ import ViewHeader from './components/ViewHeader';
 export {
     Avatar,
     ButtonRadio,
-    ButtonSwitch,
+    ButtonToggle,
     ClickOutside,
     ContentBox,
     InputField,

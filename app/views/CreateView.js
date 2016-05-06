@@ -17,7 +17,7 @@ import {
 } from 'app/utils';
 
 import {
-    ButtonSwitch,
+    ButtonToggle,
     ClickOutside,
     ContentBox,
     InputField,
@@ -31,15 +31,6 @@ const ERROR_TITLE = 'Please fill in a title.';
 const ERROR_DATE = 'A valid date follows the pattern YYYYMMDD.';
 const ERROR_END = 'A project must start before it can end, silly.';
 
-const authData = firebaseRef.getAuth();
-const provider = authData[authData.provider];
-const userData = {
-    id: authData.uid,
-    name: provider.displayName,
-    avatar: provider.profileImageRul,
-    role: 'owner'
-};
-
 const initialState = {
     errors: {},
     isSubmitting: false,
@@ -48,15 +39,11 @@ const initialState = {
             end: '',
             start: ''
         },
-        owner: {
-            id: userData.id,
-            name: userData.name
-        },
+        owner: {},
         isPublic: true,
         title: ''
     },
-    showSuccess: false,
-    switchOptions: ['Private', 'Public']
+    showSuccess: false
 };
 
 const block = purebem.of('create-view');
@@ -65,6 +52,27 @@ const CreateView = React.createClass({
 
     getInitialState() {
         return cloneDeep(initialState);
+    },
+
+    componentDidMount() {
+        const authData = firebaseRef.getAuth();
+        const provider = authData[authData.provider];
+
+        this.userData = {
+            id: authData.uid,
+            name: provider.displayName,
+            avatar: provider.profileImageURL,
+            role: 'owner'
+        };
+
+        const { project } = this.state;
+
+        project.owner = {
+            id: this.userData.id,
+            name: this.userData.name
+        };
+
+        this.setState({ project });
     },
 
     handleInputChange(evt) {
@@ -196,15 +204,17 @@ const CreateView = React.createClass({
     //     window.scrollTo(0,0);
     // },
 
-    // renderPrivacyInfo() {
-    //     const info = this.state.isPublic
-    //         ? (<p>Public projects aim at collaboration. Users can find your project and may request to join.</p>)
-    //         : (<p>Private projects aim at privacy. Other users cannot find nor participate in private projects.</p>);
+    renderPrivacyInfo() {
+        const body = this.state.project.isPublic
+            ? 'Public projects aim at collaboration. Users can find, and may request to join, public projects.'
+            : 'Private projects aim at privacy. Other users can not find nor participate in private projects.';
 
-    //     return (
-    //         <div className={ block('body') }>{ info }</div>
-    //     );
-    // },
+        return (
+            <div className={ block('info') }>
+                <p className={ block('body') }>{ body }</p>
+            </div>
+        );
+    },
 
     // renderError() {
     //     if (!this.hasErrors()) {
@@ -217,9 +227,21 @@ const CreateView = React.createClass({
     //         </div>
     //     );
     // },
+    handleSubmit(evt) {
+        evt.preventDefault();
+
+        console.log(this.state.project);
+    },
+
     handleReset() {
         this.form.reset();
         this.setState(cloneDeep(initialState));
+    },
+
+    handleToggle() {
+        const { project } = this.state;
+        project.isPublic = !project.isPublic;
+        this.setState({ project });
     },
 
     handleModalClose() {
@@ -245,30 +267,37 @@ const CreateView = React.createClass({
     renderForm() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
         const { errors, project } = this.state;
+        const toggleOptions = ['Public', 'Private'];
 
         return (
             <form className={ block('form') } onSubmit={ this.handleSubmit } ref={ (form) => this.form = form }>
                 <div className="form__group">
-                    <label>Project Title</label>
+                    <label>Project Name</label>
                     <InputField
                         name="title"
                         onChange={ this.handleInputChange }
                         value={ project.title } />
                 </div>
                 <div className="form__group">
-                    <label>Start Date<span className="label-body">- YYYYMMDD</span></label>
+                    <label>Project Start<span className="label-body">- YYYYMMDD</span></label>
                     <InputField
                         name="start"
                         onChange={ this.handleInputChange }
                         value={ project.date.start } />
                 </div>
                 <div className="form__group">
-                    <label>End Date<span className="label-body">- YYYYMMDD</span></label>
+                    <label>Project End<span className="label-body">- YYYYMMDD</span></label>
                     <InputField
                         name="end"
                         onChange={ this.handleInputChange }
                         value={ project.date.end } />
                 </div>
+                <ButtonToggle
+                    className={ block('toggle') }
+                    isActive={ project.isPublic }
+                    options={ toggleOptions }
+                    onClick={ this.handleToggle } />
+                { this.renderPrivacyInfo() }
                 <div className={ block('actions') }>
                     <button type="submit" className={ buttonClass }>Create Project</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
