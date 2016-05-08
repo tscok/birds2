@@ -7,6 +7,7 @@ const block = purebem.of('avatar');
 const Avatar = React.createClass({
 
     propTypes: {
+        className: PropTypes.string,
         name: PropTypes.string,
         status: PropTypes.string,
         url: PropTypes.string
@@ -14,6 +15,7 @@ const Avatar = React.createClass({
 
     getDefaultProps() {
         return {
+            className: null,
             name: null,
             status: null,
             url: null
@@ -43,10 +45,11 @@ const Avatar = React.createClass({
     },
 
     render() {
-        let { status, url } = this.props;
+        const { status, url } = this.props;
+        const classNames = purebem.many(block({ url: !!url }), this.props.className);
 
         return (
-            <div className={ block({ url: !!url }) }>
+            <div className={ classNames }>
                 <div className={ block('badge', { status }) }>
                     { this.renderImage() }
                 </div>

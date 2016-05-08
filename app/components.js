@@ -3,6 +3,7 @@ import ButtonRadio from './components/ButtonRadio';
 import ButtonToggle from './components/ButtonToggle';
 import ClickOutside from './components/ClickOutside';
 import ContentBox from './components/ContentBox';
+import Divider from './components/Divider';
 import InputField from './components/InputField';
 import JoinButton from './components/JoinButton';
 import MembersPending from './components/MembersPending';
@@ -26,6 +27,7 @@ export {
     ButtonToggle,
     ClickOutside,
     ContentBox,
+    Divider,
     InputField,
     JoinButton,
     MembersPending,

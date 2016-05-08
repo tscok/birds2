@@ -3,6 +3,7 @@ import purebem from 'purebem';
 
 import {
     Avatar,
+    Divider,
     NavLink
 } from 'app/components';
 
@@ -25,6 +26,7 @@ const User = React.createClass({
         return (
             <nav className={ block('links') }>
                 <NavLink baseClass={ block('link') } to="/profile">My Profile</NavLink>
+                <Divider className={ block('divider') } />
                 <NavLink baseClass={ block('link', ['logout']) } to="/login">Logout</NavLink>
             </nav>
         );
@@ -36,8 +38,11 @@ const User = React.createClass({
 
         return (
             <div className={ block({ active: isExpanded }) } onClick={ () => this.props.onClick(!isExpanded) }>
-                <Avatar className={ block('avatar') } url={ profileImageURL } />
-                <div className={ block('name') }>{ displayName || email }</div>
+                <div className={ block('profile') }>
+                    <Avatar className={ block('avatar') } url={ profileImageURL } />
+                    <div className={ block('name') }>{ displayName || email }</div>
+                    <div className={ block('chevron', { active: isExpanded }) } />
+                </div>
                 { this.renderDropdown() }
             </div>
         );

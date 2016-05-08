@@ -18,6 +18,7 @@
         position: absolute;
         top: 15px;
     }
+
     &__burger {
         &, &:before, &:after {
             height: 3px;
@@ -53,14 +54,14 @@
     &__content {
         display: flex;
         width: 280px;
-        flex-direction: column-reverse;
+        flex-direction: column;
         height: 100%;
         position: fixed;
         top: 0;
         left: 0;
         bottom: 0;
-        z-index: @z-index-top;
         opacity: 0;
+        z-index: @z-index-top;
         .transform(translateX(-280px));
     }
 
@@ -74,28 +75,26 @@
     &__links {
         flex: 1;
         display: flex;
-        line-height: @height;
+        line-height: 40px;
         flex-direction: column;
+        padding-top: 40px;
     }
 
     &__link {
         padding: 0 20px;
         position: relative;
 
-        &--active:after {
-            content: "";
-            display: block;
-            background-color: @color-grayd;
-            width: 100%;
-            height: 3px;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-        }
-
         &, &:hover {
             color: inherit;
             text-decoration: none;
+        }
+
+        &:hover {
+            background-color: @color-grayf9;
+        }
+
+        &--active:hover, &--active {
+            background-color: @color-graye;
         }
     }
 }
@@ -103,12 +102,10 @@
 .desktop-layout({
 
     .navigation {
+        @height: 70px;
+
         &__burger {
             display: none;
-        }
-
-        &__content {
-            z-index: 0;
         }
 
         &--active &__content {
@@ -123,6 +120,31 @@
 
         &__links {
             flex-direction: row;
+            line-height: @height;
+            height: @height;
+            padding-top: 0;
+        }
+
+        &__link {
+
+            &:hover {
+                background-color: transparent;
+            }
+            
+            &--active {
+                background-color: transparent;
+
+                &:after {
+                    content: "";
+                    display: block;
+                    background-color: @color-grayd;
+                    width: 100%;
+                    height: 3px;
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                }
+            }
         }
     }
 
