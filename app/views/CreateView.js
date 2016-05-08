@@ -207,12 +207,10 @@ const CreateView = React.createClass({
     renderPrivacyInfo() {
         const body = this.state.project.isPublic
             ? 'Public projects aim at collaboration. Users can find, and may request to join, public projects.'
-            : 'Private projects aim at privacy. Other users can not find nor participate in private projects.';
+            : 'Private projects aim at privacy. Users can not find, nor request to join, private projects.';
 
         return (
-            <div className={ block('info') }>
-                <p className={ block('body') }>{ body }</p>
-            </div>
+            <p className={ block('body') }>{ body }</p>
         );
     },
 
@@ -292,12 +290,14 @@ const CreateView = React.createClass({
                         onChange={ this.handleInputChange }
                         value={ project.date.end } />
                 </div>
-                <ButtonToggle
-                    className={ block('toggle') }
-                    isActive={ project.isPublic }
-                    options={ toggleOptions }
-                    onClick={ this.handleToggle } />
-                { this.renderPrivacyInfo() }
+                <div className={ block('privacy') }>
+                    <ButtonToggle
+                        className={ block('toggle') }
+                        isActive={ project.isPublic }
+                        options={ toggleOptions }
+                        onClick={ this.handleToggle } />
+                    { this.renderPrivacyInfo() }
+                </div>
                 <div className={ block('actions') }>
                     <button type="submit" className={ buttonClass }>Create Project</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>

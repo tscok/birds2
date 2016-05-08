@@ -119,8 +119,10 @@ const ProfileView = React.createClass({
 
         return (
             <div className={ block() }>
-                { this.renderEmpty() }
-                <ProjectList projects={ this.state.projects } userId={ this.uid } />
+                <div className="container">
+                    { this.renderEmpty() }
+                    <ProjectList projects={ this.state.projects } userId={ this.uid } />
+                </div>
             </div>
         );
     }

@@ -45,7 +45,6 @@ const ButtonToggle = React.createClass({
 
         return (
             <div className={ classNames } onClick={ this.props.onClick } onKeyDown={ this.onKeyDown } tabIndex="0">
-                <div className={ block('lever') } />
                 {
                     [].map.call(this.props.options, this.renderOption)
                 }

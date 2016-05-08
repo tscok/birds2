@@ -13,7 +13,8 @@
         }
     }
 
-    &__toggle {
+    &__privacy {
+        max-width: 400px;
         margin: 2.5em auto 1em;
     }
 
@@ -32,7 +33,24 @@
         text-align: center;
     }
 
-    &__button--reset {
-        margin-left: 20px;
-    }
 }
+
+.tablet-layout({
+
+    .create-view {
+        &__toggle {
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        &__button {
+            width: auto;
+            margin-bottom: 0;
+
+            &--reset {
+                margin-left: 20px;
+            }
+        }
+    }
+
+});
