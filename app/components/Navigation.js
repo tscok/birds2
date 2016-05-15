@@ -138,14 +138,6 @@ const Navigation = React.createClass({
         );
     },
 
-    renderMenuExpanded() {
-        return (
-            <ClickOutside onClick={ this.handleMenuToggle }>
-                { this.renderMenu() }
-            </ClickOutside>
-        );
-    },
-
     render() {
         const active = this.isLoggedIn();
         const expanded = this.state.isMenuExpanded;
@@ -153,11 +145,9 @@ const Navigation = React.createClass({
         return (
             <header className={ block({ active, expanded }) }>
                 { this.renderBurger() }
-                {
-                    expanded
-                        ? this.renderMenuExpanded()
-                        : this.renderMenu()
-                }
+                <ClickOutside onClick={ () => expanded && this.handleMenuToggle() }>
+                    { this.renderMenu() }
+                </ClickOutside>
             </header>
         );
     }
