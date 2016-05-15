@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 import promise from 'promise';
 
-import { assign } from 'app/lodash';
+import {
+    assign,
+    forEach
+} from 'app/lodash';
 
 import {
     firebaseRef,
@@ -11,6 +14,7 @@ import {
 } from 'app/utils';
 
 import {
+    ButtonRadio,
     NavLink,
     ProjectList,
     Spinner,
@@ -22,93 +26,75 @@ const block = purebem.of('profile-view');
 
 const ProfileView = React.createClass({
 
+    contextTypes: {
+        router: PropTypes.object.isRequired
+    },
+
     getInitialState() {
         return {
-            projects: [],
-            isLoading: true
+            projects: {},
+            isLoading: true,
+            currentTab: 'owner'
         };
     },
 
-    componentWillMount() {
-        this.uid = firebaseRef.getAuth().uid;
+    componentDidMount() {
+        const uid = firebaseRef.getAuth().uid;
 
-        this.usersRef = firebaseRef.child(`users/${this.uid}/projects`);
-        this.membersRef = firebaseRef.child('members');
-        this.projectsRef = firebaseRef.child('projects');
-
-        this.usersRef.on('value', (snap) => {
-            if (snap.numChildren() === 0) {
-                this.setState({ isLoading: false });
-                return;
-            }
-
-            this.getProjects(snap);
-        });
+        this.usersRef = firebaseRef.child(`users/${uid}`);
+        this.usersRef.on('value', this.handleValue);
     },
 
     componentWillUnmount() {
         this.usersRef.off('value');
     },
 
-    getProjects(snap) {
-        const total = snap.numChildren();
-        const projects = [];
-
-        snap.forEach((item) => {
-            this.getProject(item.key()).then(result => {
-                projects.push(result);
-
-                if (projects.length === total) {
-                    sortByKey(projects, 'status');
-                    this.setState({ projects, isLoading: false });
-                }
-            });
-        });
+    handleValue(snap) {
+        if (snap.numChildren() === 0) {
+            this.setState({ isLoading: false });
+            return;
+        }
+        this.setState({ projects: snap.val(), isLoading: false });
     },
 
-    getProject(pid) {
-        return new promise((resolve, reject) => {
-            this.projectsRef.child(pid).once('value', (snap) => {
-                const project = snap.val();
-                project.id = pid;
-                project.status = getStatus(project.dateStart, project.dateEnd);
-
-                this.getMembers(pid).then(result => {
-                    project.members = result;
-                    resolve(project);
-                });
-            });
-        });
+    handleTabClick(tab) {
+        this.setState({ currentTab: tab });
     },
 
-    getMembers(pid) {
-        return new promise((resolve, reject) => {
-            this.membersRef.child(pid).once('value', (snap) => {
-                const data = {
-                    active: snap.child('active').numChildren(),
-                    pending: snap.child('pending').numChildren()
-                };
-                resolve(data);
-            });
-        });
+    handleListItemClick(id) {
+        this.context.router.push(`project/${id}`);
     },
 
     renderEmpty() {
-        if (this.state.projects.length) {
+        if (Object.keys(this.state.projects).length) {
             return null;
         }
 
-        const create = purebem.many(block('button', ['create']), 'button');
-        const search = purebem.many(block('button', ['search']), 'button');
+        const searchClass = purebem.many(block('button', ['search']), 'button');
+        const createClass = purebem.many(block('button', ['create']), 'button');
 
         return (
             <ViewHeader title="My Profile">
                 <p>This page will show your projects, the ones you contribute to and those you have requested to join.</p>
                 <div className={ block('actions') }>
-                    <NavLink to="/create" baseClass={ create } activeClass={ false }>Create a project</NavLink>
-                    <NavLink to="/search" baseClass={ search } activeClass={ false }>Find &amp; Join projects</NavLink>
+                    <NavLink to="/search" baseClass={ searchClass } activeClass={ false }>Find &amp; Join projects</NavLink>
+                    <NavLink to="/create" baseClass={ createClass } activeClass={ false }>Create a project</NavLink>
                 </div>
             </ViewHeader>
+        );
+    },
+
+    renderTab(tab, index) {
+        const active = this.state.currentTab === tab;
+        return (
+            <span key={ index } className={ block('tab', { active }) } onClick={ () => this.handleTabClick(tab) }>{ tab }</span>
+        );
+    },
+
+    renderListItem(id, index) {
+        const item = this.state.projects[this.state.currentTab][id];
+        return (
+            <div key={ index } onClick={ () => this.handleListItemClick(id) }>{ item.title }</div>
         );
     },
 
@@ -117,11 +103,22 @@ const ProfileView = React.createClass({
             return <Spinner />;
         }
 
+        console.log(this.state.projects);
+
         return (
             <div className={ block() }>
                 <div className="container">
                     { this.renderEmpty() }
-                    <ProjectList projects={ this.state.projects } userId={ this.uid } />
+                    <div className={ block('tabs') }>
+                        {
+                            Object.keys(this.state.projects).map(this.renderTab)
+                        }
+                    </div>
+                    <div className={ block('list') }>
+                        {
+                            Object.keys(this.state.projects[this.state.currentTab]).map(this.renderListItem)
+                        }
+                    </div>
                 </div>
             </div>
         );
