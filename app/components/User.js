@@ -3,6 +3,7 @@ import purebem from 'purebem';
 
 import {
     Avatar,
+    ClickOutside,
     Divider,
     NavLink
 } from 'app/components';
@@ -15,7 +16,7 @@ const User = React.createClass({
     propTypes: {
         data: PropTypes.object.isRequired,
         isExpanded: PropTypes.bool.isRequired,
-        onClick: PropTypes.func.isRequired,
+        onToggle: PropTypes.func.isRequired,
     },
 
     renderDropdown() {
@@ -32,20 +33,34 @@ const User = React.createClass({
         );
     },
 
-    render() {
+    renderUser() {
         const { displayName, email, profileImageURL } = this.props.data;
-        const { isExpanded } = this.props;
+        const expanded = this.props.isExpanded;
 
         return (
-            <div className={ block({ active: isExpanded }) } onClick={ () => this.props.onClick(!isExpanded) }>
+            <div className={ block({ expanded }) } onClick={ () => this.props.onToggle(!expanded) }>
                 <div className={ block('profile') }>
                     <Avatar className={ block('avatar') } url={ profileImageURL } />
                     <div className={ block('name') }>{ displayName || email }</div>
-                    <div className={ block('chevron', { active: isExpanded }) } />
+                    <div className={ block('chevron', { expanded }) } />
                 </div>
                 { this.renderDropdown() }
             </div>
         );
+    },
+
+    renderUserExpanded() {
+        return (
+            <ClickOutside onClick={ this.props.onToggle }>
+                { this.renderUser() }
+            </ClickOutside>
+        );
+    },
+
+    render() {
+        return this.props.isExpanded
+            ? this.renderUserExpanded()
+            : this.renderUser();
     }
 });
 

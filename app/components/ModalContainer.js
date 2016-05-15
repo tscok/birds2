@@ -6,13 +6,16 @@ import {
     overlayRemove
 } from 'app/utils';
 
+import { ClickOutside } from 'app/components';
+
 
 const block = purebem.of('modal-container');
 
 const ModalContainer = React.createClass({
 
     propTypes: {
-        children: PropTypes.node
+        children: PropTypes.node.isRequired,
+        onClose: PropTypes.func.isRequired
     },
 
     componentWillMount() {
@@ -26,7 +29,9 @@ const ModalContainer = React.createClass({
     render() {
         return (
             <div className={ block() }>
-                { this.props.children }
+                <ClickOutside onClick={ this.props.onClose }>
+                    { this.props.children }
+                </ClickOutside>
             </div>
         );
     }

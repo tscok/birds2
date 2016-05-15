@@ -52,7 +52,7 @@ const Navigation = React.createClass({
         return match === true && !!id;
     },
     
-    handleMenuToggle(expanded) {
+    handleMenuToggle(expanded=false) {
         switch (expanded) {
             case true:
                 overlayAdd('navigation');
@@ -64,7 +64,7 @@ const Navigation = React.createClass({
         this.setState({ isMenuExpanded: expanded });
     },
 
-    handleUserToggle(expanded) {
+    handleUserToggle(expanded=false) {
         this.setState({ isUserExpanded: expanded });
     },
 
@@ -75,13 +75,12 @@ const Navigation = React.createClass({
 
         const authData = firebaseRef.getAuth();
         const userData = authData[authData.provider];
+        const expanded = this.state.isUserExpanded;
 
         return (
-            <ClickOutside onClick={ () => this.handleUserToggle(false) }>
-                <User data={ userData }
-                      isExpanded={ this.state.isUserExpanded }
-                      onClick={ this.handleUserToggle } />
-            </ClickOutside>
+            <User data={ userData }
+                  isExpanded={ expanded }
+                  onToggle={ this.handleUserToggle } />
         );
     },
 
@@ -129,20 +128,36 @@ const Navigation = React.createClass({
         );
     },
 
+    renderMenu() {
+        return (
+            <div className={ block('content') }>
+                { this.renderProfileNav() }
+                { this.renderProjectNav() }
+                { this.renderUser() }
+            </div>
+        );
+    },
+
+    renderMenuExpanded() {
+        return (
+            <ClickOutside onClick={ this.handleMenuToggle }>
+                { this.renderMenu() }
+            </ClickOutside>
+        );
+    },
+
     render() {
-        const { isMenuExpanded } = this.state;
-        const isMenuActive = this.isLoggedIn();
+        const active = this.isLoggedIn();
+        const expanded = this.state.isMenuExpanded;
 
         return (
-            <header className={ block({ 'active': isMenuActive, 'expanded': isMenuExpanded }) }>
+            <header className={ block({ active, expanded }) }>
                 { this.renderBurger() }
-                <ClickOutside onClick={ () => this.handleMenuToggle(false) }>
-                    <div className={ block('content') }>
-                        { this.renderProfileNav() }
-                        { this.renderProjectNav() }
-                        { this.renderUser() }
-                    </div>
-                </ClickOutside>
+                {
+                    expanded
+                        ? this.renderMenuExpanded()
+                        : this.renderMenu()
+                }
             </header>
         );
     }
