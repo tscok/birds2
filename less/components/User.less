@@ -3,6 +3,13 @@
 
     cursor: pointer;
 
+    &:hover {
+        background-color: @color-grayf9;
+    }
+    &--expanded:hover {
+        background-color: transparent;
+    }
+
     &__profile {
         display: flex;
         padding: 20px;
@@ -11,10 +18,12 @@
 
     &__name {
         flex: 1;
-        margin-left: 20px;
+        margin-left: 10px;
+        padding-right: 10px;
         line-height: @size;
         position: relative;
         .user-select;
+        .ellipsis;
     }
 
     &__chevron {
@@ -28,6 +37,11 @@
             border-color: @color-black transparent transparent;
             position: relative;
             top: 4px;
+        }
+
+        &--expanded:after {
+            border-color: transparent transparent @color-black;
+            top: 0;
         }
     }
 
@@ -46,14 +60,9 @@
             text-decoration: none;
         }
 
-        &:hover, &--active {
+        &:hover {
             background-color: @color-graye;
         }
-    }
-
-    &--active &__chevron:after {
-        border-color: transparent transparent @color-black;
-        top: 0;
     }
 }
 
@@ -67,7 +76,7 @@
         padding: 0 15px;
         position: relative;
 
-        &--active {
+        &--expanded {
             box-shadow: @shadow;
         }
 
