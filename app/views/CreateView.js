@@ -109,9 +109,9 @@ const CreateView = React.createClass({
 
             firebaseRef.child(`members/${pid}/member`).push(this.userData);
 
-            firebaseRef.child(`users/${uid}/owner`).push(data);
+            firebaseRef.child(`users/${uid}/owner/${pid}`).set(data);
 
-            this.setState({ showSuccess: true });
+            this.setState({ showSuccess: true, projectId: pid });
         },
         (error) => {
             this.setState({ showError: error.message });
