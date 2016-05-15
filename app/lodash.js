@@ -6,6 +6,7 @@ import forEach from 'lodash.foreach';
 import isNull from 'lodash.isnull';
 import omitBy from 'lodash.omitby';
 import pick from 'lodash.pick';
+import pickBy from 'lodash.pickby';
 import uniqBy from 'lodash.uniqby';
 
 export {
@@ -17,5 +18,6 @@ export {
     isNull,
     omitBy,
     pick,
+    pickBy,
     uniqBy
 };
