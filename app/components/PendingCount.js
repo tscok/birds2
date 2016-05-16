@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
 
-const block = purebem.of('members-pending');
+const block = purebem.of('pending-count');
 
-const MembersPending = React.createClass({
+const PendingCount = React.createClass({
 
     propTypes: {
         ownerId: PropTypes.string.isRequired,
@@ -26,4 +26,4 @@ const MembersPending = React.createClass({
 
 });
 
-export default MembersPending;
+export default PendingCount;
