@@ -1,11 +1,7 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
-import moment from 'moment';
 
-import {
-    ContentBox,
-    Table
-} from 'app/components';
+import { ProjectListItem } from 'app/components';
 
 
 const block = purebem.of('project-list');
@@ -13,35 +9,26 @@ const block = purebem.of('project-list');
 const ProjectList = React.createClass({
 
     propTypes: {
-        projects: PropTypes.array.isRequired,
-        userId: PropTypes.string.isRequired
+        projects: PropTypes.object.isRequired
     },
 
-    contextTypes: {
-        router: PropTypes.object.isRequired
-    },
+    renderItem(pid, index) {
+        const item = this.props.projects[pid];
 
-    handleClick(id) {
-        this.context.router.push(`project/${id}`);
+        return (
+            <ProjectListItem
+                item={ item }
+                key={ index }
+                pid={ pid } />
+        );
     },
 
     render() {
-        if (!this.props.projects.length) {
-            return null;
-        }
-
-        const headers = ['avatar', 'title', 'ownerId', 'status'];
-
         return (
             <div className={ block() }>
-                <div className="container">
-                    <ContentBox title="Projects">
-                        <Table
-                            data={ this.props.projects }
-                            headers={ headers }
-                            onClick={ this.handleClick } />
-                    </ContentBox>
-                </div>
+                {
+                    [].map.call(Object.keys(this.props.projects), this.renderItem)
+                }
             </div>
         );
     }
