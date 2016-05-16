@@ -14,10 +14,10 @@ import {
 } from 'app/utils';
 
 import {
-    ButtonRadio,
     NavLink,
     ProjectList,
     Spinner,
+    Tabs,
     ViewHeader
 } from 'app/components';
 
@@ -34,42 +34,36 @@ const ProfileView = React.createClass({
         return {
             projects: {},
             isLoading: true,
-            currentTab: 'owner'
+            activeTab: 'owner'
         };
     },
 
     componentDidMount() {
         const uid = firebaseRef.getAuth().uid;
 
+        // Do an auth check here. Has login credentials expired, route to login.
+        // Should probably be used in all views…
+
         this.usersRef = firebaseRef.child(`users/${uid}`);
-        this.usersRef.on('value', this.handleValue);
+
+        this.usersRef.on('value', (snap) => {
+            if (snap.numChildren() === 0) {
+                this.setState({ isLoading: false });
+                return;
+            }
+            this.setState({ projects: snap.val(), isLoading: false });
+        });
     },
 
     componentWillUnmount() {
         this.usersRef.off('value');
     },
 
-    handleValue(snap) {
-        if (snap.numChildren() === 0) {
-            this.setState({ isLoading: false });
-            return;
-        }
-        this.setState({ projects: snap.val(), isLoading: false });
-    },
-
     handleTabClick(tab) {
-        this.setState({ currentTab: tab });
-    },
-
-    handleListItemClick(id) {
-        this.context.router.push(`project/${id}`);
+        this.setState({ activeTab: tab });
     },
 
     renderEmpty() {
-        if (Object.keys(this.state.projects).length) {
-            return null;
-        }
-
         const searchClass = purebem.many(block('button', ['search']), 'button');
         const createClass = purebem.many(block('button', ['create']), 'button');
 
@@ -84,41 +78,24 @@ const ProfileView = React.createClass({
         );
     },
 
-    renderTab(tab, index) {
-        const active = this.state.currentTab === tab;
-        return (
-            <span key={ index } className={ block('tab', { active }) } onClick={ () => this.handleTabClick(tab) }>{ tab }</span>
-        );
-    },
-
-    renderListItem(id, index) {
-        const item = this.state.projects[this.state.currentTab][id];
-        return (
-            <div key={ index } onClick={ () => this.handleListItemClick(id) }>{ item.title }</div>
-        );
-    },
-
     render() {
-        if (this.state.isLoading) {
+        const { projects, activeTab, isLoading } = this.state;
+
+        if (isLoading) {
             return <Spinner />;
         }
 
-        console.log(this.state.projects);
+        if (!Object.keys(projects).length) {
+            return this.renderEmpty();
+        }
 
         return (
             <div className={ block() }>
                 <div className="container">
-                    { this.renderEmpty() }
-                    <div className={ block('tabs') }>
-                        {
-                            Object.keys(this.state.projects).map(this.renderTab)
-                        }
-                    </div>
-                    <div className={ block('list') }>
-                        {
-                            Object.keys(this.state.projects[this.state.currentTab]).map(this.renderListItem)
-                        }
-                    </div>
+                    <Tabs tabs={ Object.keys(projects) }
+                          activeTab={ activeTab }
+                          onClick={ this.handleTabClick } />
+                    <ProjectList projects={ projects[activeTab] } />
                 </div>
             </div>
         );
