@@ -6,11 +6,12 @@ import ContentBox from './components/ContentBox';
 import Divider from './components/Divider';
 import InputField from './components/InputField';
 import JoinButton from './components/JoinButton';
-import MembersPending from './components/MembersPending';
 import ModalContainer from './components/ModalContainer';
 import Navigation from './components/Navigation';
 import NavLink from './components/NavLink';
+import PendingCount from './components/PendingCount';
 import ProjectList from './components/ProjectList';
+import ProjectListItem from './components/ProjectListItem';
 import ProjectMap from './components/ProjectMap';
 import ProjectSites from './components/ProjectSites';
 import ProjectSuccess from './components/ProjectSuccess';
@@ -18,6 +19,7 @@ import Spinner from './components/Spinner';
 import Table from './components/Table';
 import TableCol from './components/TableCol';
 import TableRow from './components/TableRow';
+import Tabs from './components/Tabs';
 import User from './components/User';
 import ViewHeader from './components/ViewHeader';
 
@@ -30,11 +32,12 @@ export {
     Divider,
     InputField,
     JoinButton,
-    MembersPending,
     ModalContainer,
     Navigation,
     NavLink,
+    PendingCount,
     ProjectList,
+    ProjectListItem,
     ProjectMap,
     ProjectSites,
     ProjectSuccess,
@@ -42,6 +45,7 @@ export {
     Table,
     TableCol,
     TableRow,
+    Tabs,
     User,
     ViewHeader
 };
