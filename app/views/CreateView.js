@@ -4,8 +4,8 @@ import moment from 'moment';
 
 import {
     cloneDeep,
-    omitBy,
-    pick
+    omit,
+    omitBy
 } from 'app/lodash';
 
 import {
@@ -42,6 +42,7 @@ const initialState = {
         isPublic: true,
         title: ''
     },
+    projectId: null,
     showError: null,
     showSuccess: null,
     toggleOptions: ['Public', 'Private']
@@ -56,7 +57,6 @@ const CreateView = React.createClass({
     },
 
     componentDidMount() {
-        const { project } = this.state;
         const authData = firebaseRef.getAuth();
         const provider = authData[authData.provider];
 
@@ -66,10 +66,6 @@ const CreateView = React.createClass({
             avatar: provider.profileImageURL,
             role: 'owner'
         };
-
-        project.ownerId = this.userData.uid;
-        project.ownerName = this.userData.name;
-        this.setState({ project });
     },
 
     isValidInput() {
@@ -102,14 +98,20 @@ const CreateView = React.createClass({
             return;
         }
 
+        project.ownerId = this.userData.uid;
+        project.ownerName = this.userData.name;
+
         firebaseRef.child('projects').push(project).then((ref) => {
             const pid = ref.key();
             const uid = this.userData.uid;
-            const data = pick(project, ['dateEnd', 'dateStart', 'isPublic', 'title']);
 
-            firebaseRef.child(`members/${pid}/member`).push(this.userData);
+            const projectData = omit(project, ['ownerId', 'ownerName']);
+            projectData.role = 'owner';
+            projectData.pid = pid;
 
-            firebaseRef.child(`users/${uid}/owner/${pid}`).set(data);
+            firebaseRef.child(`projects/${pid}`).update({ pid });
+            firebaseRef.child(`members/${pid}/${uid}`).set(this.userData);
+            firebaseRef.child(`users/${uid}/projects/${pid}`).set(projectData);
 
             this.setState({ showSuccess: true, projectId: pid });
         },
