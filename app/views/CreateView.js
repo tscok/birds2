@@ -62,7 +62,7 @@ const CreateView = React.createClass({
 
         this.userData = {
             uid: authData.uid,
-            name: provider.displayName,
+            uname: provider.displayName,
             avatar: provider.profileImageURL,
             role: 'owner'
         };
@@ -98,20 +98,20 @@ const CreateView = React.createClass({
             return;
         }
 
-        project.ownerId = this.userData.uid;
-        project.ownerName = this.userData.name;
+        const projectRef = firebaseRef.child('projects').push();
 
-        firebaseRef.child('projects').push(project).then((ref) => {
-            const pid = ref.key();
-            const uid = this.userData.uid;
+        project.pid = projectRef.key();
+        project.uid = this.userData.uid;
+        project.uname = this.userData.uname;
 
-            const projectData = omit(project, ['ownerId', 'ownerName']);
-            projectData.role = 'owner';
-            projectData.pid = pid;
+        projectRef.set(project).then(() => {
+            const { pid } = project;
+            const { uid } = this.userData;
 
-            firebaseRef.child(`projects/${pid}`).update({ pid });
+            project.role = 'owner';
+
             firebaseRef.child(`members/${pid}/${uid}`).set(this.userData);
-            firebaseRef.child(`users/${uid}/projects/${pid}`).set(projectData);
+            firebaseRef.child(`users/${uid}/projects/${pid}`).set(project);
 
             this.setState({ showSuccess: true, projectId: pid });
         },
