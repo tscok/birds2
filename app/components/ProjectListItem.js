@@ -13,8 +13,7 @@ const ProjectListItem = React.createClass({
     },
 
     propTypes: {
-        item: PropTypes.object.isRequired,
-        pid: PropTypes.string.isRequired
+        item: PropTypes.object.isRequired
     },
 
     handleClick(id) {
@@ -22,7 +21,7 @@ const ProjectListItem = React.createClass({
     },
 
     render() {
-        const { item, pid } = this.props;
+        const { item } = this.props;
 
         return (
             <div className={ block() }>
@@ -30,7 +29,7 @@ const ProjectListItem = React.createClass({
                     <Avatar name={ item.title } />
                 </div>
                 <div className={ block('column', ['right']) }>
-                    <span className={ block('title') } onClick={ () => this.handleClick(pid) }>{ item.title }</span>
+                    <span className={ block('title') } onClick={ () => this.handleClick(item.pid) }>{ item.title }</span>
                     <div className={ block('dates') }>{ item.dateStart } - { item.dateEnd }</div>
                 </div>
             </div>

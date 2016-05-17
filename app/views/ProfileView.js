@@ -2,16 +2,9 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 import promise from 'promise';
 
-import {
-    assign,
-    forEach
-} from 'app/lodash';
+import { filter, map, uniq } from 'app/lodash';
 
-import {
-    firebaseRef,
-    getStatus,
-    sortByKey
-} from 'app/utils';
+import { firebaseRef } from 'app/utils';
 
 import {
     NavLink,
@@ -44,7 +37,7 @@ const ProfileView = React.createClass({
         // Do an auth check here. Has login credentials expired, route to login.
         // Should probably be used in all views…
 
-        this.usersRef = firebaseRef.child(`users/${uid}`);
+        this.usersRef = firebaseRef.child(`users/${uid}/projects`);
 
         this.usersRef.on('value', (snap) => {
             if (snap.numChildren() === 0) {
@@ -92,10 +85,12 @@ const ProfileView = React.createClass({
         return (
             <div className={ block() }>
                 <div className="container">
-                    <Tabs tabs={ Object.keys(projects) }
-                          activeTab={ activeTab }
-                          onClick={ this.handleTabClick } />
-                    <ProjectList projects={ projects[activeTab] } />
+                    <Tabs
+                        activeTab={ activeTab }
+                        tabs={ uniq(map(projects, 'role')) }
+                        onClick={ this.handleTabClick } />
+                    <ProjectList
+                        projects={ filter(projects, { 'role': activeTab }) } />
                 </div>
             </div>
         );

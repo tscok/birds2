@@ -9,17 +9,12 @@ const block = purebem.of('project-list');
 const ProjectList = React.createClass({
 
     propTypes: {
-        projects: PropTypes.object.isRequired
+        projects: PropTypes.array.isRequired
     },
 
-    renderItem(pid, index) {
-        const item = this.props.projects[pid];
-
+    renderItem(item, index) {
         return (
-            <ProjectListItem
-                item={ item }
-                key={ index }
-                pid={ pid } />
+            <ProjectListItem key={ index } item={ item } />
         );
     },
 
@@ -27,7 +22,7 @@ const ProjectList = React.createClass({
         return (
             <div className={ block() }>
                 {
-                    [].map.call(Object.keys(this.props.projects), this.renderItem)
+                    [].map.call(this.props.projects, this.renderItem)
                 }
             </div>
         );
