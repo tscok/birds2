@@ -7,8 +7,9 @@ import { filter, map, uniq } from 'app/lodash';
 import { firebaseRef } from 'app/utils';
 
 import {
+    List,
     NavLink,
-    ProjectList,
+    ProjectListItem,
     Spinner,
     Tabs,
     ViewHeader
@@ -89,8 +90,9 @@ const ProfileView = React.createClass({
                         activeTab={ activeTab }
                         tabs={ uniq(map(projects, 'role')) }
                         onClick={ this.handleTabClick } />
-                    <ProjectList
-                        projects={ filter(projects, { 'role': activeTab }) } />
+                    <List
+                        list={ filter(projects, { 'role': activeTab }) }
+                        item={ ProjectListItem } />
                 </div>
             </div>
         );

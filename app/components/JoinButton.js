@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
+import { firebaseRef } from 'app/utils';
+
 
 const block = purebem.of('join-button');
 
@@ -15,8 +17,14 @@ const JoinButton = React.createClass({
     },
 
     render() {
+        const uid = firebaseRef.getAuth().uid;
+
+        if (this.props.data.uid === uid) {
+            return null;
+        }
+
         return (
-            <button type="button" className={ block('button') } onClick={ this.handleClick }>Join</button>
+            <button type="button" className={ block() } onClick={ this.handleClick }>Join</button>
         );
     }
 

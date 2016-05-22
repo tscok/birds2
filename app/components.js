@@ -6,15 +6,16 @@ import ContentBox from './components/ContentBox';
 import Divider from './components/Divider';
 import InputField from './components/InputField';
 import JoinButton from './components/JoinButton';
+import List from './components/List';
 import ModalContainer from './components/ModalContainer';
 import Navigation from './components/Navigation';
 import NavLink from './components/NavLink';
 import PendingCount from './components/PendingCount';
-import ProjectList from './components/ProjectList';
 import ProjectListItem from './components/ProjectListItem';
 import ProjectMap from './components/ProjectMap';
 import ProjectSites from './components/ProjectSites';
 import ProjectSuccess from './components/ProjectSuccess';
+import SearchResultItem from './components/SearchResultItem';
 import Spinner from './components/Spinner';
 import Table from './components/Table';
 import TableCol from './components/TableCol';
@@ -32,15 +33,16 @@ export {
     Divider,
     InputField,
     JoinButton,
+    List,
     ModalContainer,
     Navigation,
     NavLink,
     PendingCount,
-    ProjectList,
     ProjectListItem,
     ProjectMap,
     ProjectSites,
     ProjectSuccess,
+    SearchResultItem,
     Spinner,
     Table,
     TableCol,

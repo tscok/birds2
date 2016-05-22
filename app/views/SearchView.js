@@ -14,8 +14,8 @@ import {
 
 import {
     InputField,
-    JoinButton,
-    ProjectList,
+    List,
+    SearchResultItem,
     ViewHeader
 } from 'app/components';
 
@@ -69,20 +69,14 @@ const SearchView = React.createClass({
         this.setState({ results, isLoading: false });
     },
 
-    renderResult(result, index) {
-        return (
-            <div key={ index } className={ block('result') }>{ result.title }</div>
-        );
-    },
-
     renderResults() {
         if (this.state.results.length === 0) {
             return null;
         }
         return (
-            <div className={ block('results') }>
-                <ProjectList projects={ this.state.results } />
-            </div>
+            <List
+                list={ this.state.results }
+                item={ SearchResultItem } />
         );
     },
 
