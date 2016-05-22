@@ -5,7 +5,7 @@ import { debounce } from './lodash';
 
 
 const body = document.querySelector('body');
-const delayAction = debounce(action => action(), 300);
+const debouncer = debounce(action => action(), 300);
 const firebaseRef = new Firebase('https://birds.firebaseio.com');
 
 
@@ -49,7 +49,7 @@ function overlayRemove() {
 
 export {
     capitalize,
-    delayAction,
+    debouncer,
     firebaseRef,
     getStatus,
     isDate,
