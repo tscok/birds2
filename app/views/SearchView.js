@@ -3,25 +3,20 @@ import purebem from 'purebem';
 import promise from 'promise';
 import moment from 'moment';
 
-import {
-    filter,
-    uniqBy,
-    forEach
-} from 'app/lodash';
+import { filter } from 'app/lodash';
 
 import {
-    delayAction,
+    debouncer,
     firebaseRef,
     getStatus,
-    isEmpty,
-    sortByKey
+    isEmpty
 } from 'app/utils';
 
 import {
-    ContentBox,
     InputField,
-    ViewHeader,
-    Table
+    JoinButton,
+    ProjectList,
+    ViewHeader
 } from 'app/components';
 
 
@@ -32,122 +27,80 @@ const SearchView = React.createClass({
     getInitialState() {
         return {
             isLoading: false,
-            loadTime: 0,
             needle: '',
+            projects: {},
             results: []
         };
     },
 
-    componentWillMount() {
+    componentDidMount() {
         this.projectsRef = firebaseRef.child('projects').orderByChild('isPublic').equalTo(true);
-    },
 
-    getMatch(sample) {
-        const pattern = new RegExp(this.state.needle, 'i');
-        return pattern.test(sample);
-    },
-
-    getList(snap) {
-        let arr = [], obj = {};
-        snap.forEach(child => {
-            obj = child.val();
-            obj.status = getStatus(obj.dateStart, obj.dateEnd);
-            obj.id = child.key();
-
-            if (this.getMatch(obj.title)) {
-                arr.push(obj);
+        this.projectsRef.on('value', (snap) => {
+            if (snap.numChildren() === 0) {
+                this.setState({ projects: {}, isLoading: false });
+                return;
             }
-            
-            if (!!obj.sites) {
-                forEach(obj.sites, site => {
-                    if (this.getMatch(site.name)) {
-                        arr.push(obj);
-                    }
-                });
-            }
+            this.setState({ projects: snap.val(), isLoading: false });
         });
-        return arr;
     },
 
-    handleSearch() {
-        let results = [];
+    componentWillUnmount() {
+        this.projectsRef.off('value');
+    },
 
-        if (isEmpty(this.state.needle)) {
-            this.setState({ results, isLoading: false });
+    handleInput(evt) {
+        const needle = evt.target.value;
+        this.setState({ needle, isLoading: !isEmpty(needle) });
+        debouncer(this.handleFiltering);
+    },
+
+    handleFiltering() {
+        if (this.state.needle === '') {
+            this.setState({ results: [] });
             return;
         }
 
-        const a = moment();
-        const projects = new promise((resolve, reject) => {
-            this.projectsRef.once('value', (snap) => {
-                resolve(this.getList(snap));
-            });
+        const { needle, projects } = this.state;
+        const pattern = new RegExp(needle, 'i');
+        const results = filter(projects, (project) => {
+            return pattern.test(project.title) || pattern.test(project.uname);
         });
-
-        projects.then(list => {
-            const b = moment();
-            const loadTime = b.diff(a, 'seconds', true);
-            results = uniqBy(list, 'id');
-            sortByKey(results, 'status');
-            this.setState({ results, loadTime, isLoading: false });
-        });
+        this.setState({ results, isLoading: false });
     },
 
-    handleChange(evt) {
-        const needle = evt.target.value;
-        this.setState({ needle, isLoading: !isEmpty(needle) });
-        delayAction(() => this.handleSearch());
-    },
-
-    renderResults() {
-        const data = this.state.results;
-        const headers = ['avatar', 'title', 'ownerName', 'status', 'join'];
-
-        if (data.length === 0) {
-            return null;
-        }
-
+    renderResult(result, index) {
         return (
-            <ContentBox className={ block('results') }>
-                <Table
-                    data={ data }
-                    headers={ headers } />
-            </ContentBox>
+            <div key={ index } className={ block('result') }>{ result.title }</div>
         );
     },
 
-    renderInfo() {
-        const { isLoading, loadTime, needle, results } = this.state;
-        const count = results.length;
-        const wording = count !== 1 ? 'results' : 'result';
-        
-
-        if (isEmpty(needle) && !isLoading && !count || isLoading && !count) {
+    renderResults() {
+        if (this.state.results.length === 0) {
             return null;
         }
-
         return (
-            <span>{ count } { wording } ({ loadTime } seconds).</span>
+            <div className={ block('results') }>
+                <ProjectList projects={ this.state.results } />
+            </div>
         );
     },
 
     render() {
+        const { projects } = this.state;
+
         return (
             <div className={ block() }>
                 <div className="container">
                     <ViewHeader title="Find Projects">
-                        <p>Find public projects by title, site or user.</p>
+                        <p>Find public projects by title or username.</p>
                         <InputField
-                            autoFocus={ true }
                             iconClass="icon-search"
                             iconClick={ this.handleSearch }
                             isLoading={ this.state.isLoading }
-                            onChange={ this.handleChange }
-                            placeholder="Project title, site name, etc."
+                            onChange={ this.handleInput }
+                            placeholder="Project title or username"
                             value={ this.state.needle } />
-                        <div className={ block('info') }>
-                            { this.renderInfo() }
-                        </div>
                     </ViewHeader>
                     { this.renderResults() }
                 </div>
