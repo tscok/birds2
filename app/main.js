@@ -1,9 +1,16 @@
-import '../less/index';
-
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 import routes from './routes';
 
+import '../less/index';
 
-ReactDOM.render(routes, document.getElementById('app'));
+
+render(
+    <Provider store={ store }>
+        { routes }
+    </Provider>,
+    document.getElementById('app')
+);

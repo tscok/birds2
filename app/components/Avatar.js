@@ -7,8 +7,9 @@ const block = purebem.of('avatar');
 const Avatar = React.createClass({
 
     propTypes: {
+        name: PropTypes.string.isRequired,
+        // ...
         className: PropTypes.string,
-        name: PropTypes.string,
         status: PropTypes.string,
         url: PropTypes.string
     },
@@ -16,18 +17,17 @@ const Avatar = React.createClass({
     getDefaultProps() {
         return {
             className: null,
-            name: null,
             status: null,
             url: null
         };
     },
 
     renderLetter() {
-        if (this.props.url || !this.props.name) {
+        if (this.props.url) {
             return null;
         }
 
-        const letter = this.props.name.substring(0,1);
+        const letter = this.props.name.substring(0,1).toUpperCase();
 
         return (
             <div className={ block('letter') }>{ letter }</div>

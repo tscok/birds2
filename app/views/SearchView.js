@@ -3,11 +3,12 @@ import purebem from 'purebem';
 import promise from 'promise';
 import moment from 'moment';
 
+import { firebase, getUser } from 'app/firebase';
+
 import { filter } from 'app/lodash';
 
 import {
     debouncer,
-    firebaseRef,
     getStatus,
     isEmpty
 } from 'app/utils';
@@ -33,8 +34,14 @@ const SearchView = React.createClass({
         };
     },
 
+    componentWillMount() {
+        getUser((user) => {
+            this.setState({ userId: user.uid });
+        });
+    },
+
     componentDidMount() {
-        this.projectsRef = firebaseRef.child('projects').orderByChild('isPublic').equalTo(true);
+        this.projectsRef = firebase.database().ref('projects').orderByChild('isPublic').equalTo(true);
 
         this.projectsRef.on('value', (snap) => {
             if (snap.numChildren() === 0) {

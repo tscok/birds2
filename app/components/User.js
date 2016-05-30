@@ -1,12 +1,7 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import {
-    Avatar,
-    ClickOutside,
-    Divider,
-    NavLink
-} from 'app/components';
+import { Avatar, ClickOutside, Divider, NavLink } from 'app/components';
 
 
 const block = purebem.of('user');
@@ -16,7 +11,8 @@ const User = React.createClass({
     propTypes: {
         data: PropTypes.object.isRequired,
         isExpanded: PropTypes.bool.isRequired,
-        onToggle: PropTypes.func.isRequired,
+        onSignOut: PropTypes.func.isRequired,
+        onToggle: PropTypes.func.isRequired
     },
 
     renderDropdown() {
@@ -28,20 +24,24 @@ const User = React.createClass({
             <nav className={ block('links') }>
                 <NavLink baseClass={ block('link') } to="/profile">My Profile</NavLink>
                 <Divider className={ block('divider') } />
-                <NavLink baseClass={ block('link', ['logout']) } to="/login">Logout</NavLink>
+                <div className={ block('link') } onClick={ this.props.onSignOut }>Sign Out</div>
             </nav>
         );
     },
 
     renderUser() {
-        const { displayName, email, profileImageURL } = this.props.data;
+        const { email, name, photoURL } = this.props.data;
         const expanded = this.props.isExpanded;
+        const userName = name || email;
 
         return (
             <div className={ block({ expanded }) } onClick={ () => this.props.onToggle(!expanded) }>
                 <div className={ block('profile') }>
-                    <Avatar className={ block('avatar') } url={ profileImageURL } />
-                    <div className={ block('name') }>{ displayName || email }</div>
+                    <Avatar
+                        className={ block('avatar') }
+                        name={ userName }
+                        url={ photoURL } />
+                    <div className={ block('name') }>{ userName }</div>
                     <div className={ block('chevron', { expanded }) } />
                 </div>
                 { this.renderDropdown() }

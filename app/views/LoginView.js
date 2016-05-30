@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import purebem from 'purebem';
 import promise from 'promise';
 
-import { firebaseRef } from 'app/utils';
+import { firebase, getUser } from 'app/firebase';
 
-import {
-    ContentBox,
-    InputField,
-    Spinner
-} from 'app/components';
+import { ContentBox, InputField, Spinner } from 'app/components';
+
+import { userUpdate, userLogout } from 'app/redux/actions';
 
 
 const block = purebem.of('login-view');
@@ -19,6 +18,11 @@ const LoginView = React.createClass({
         router: PropTypes.object
     },
 
+    propsTypes: {
+        onLogin: PropTypes.func.isRequired,
+        onLogout: PropTypes.func.isRequired
+    },
+
     getInitialState() {
         return {
             email: '',
@@ -27,27 +31,27 @@ const LoginView = React.createClass({
         };
     },
 
-    passwordLogin(userData) {
-        return new promise((resolve, reject) => {
-            firebaseRef.authWithPassword(userData, (error, authData) => {
-                if (error) reject(error);
-            });
+    componentDidMount() {
+        firebase.auth().signOut().then(() => {
+            console.log('user logged out');
+            this.props.onLogout();
         });
+    },
+
+    passwordLogin(email, password) {
+        return firebase.auth().signInWithEmailAndPassword(email, password);
     },
 
     socialLogin(provider) {
-        return new promise((resolve, reject) => {
-            firebaseRef.authWithOAuthPopup(provider, (error, authData) => {
-                if (error) reject(error);
-                else resolve(authData);
-            });
-        });
+        return firebase.auth().signInWithPopup(provider);
     },
 
     handleAuthResponse(loginPromise) {
-        this.setState({ isSubmitting: false });
         loginPromise.then(
             (authData) => {
+                console.log('user logged in');
+                this.props.onLogin(getUser(authData.user));
+                this.setState({ isSubmitting: false });
                 this.context.router.push('/profile');
             },
             (error) => {
@@ -55,18 +59,21 @@ const LoginView = React.createClass({
             }
         );
     },
-    
-    handleSocialClick(provider) {
+
+    handleFacebookLogin() {
+        const provider = new firebase.auth.FacebookAuthProvider();
         const loginPromise = this.socialLogin(provider);
         this.handleAuthResponse(loginPromise);
     },
 
     handleSubmit(evt) {
         evt.preventDefault();
-        const { email, password, isSubmitting } = this.state;
-        const loginPromise = this.passwordLogin({ email, password });
+        
+        this.setState({ isSubmitting: true, error: '' });
 
-        this.setState({ isSubmitting: !isSubmitting, error: '' });
+        const { email, password } = this.state;
+        const loginPromise = this.passwordLogin(email, password);
+        
         this.handleAuthResponse(loginPromise);
     },
 
@@ -126,7 +133,7 @@ const LoginView = React.createClass({
         const buttonClass = purebem.many(block('button', ['facebook']), 'button-primary');
         return (
             <div className={ block('social-login') }>
-                <button type="button" className={ buttonClass } onClick={ () => this.handleSocialClick('facebook') }>Continue with Facebook</button>
+                <button type="button" className={ buttonClass } onClick={ this.handleFacebookLogin }>Continue with Facebook</button>
             </div>
         );
     },
@@ -134,13 +141,18 @@ const LoginView = React.createClass({
     render() {
         return (
             <div className={ block() }>
-                <ContentBox>
-                    { this.renderPasswordLogin() }
-                    { this.renderFacebookLogin() }
-                </ContentBox>
+                { this.renderPasswordLogin() }
+                { this.renderFacebookLogin() }
             </div>
         );
     }
 });
 
-export default LoginView;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onLogin: (user) => dispatch(userUpdate(user)),
+        onLogout: () => dispatch(userLogout())
+    };
+};
+
+export default connect(null, mapDispatchToProps)(LoginView);

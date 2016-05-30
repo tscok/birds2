@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
 import {
+    noop,
     overlayAdd,
     overlayRemove
 } from 'app/utils';
@@ -15,7 +16,14 @@ const ModalContainer = React.createClass({
 
     propTypes: {
         children: PropTypes.node.isRequired,
-        onClose: PropTypes.func.isRequired
+        // ...
+        onClose: PropTypes.func
+    },
+
+    getDefaultProps() {
+        return {
+            onClose: noop
+        };
     },
 
     componentWillMount() {
@@ -30,7 +38,9 @@ const ModalContainer = React.createClass({
         return (
             <div className={ block() }>
                 <ClickOutside onClick={ this.props.onClose }>
-                    { this.props.children }
+                    <div className={ block('content') }>
+                        { this.props.children }
+                    </div>
                 </ClickOutside>
             </div>
         );

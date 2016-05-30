@@ -1,10 +1,9 @@
 import React from 'react';
-import { Router, Route, browserHistory, IndexRoute, Redirect } from 'react-router';
+import { Router, Route, browserHistory, IndexRedirect, Redirect } from 'react-router';
 
-import { firebaseRef } from 'app/utils';
+import App from './App';
 
 import {
-    AppView,
     LoginView,
     NotFoundView,
     ProfileView,
@@ -19,35 +18,23 @@ import {
 } from './views';
 
 
-function logout() {
-    if (firebaseRef.getAuth()) {
-        firebaseRef.unauth();
-    }
-}
-
-function requireAuth(nextState, replace) {
-    if (!firebaseRef.getAuth()) {
-        replace('/login');
-    }
-}
-
 const routes = (
     <Router history={ browserHistory }>
-        <Route path="/" component={ AppView }>
-            <IndexRoute component={ ProfileView } onEnter={ requireAuth } />
+        <Route path="/" component={ App }>
+            <IndexRedirect to="/login" />
 
-            <Route path="/login" component={ LoginView } onEnter={ logout } />
+            <Route path="/login" component={ LoginView } />
             
-            <Route path="/profile" component={ ProfileView } onEnter={ requireAuth } />
-            <Route path="/create" component={ CreateView } onEnter={ requireAuth } />
-            <Route path="/search" component={ SearchView } onEnter={ requireAuth } />
+            <Route path="/profile" component={ ProfileView } />
+            <Route path="/create" component={ CreateView } />
+            <Route path="/search" component={ SearchView } />
 
-            <Route path="/project/:id" component={ ProjectView } onEnter={ requireAuth } />
-            <Route path="/project/:id/entry" component={ ProjectEntryView } onEnter={ requireAuth } />
-            <Route path="/project/:id/export" component={ ProjectExportView } onEnter={ requireAuth } />
-            <Route path="/project/:id/members" component={ ProjectMembersView } onEnter={ requireAuth } />
-            <Route path="/project/:id/rings" component={ ProjectRingsView } onEnter={ requireAuth } />
-            <Route path="/project/:id/sites" component={ ProjectSitesView } onEnter={ requireAuth } />
+            <Route path="/project/:id" component={ ProjectView } />
+            <Route path="/project/:id/entry" component={ ProjectEntryView } />
+            <Route path="/project/:id/export" component={ ProjectExportView } />
+            <Route path="/project/:id/members" component={ ProjectMembersView } />
+            <Route path="/project/:id/rings" component={ ProjectRingsView } />
+            <Route path="/project/:id/sites" component={ ProjectSitesView } />
             
             <Redirect from="/project" to="/profile" />
 

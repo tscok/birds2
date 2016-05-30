@@ -1,26 +1,17 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import purebem from 'purebem';
 import moment from 'moment';
 
-import {
-    cloneDeep,
-    omit,
-    omitBy
-} from 'app/lodash';
+import { firebase, getUser } from 'app/firebase';
 
-import {
-    firebaseRef,
-    isDate,
-    isEmpty
-} from 'app/utils';
+import { cloneDeep, omit, omitBy } from 'app/lodash';
 
-import {
-    ButtonToggle,
-    InputField,
-    ModalContainer,
-    ProjectSuccess,
-    ViewHeader
-} from 'app/components';
+import { isDate, isEmpty } from 'app/utils';
+
+import { ButtonToggle, InputField, ModalContainer, ProjectSuccess, ViewHeader } from 'app/components';
+
+import { projectUpdate, projectReset, projectPrivacy } from 'app/redux/actions';
 
 
 const ERROR_DATES = 'Please make sure dates are in order.';
@@ -29,137 +20,130 @@ const ERROR_WRITE = 'Sorry! The project could not be created.'
 const INFO_PUBLIC = 'Public projects aim at collaboration. Users can find, and may request to join, your project.';
 const INFO_PRIVATE = 'Private projects aim at privacy. Users can not find, nor request to join, your project.';
 
-const initialState = {
-    isSubmitting: false,
-    isValid: {
-        dateEnd: false,
-        dateStart: false,
-        title: false
-    },
-    project: {
-        dateEnd: '',
-        dateStart: '',
-        isPublic: true,
-        title: ''
-    },
-    projectId: null,
-    showError: null,
-    showSuccess: null,
-    toggleOptions: ['Public', 'Private']
-};
-
 const block = purebem.of('create-view');
 
 const CreateView = React.createClass({
 
-    getInitialState() {
-        return cloneDeep(initialState);
-    },
-
-    componentDidMount() {
-        const authData = firebaseRef.getAuth();
-        const provider = authData[authData.provider];
-
-        this.userData = {
-            uid: authData.uid,
-            uname: provider.displayName,
-            avatar: provider.profileImageURL,
-            role: 'owner'
-        };
+    propTypes: {
+        data: PropTypes.shape({
+            dateEnd: PropTypes.string,
+            dateStart: PropTypes.string,
+            isPublic: PropTypes.bool,
+            title: PropTypes.string
+        }).isRequired,
+        errorMessage: PropTypes.string.isRequired,
+        isSubmitting: PropTypes.bool.isRequired,
+        isSuccess: PropTypes.bool.isRequired,
+        isValid: PropTypes.shape({
+            dateEnd: PropTypes.bool.isRequired,
+            dateStart: PropTypes.bool.isRequired,
+            title: PropTypes.bool.isRequired
+        }).isRequired,
+        onPrivacy: PropTypes.func.isRequired,
+        onReset: PropTypes.func.isRequired,
+        onUpdate: PropTypes.func.isRequired,
+        pid: PropTypes.string,
+        privacyTypes: PropTypes.array.isRequired,
+        user: PropTypes.shape({
+            uid: PropTypes.string,
+            name: PropTypes.string,
+            email: PropTypes.string,
+            photoURL: PropTypes.string
+        }).isRequired,
     },
 
     isValidInput() {
-        const { isValid } = this.state;
+        const { isValid } = this.props;
         return Object.keys(omitBy(isValid, (value) => value)).length === 0;
     },
 
     handleInputChange(evt) {
         const { name, value } = evt.target;
-        const { isValid, project } = this.state;
+        const { isValid, data } = this.props;
 
         if (name === 'title') {
-            project.title = value;
+            data.title = value;
             isValid.title = !isEmpty(value);
         } else {
-            project[name] = value;
+            data[name] = value;
             isValid[name] = isDate(value);
         }
 
-        this.setState({ project });
+        this.props.onUpdate('data', data);
     },
 
     handleSubmit(evt) {
         evt.preventDefault();
 
-        const { project } = this.state;
+        const { data } = this.props;
 
-        if (project.dateStart >= project.dateEnd) {
-            this.setState({ showError: ERROR_DATES });
+        if (data.dateStart >= data.dateEnd) {
+            this.props.onUpdate('errorMessage', ERROR_DATES);
             return;
         }
 
-        const projectRef = firebaseRef.child('projects').push();
+        console.log('handleSubmit', data);
 
-        project.pid = projectRef.key();
-        project.uid = this.userData.uid;
-        project.uname = this.userData.uname;
+        // const projectRef = firebase.database().child('projects').push();
 
-        projectRef.set(project).then(() => {
-            const { pid } = project;
-            const { uid } = this.userData;
+        // project.pid = projectRef.key();
+        // project.uid = this.userData.uid;
+        // project.uname = this.userData.uname;
 
-            project.role = 'owner';
+        // projectRef.set(project).then(() => {
+        //     const { pid } = project;
+        //     const { uid } = this.userData;
 
-            firebaseRef.child(`members/${pid}/${uid}`).set(this.userData);
-            firebaseRef.child(`users/${uid}/projects/${pid}`).set(project);
+        //     project.role = 'owner';
 
-            this.setState({ showSuccess: true, projectId: pid });
-        },
-        (error) => {
-            this.setState({ showError: error.message });
-        });
+        //     firebase.database().child(`members/${pid}/${uid}`).set(this.userData);
+        //     firebase.database().child(`users/${uid}/projects/${pid}`).set(project);
+
+        //     this.setState({ showSuccess: true, projectId: pid });
+        // },
+        // (error) => {
+        //     this.props.onUpdate('errorMessage', error.message);
+        // });
     },
 
     handleReset() {
         this.form.reset();
-        this.setState(cloneDeep(initialState));
-    },
-
-    handleToggle() {
-        const { project } = this.state;
-        project.isPublic = !project.isPublic;
-        this.setState({ project });
+        this.props.onReset();
     },
 
     handleModalClose() {
         this.handleReset();
         window.scrollTo(0,0);
     },
+
+    handleToggle() {
+        this.props.onPrivacy(this.props.data.isPublic);
+    },
     
     renderSuccess() {
-        if (!this.state.showSuccess) {
+        if (!this.props.showSuccess) {
             return null;
         }
         return (
             <ModalContainer onClose={ this.handleModalClose }>
                 <ProjectSuccess
-                    projectId={ this.state.projectId }
+                    projectId={ this.props.pid }
                     onClose={ this.handleModalClose } />
             </ModalContainer>
         );
     },
 
     renderErrorMessage() {
-        if (!this.state.showError) {
+        if (this.props.errorMessage === '') {
             return null;
         }
         return (
-            <p className={ block('body', ['error']) }>{ this.state.showError }</p>
+            <p className={ block('body', ['error']) }>{ this.props.errorMessage }</p>
         );
     },
 
     renderPrivacyInfo() {
-        const { isPublic } = this.state.project;
+        const { isPublic } = this.props.data;
         return (
             <p className={ block('body') }>{ isPublic ? INFO_PUBLIC : INFO_PRIVATE }</p>
         );
@@ -167,7 +151,7 @@ const CreateView = React.createClass({
 
     renderForm() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
-        const { project } = this.state;
+        const { data } = this.props;
 
         return (
             <form className={ block('form') } onSubmit={ this.handleSubmit } ref={ (form) => this.form = form }>
@@ -177,7 +161,7 @@ const CreateView = React.createClass({
                         name="title"
                         onBlur={ this.handleInputBlur }
                         onChange={ this.handleInputChange }
-                        value={ project.title } />
+                        value={ data.title } />
                 </div>
                 <div className="form__group">
                     <label>Start Date<span className="label-body">- YYYYMMDD</span></label>
@@ -185,7 +169,7 @@ const CreateView = React.createClass({
                         name="dateStart"
                         onBlur={ this.handleInputBlur }
                         onChange={ this.handleInputChange }
-                        value={ project.dateStart } />
+                        value={ data.dateStart } />
                 </div>
                 <div className="form__group">
                     <label>End Date<span className="label-body">- YYYYMMDD</span></label>
@@ -193,13 +177,13 @@ const CreateView = React.createClass({
                         name="dateEnd"
                         onBlur={ this.handleInputBlur }
                         onChange={ this.handleInputChange }
-                        value={ project.dateEnd } />
+                        value={ data.dateEnd } />
                 </div>
                 <div className={ block('privacy') }>
                     <ButtonToggle
                         className={ block('toggle') }
-                        isActive={ project.isPublic }
-                        options={ this.state.toggleOptions }
+                        isActive={ data.isPublic }
+                        options={ this.props.privacyTypes }
                         onClick={ this.handleToggle } />
                     { this.renderPrivacyInfo() }
                 </div>
@@ -226,4 +210,25 @@ const CreateView = React.createClass({
 
 });
 
-export default CreateView;
+const mapStateToProps = (state) => {
+    return {
+        data: state.project.data,
+        errorMessage: state.project.errorMessage,
+        isSubmitting: state.project.isSubmitting,
+        isSuccess: state.project.isSuccess,
+        isValid: state.project.isValid,
+        pid: state.project.projectId,
+        privacyTypes: state.project.types,
+        user: state.user
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUpdate: (field, value) => dispatch(projectUpdate(field, value)),
+        onReset: () => dispatch(projectReset()),
+        onPrivacy: (value) => dispatch(projectPrivacy({ isPublic: !value }))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateView);

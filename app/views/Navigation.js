@@ -1,17 +1,13 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import purebem from 'purebem';
 
-import {
-    firebaseRef,
-    overlayAdd,
-    overlayRemove
-} from 'app/utils';
+import { firebase, getUser } from 'app/firebase';
 
-import {
-    ClickOutside,
-    NavLink,
-    User
-} from 'app/components';
+import { overlayAdd, overlayRemove } from 'app/utils';
+import { ClickOutside, NavLink, User } from 'app/components';
+
+import { userUpdate, menuUpdate } from 'app/redux/actions';
 
 
 const block = purebem.of('navigation');
@@ -24,24 +20,26 @@ const Navigation = React.createClass({
 
     propTypes: {
         location: PropTypes.object.isRequired,
-        params: PropTypes.object.isRequired
+        params: PropTypes.object.isRequired,
+        isMenuExpanded: PropTypes.bool.isRequired,
+        isUserExpanded: PropTypes.bool.isRequired,
+        onAuth: PropTypes.func.isRequired,
+        toggleMenu: PropTypes.func.isRequired,
+        user: PropTypes.object.isRequired
     },
 
-    getInitialState() {
-        return {
-            isMenuExpanded: false,
-            isUserExpanded: false
-        };
+    componentWillMount() {
+        firebase.auth().onAuthStateChanged((authData) => {
+            if (authData) {
+                this.props.onAuth(getUser(authData));
+            }
+        });
     },
 
     componentDidUpdate(prevProps) {
         if (prevProps.location.pathname !== this.props.location.pathname) {
             this.handleMenuToggle(false);
         }
-    },
-
-    isLoggedIn() {
-        return firebaseRef.getAuth() !== null;
     },
 
     isProject() {
@@ -60,35 +58,34 @@ const Navigation = React.createClass({
             default:
                 overlayRemove();
         };
-        
-        this.setState({ isMenuExpanded: expanded });
+
+        this.props.toggleMenu('main', expanded);
     },
 
     handleUserToggle(expanded=false) {
-        this.setState({ isUserExpanded: expanded });
+        this.props.toggleMenu('user', expanded);
+    },
+
+    handleSignOut() {
+        this.context.router.push('/login');
     },
 
     renderUser() {
-        if (!this.isLoggedIn()) {
+        if (!this.props.user.uid) {
             return null;
         }
-
-        const authData = firebaseRef.getAuth();
-        const userData = authData[authData.provider];
-        const expanded = this.state.isUserExpanded;
-
         return (
-            <User data={ userData }
-                  isExpanded={ expanded }
-                  onToggle={ this.handleUserToggle } />
+            <User data={ this.props.user }
+                isExpanded={ this.props.isUserExpanded }
+                onSignOut={ this.handleSignOut }
+                onToggle={ this.handleUserToggle } />
         );
     },
 
     renderProfileNav() {
-        if (!this.isLoggedIn() || this.isProject()) {
+        if (!this.props.user.uid || this.isProject()) {
             return null;
         }
-
         return (
             <nav className={ block('links', ['profile']) }>
                 <NavLink baseClass={ block('link') } to="/profile">My Profile</NavLink>
@@ -99,12 +96,10 @@ const Navigation = React.createClass({
     },
 
     renderProjectNav() {
-        if (!this.isLoggedIn() || !this.isProject()) {
+        if (!this.props.user.uid || !this.isProject()) {
             return null;
         }
-
         const { id } = this.props.params;
-
         return (
             <nav className={ block('links', ['project']) }>
                 <NavLink baseClass={ block('link') } to={ `/project/${id}` }>Dashboard</NavLink>
@@ -117,7 +112,7 @@ const Navigation = React.createClass({
     },
 
     renderBurger() {
-        if (!this.isLoggedIn()) {
+        if (!this.props.user.uid) {
             return null;
         }
 
@@ -128,25 +123,19 @@ const Navigation = React.createClass({
         );
     },
 
-    renderMenu() {
-        return (
-            <div className={ block('content') }>
-                { this.renderProfileNav() }
-                { this.renderProjectNav() }
-                { this.renderUser() }
-            </div>
-        );
-    },
-
     render() {
-        const active = this.isLoggedIn();
-        const expanded = this.state.isMenuExpanded;
+        const active = !!this.props.user.uid;
+        const expanded = this.props.isMenuExpanded;
 
         return (
             <header className={ block({ active, expanded }) }>
                 { this.renderBurger() }
                 <ClickOutside onClick={ () => expanded && this.handleMenuToggle() }>
-                    { this.renderMenu() }
+                    <div className={ block('content') }>
+                        { this.renderProfileNav() }
+                        { this.renderProjectNav() }
+                        { this.renderUser() }
+                    </div>
                 </ClickOutside>
             </header>
         );
@@ -154,4 +143,19 @@ const Navigation = React.createClass({
 
 });
 
-export default Navigation;
+const mapStateToProps = (state) => {
+    return {
+        user: state.user,
+        isMenuExpanded: state.menu.main.expanded,
+        isUserExpanded: state.menu.user.expanded
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onAuth: (user) => dispatch(userUpdate(user)),
+        toggleMenu: (menu, expanded) => dispatch(menuUpdate(menu, { expanded }))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

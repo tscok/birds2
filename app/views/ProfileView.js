@@ -1,19 +1,12 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import purebem from 'purebem';
 import promise from 'promise';
 
+import { firebase, getUser } from 'app/firebase';
+
 import { filter, map, uniq } from 'app/lodash';
 
-import { firebaseRef } from 'app/utils';
-
-import {
-    List,
-    NavLink,
-    ProjectListItem,
-    Spinner,
-    Tabs,
-    ViewHeader
-} from 'app/components';
+import { List, NavLink, ProjectListItem, Spinner, Tabs, ViewHeader } from 'app/components';
 
 
 const block = purebem.of('profile-view');
@@ -21,7 +14,7 @@ const block = purebem.of('profile-view');
 const ProfileView = React.createClass({
 
     contextTypes: {
-        router: PropTypes.object.isRequired
+        router: React.PropTypes.object
     },
 
     getInitialState() {
@@ -33,24 +26,21 @@ const ProfileView = React.createClass({
     },
 
     componentDidMount() {
-        const uid = firebaseRef.getAuth().uid;
+        this.usersRef = firebase.database().ref('users');
+    },
 
-        // Do an auth check here. Has login credentials expired, route to login.
-        // Should probably be used in all views…
+    componentWillUnmount() {
+        this.usersRef.off('value');
+    },
 
-        this.usersRef = firebaseRef.child(`users/${uid}/projects`);
-
-        this.usersRef.on('value', (snap) => {
+    getData(uid) {
+        this.usersRef.child(`${uid}/projects`).on('value', (snap) => {
             if (snap.numChildren() === 0) {
                 this.setState({ isLoading: false });
                 return;
             }
             this.setState({ projects: snap.val(), isLoading: false });
         });
-    },
-
-    componentWillUnmount() {
-        this.usersRef.off('value');
     },
 
     handleTabClick(tab) {
