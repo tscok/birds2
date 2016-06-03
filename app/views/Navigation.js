@@ -27,6 +27,14 @@ const Navigation = React.createClass({
         user: PropTypes.object.isRequired
     },
 
+    componentDidUpdate(prevProps) {
+        const prevPath = prevProps.location.pathname;
+        const nextPath = this.props.location.pathname;
+        if (prevPath !== nextPath) {
+            this.handleMenuToggle();
+        }
+    },
+
     isProject() {
         const route = this.props.location.pathname.split('/');
         const match = route.some(part => part === 'project');

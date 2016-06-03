@@ -4,7 +4,7 @@ import purebem from 'purebem';
 import promise from 'promise';
 
 import { firebase, getUser } from 'app/firebase';
-
+import { overlayAdd } from 'app/utils';
 import { ContentBox, InputField, Spinner } from 'app/components';
 
 import { userUpdate, userLogout } from 'app/redux/user';
@@ -32,6 +32,8 @@ const LoginView = React.createClass({
     },
 
     componentDidMount() {
+        overlayAdd();
+        
         firebase.auth().signOut().then(() => {
             console.log('user logged out');
             this.props.onLogout();
