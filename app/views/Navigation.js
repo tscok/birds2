@@ -7,7 +7,7 @@ import { firebase, getUser } from 'app/firebase';
 import { overlayAdd, overlayRemove } from 'app/utils';
 import { ClickOutside, NavLink, User } from 'app/components';
 
-import { userUpdate, menuUpdate } from 'app/redux/actions';
+import { menuUpdate } from 'app/redux/actions';
 
 
 const block = purebem.of('navigation');
@@ -23,23 +23,8 @@ const Navigation = React.createClass({
         params: PropTypes.object.isRequired,
         isMenuExpanded: PropTypes.bool.isRequired,
         isUserExpanded: PropTypes.bool.isRequired,
-        onAuth: PropTypes.func.isRequired,
         toggleMenu: PropTypes.func.isRequired,
         user: PropTypes.object.isRequired
-    },
-
-    componentWillMount() {
-        firebase.auth().onAuthStateChanged((authData) => {
-            if (authData) {
-                this.props.onAuth(getUser(authData));
-            }
-        });
-    },
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.location.pathname !== this.props.location.pathname) {
-            this.handleMenuToggle(false);
-        }
     },
 
     isProject() {
@@ -99,7 +84,9 @@ const Navigation = React.createClass({
         if (!this.props.user.uid || !this.isProject()) {
             return null;
         }
+
         const { id } = this.props.params;
+
         return (
             <nav className={ block('links', ['project']) }>
                 <NavLink baseClass={ block('link') } to={ `/project/${id}` }>Dashboard</NavLink>
@@ -153,7 +140,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onAuth: (user) => dispatch(userUpdate(user)),
         toggleMenu: (menu, expanded) => dispatch(menuUpdate(menu, { expanded }))
     };
 };
