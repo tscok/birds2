@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import purebem from 'purebem';
 import promise from 'promise';
 import moment from 'moment';
@@ -7,37 +8,28 @@ import { firebase, getUser } from 'app/firebase';
 
 import { filter } from 'app/lodash';
 
-import {
-    debouncer,
-    getStatus,
-    isEmpty
-} from 'app/utils';
+import { debouncer, getStatus, isEmpty } from 'app/utils';
 
-import {
-    InputField,
-    List,
-    SearchResultItem,
-    ViewHeader
-} from 'app/components';
+import { InputField, List, SearchResultItem, ViewHeader } from 'app/components';
+
+import { searchUpdate } from 'app/redux/actions';
 
 
 const block = purebem.of('search-view');
 
 const SearchView = React.createClass({
 
-    getInitialState() {
-        return {
-            isLoading: false,
-            needle: '',
-            projects: {},
-            results: []
-        };
-    },
-
-    componentWillMount() {
-        getUser((user) => {
-            this.setState({ userId: user.uid });
-        });
+    propTypes: {
+        data: PropTypes.object.isRequired,
+        isSearching: PropTypes.bool.isRequired,
+        keyword: PropTypes.string.isRequired,
+        results: PropTypes.array.isRequired,
+        user: PropTypes.shape({
+            uid: PropTypes.string,
+            name: PropTypes.string,
+            email: PropTypes.string,
+            photoURL: PropTypes.string
+        }).isRequired
     },
 
     componentDidMount() {
@@ -45,10 +37,10 @@ const SearchView = React.createClass({
 
         this.projectsRef.on('value', (snap) => {
             if (snap.numChildren() === 0) {
-                this.setState({ projects: {}, isLoading: false });
+                this.props.onUpdate({ data: {}, isSearching: false });
                 return;
             }
-            this.setState({ projects: snap.val(), isLoading: false });
+            this.props.onUpdate({ data: snap.val(), isSearching: false });
         });
     },
 
@@ -57,39 +49,37 @@ const SearchView = React.createClass({
     },
 
     handleInput(evt) {
-        const needle = evt.target.value;
-        this.setState({ needle, isLoading: !isEmpty(needle) });
+        const keyword = evt.target.value;
+        this.props.onUpdate({ keyword, isSearching: !this.props.isSearching });
         debouncer(this.handleFiltering);
     },
 
     handleFiltering() {
-        if (this.state.needle === '') {
-            this.setState({ results: [] });
+        if (this.props.keyword === '') {
+            this.props.onUpdate({ results: [] });
             return;
         }
 
-        const { needle, projects } = this.state;
-        const pattern = new RegExp(needle, 'i');
-        const results = filter(projects, (project) => {
+        const { keyword, data } = this.props;
+        const pattern = new RegExp(keyword, 'i');
+        const results = filter(data, (project) => {
             return pattern.test(project.title) || pattern.test(project.uname);
         });
-        this.setState({ results, isLoading: false });
+        this.props.onUpdate({ results, isSearching: false });
     },
 
     renderResults() {
-        if (this.state.results.length === 0) {
+        if (this.props.results.length === 0) {
             return null;
         }
         return (
             <List
-                list={ this.state.results }
+                list={ this.props.results }
                 item={ SearchResultItem } />
         );
     },
 
     render() {
-        const { projects } = this.state;
-
         return (
             <div className={ block() }>
                 <div className="container">
@@ -98,10 +88,10 @@ const SearchView = React.createClass({
                         <InputField
                             iconClass="icon-search"
                             iconClick={ this.handleSearch }
-                            isLoading={ this.state.isLoading }
+                            isLoading={ this.props.isSearching }
                             onChange={ this.handleInput }
                             placeholder="Project title or username"
-                            value={ this.state.needle } />
+                            value={ this.props.keyword } />
                     </ViewHeader>
                     { this.renderResults() }
                 </div>
@@ -111,4 +101,20 @@ const SearchView = React.createClass({
 
 });
 
-export default SearchView;
+const mapStateToProps = (state) => {
+    return {
+        data: state.search.data,
+        isSearching: state.search.isSearching,
+        keyword: state.search.keyword,
+        results: state.search.results,
+        user: state.user
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUpdate: (data) => dispatch(searchUpdate(data))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchView);

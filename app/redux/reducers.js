@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { USER_UPDATE, USER_LOGOUT, MENU_UPDATE, PROJECT_UPDATE, PROJECT_RESET, PROJECT_PRIVACY } from './actions';
+import { USER_UPDATE, USER_LOGOUT, MENU_UPDATE, PROJECT_UPDATE, PROJECT_RESET, PROJECT_PRIVACY, SEARCH_UPDATE } from './actions';
 
 
 const user = (state = {}, action) => {
@@ -88,10 +88,31 @@ const project = (state = projectState, action) => {
     };
 };
 
+const searchState = {
+    data: {},
+    isSearching: false,
+    keyword: '',
+    results: []
+}
+
+const search = (state = searchState, action) => {
+    switch (action.type) {
+        case SEARCH_UPDATE:
+            return {
+                ...state,
+                ...action.payload
+            };
+
+        default:
+            return { ...state };
+    };
+};
+
 const rootReducer = combineReducers({
     user,
     menu,
-    project
+    project,
+    search
 });
 
 export default rootReducer;

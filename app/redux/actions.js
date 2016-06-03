@@ -11,6 +11,7 @@ export const PROJECT_UPDATE = 'PROJECT_UPDATE';
 export const PROJECT_RESET = 'PROJECT_RESET';
 export const PROJECT_PRIVACY = 'PROJECT_PRIVACY';
 
+export const SEARCH_UPDATE = 'SEARCH_UPDATE';
 
 /**
  * action creators
@@ -54,6 +55,13 @@ export const projectReset = () => {
 export const projectPrivacy = (payload) => {
     return {
         type: PROJECT_PRIVACY,
+        payload
+    };
+};
+
+export const searchUpdate = (payload) => {
+    return {
+        type: SEARCH_UPDATE,
         payload
     };
 };
