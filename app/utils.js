@@ -32,7 +32,7 @@ function sortByKey(arr, key) {
     });
 };
 
-function overlayAdd(modifier='') {
+function overlayAdd(modifier) {
     const block = purebem.of('overlay');
     const lockScroll = document.body.clientHeight >= document.documentElement.clientHeight;
     body.className = block({ modifier });
