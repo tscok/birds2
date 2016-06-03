@@ -7,7 +7,7 @@ import { firebase, getUser } from 'app/firebase';
 import { overlayAdd, overlayRemove } from 'app/utils';
 import { ClickOutside, NavLink, User } from 'app/components';
 
-import { menuUpdate } from 'app/redux/actions';
+import { menuUpdate } from 'app/redux/menu';
 
 
 const block = purebem.of('navigation');

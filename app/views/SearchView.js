@@ -12,7 +12,7 @@ import { debouncer, getStatus, isEmpty } from 'app/utils';
 
 import { InputField, List, SearchResultItem, ViewHeader } from 'app/components';
 
-import { searchUpdate } from 'app/redux/actions';
+import { searchUpdate } from 'app/redux/search';
 
 
 const block = purebem.of('search-view');

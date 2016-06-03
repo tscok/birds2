@@ -7,7 +7,7 @@ import { firebase, getUser } from 'app/firebase';
 
 import { ContentBox, InputField, Spinner } from 'app/components';
 
-import { userUpdate, userLogout } from 'app/redux/actions';
+import { userUpdate, userLogout } from 'app/redux/user';
 
 
 const block = purebem.of('login-view');

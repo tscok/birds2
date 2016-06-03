@@ -11,7 +11,7 @@ import { isDate, isEmpty } from 'app/utils';
 
 import { ButtonToggle, InputField, ModalContainer, ProjectSuccess, ViewHeader } from 'app/components';
 
-import { projectUpdate, projectReset, projectPrivacy } from 'app/redux/actions';
+import { projectUpdate, projectReset, projectPrivacy } from 'app/redux/project';
 
 
 const ERROR_DATES = 'Please make sure dates are in order.';
