@@ -49,7 +49,7 @@ const CreateView = React.createClass({
             name: PropTypes.string,
             email: PropTypes.string,
             photoURL: PropTypes.string
-        }).isRequired,
+        }).isRequired
     },
 
     isValidInput() {
