@@ -23,13 +23,7 @@ const SearchView = React.createClass({
         data: PropTypes.object.isRequired,
         isSearching: PropTypes.bool.isRequired,
         keyword: PropTypes.string.isRequired,
-        results: PropTypes.array.isRequired,
-        user: PropTypes.shape({
-            uid: PropTypes.string,
-            name: PropTypes.string,
-            email: PropTypes.string,
-            photoURL: PropTypes.string
-        }).isRequired
+        results: PropTypes.array.isRequired
     },
 
     componentDidMount() {
@@ -106,8 +100,7 @@ const mapStateToProps = (state) => {
         data: state.search.data,
         isSearching: state.search.isSearching,
         keyword: state.search.keyword,
-        results: state.search.results,
-        user: state.user
+        results: state.search.results
     };
 };
 
