@@ -50,7 +50,7 @@ const SearchView = React.createClass({
 
     handleFiltering() {
         if (this.props.keyword === '') {
-            this.props.onUpdate({ results: [] });
+            this.props.onUpdate({ results: [], isSearching: false });
             return;
         }
 
