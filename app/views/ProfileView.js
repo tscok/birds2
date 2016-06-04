@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import purebem from 'purebem';
 import promise from 'promise';
 
-import { firebase, getUser } from 'app/firebase';
+import { firebase } from 'app/firebase';
 
-import { filter, map, uniq } from 'app/lodash';
+import { filter, isEqual, map, uniq } from 'app/lodash';
 
 import { List, NavLink, ProjectListItem, Spinner, Tabs, ViewHeader } from 'app/components';
+
+import { profileUpdate } from 'app/redux/profile';
 
 
 const block = purebem.of('profile-view');
@@ -17,34 +20,44 @@ const ProfileView = React.createClass({
         router: React.PropTypes.object
     },
 
-    getInitialState() {
-        return {
-            projects: {},
-            isLoading: true,
-            activeTab: 'owner'
-        };
-    },
-
-    componentDidMount() {
-        this.usersRef = firebase.database().ref('users');
+    propTypes: {
+        activeTab: PropTypes.string.isRequired,
+        isLoading: PropTypes.bool.isRequired,
+        // ...
+        projects: PropTypes.object,
+        user: PropTypes.shape({
+            uid: PropTypes.string,
+            name: PropTypes.string,
+            email: PropTypes.string,
+            photoURL: PropTypes.string
+        }).isRequired
     },
 
     componentWillUnmount() {
         this.usersRef.off('value');
     },
 
-    getData(uid) {
-        this.usersRef.child(`${uid}/projects`).on('value', (snap) => {
-            if (snap.numChildren() === 0) {
-                this.setState({ isLoading: false });
-                return;
+    componentWillReceiveProps(nextProps) {
+        const { uid } = nextProps.user;
+        this.usersRef = firebase.database().ref(`users/${uid}/projects`);
+
+        if (this.props.user !== nextProps.user) {
+            this.getProjects(nextProps.projects);
+        }
+    },
+
+    getProjects(nextProjects) {
+        this.usersRef.on('value', (snap) => {
+            const projects = snap.val();
+
+            if (!isEqual(nextProjects, projects)) {
+                this.props.onUpdate({ projects, isLoading: false });
             }
-            this.setState({ projects: snap.val(), isLoading: false });
         });
     },
 
-    handleTabClick(tab) {
-        this.setState({ activeTab: tab });
+    handleTabClick(activeTab) {
+        this.props.onUpdate({ activeTab });
     },
 
     renderEmpty() {
@@ -63,13 +76,13 @@ const ProfileView = React.createClass({
     },
 
     render() {
-        const { projects, activeTab, isLoading } = this.state;
+        const { projects, activeTab, isLoading } = this.props;
 
         if (isLoading) {
             return <Spinner />;
         }
 
-        if (!Object.keys(projects).length) {
+        if (!projects) {
             return this.renderEmpty();
         }
 
@@ -90,4 +103,19 @@ const ProfileView = React.createClass({
 
 });
 
-export default ProfileView;
+const mapStateToProps = (state) => {
+    return {
+        activeTab: state.profile.activeTab,
+        isLoading: state.profile.isLoading,
+        projects: state.profile.projects,
+        user: state.user
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUpdate: (data) => dispatch(profileUpdate(data))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileView);

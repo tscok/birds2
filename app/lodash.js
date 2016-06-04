@@ -3,6 +3,7 @@ import cloneDeep from 'lodash.clonedeep';
 import debounce from 'lodash.debounce';
 import filter from 'lodash.filter';
 import forEach from 'lodash.foreach';
+import isEqual from 'lodash.isequal';
 import isNull from 'lodash.isnull';
 import map from 'lodash.map';
 import omit from 'lodash.omit';
@@ -18,6 +19,7 @@ export {
     debounce,
     filter,
     forEach,
+    isEqual,
     isNull,
     map,
     omit,
