@@ -41,7 +41,7 @@ const ProfileView = React.createClass({
         const { uid } = nextProps.user;
         this.usersRef = firebase.database().ref(`users/${uid}/projects`);
 
-        if (this.props.user !== nextProps.user) {
+        if (uid) {
             this.getProjects(nextProps.projects);
         }
     },
@@ -51,7 +51,9 @@ const ProfileView = React.createClass({
             const projects = snap.val();
 
             if (!isEqual(nextProjects, projects)) {
-                this.props.onUpdate({ projects, isLoading: false });
+                const roles = uniq(map(projects, 'role'));
+                const activeTab = roles.length ? roles[0] : 'owner';
+                this.props.onUpdate({ activeTab, projects, isLoading: false });
             }
         });
     },
