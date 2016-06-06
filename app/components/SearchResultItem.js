@@ -21,7 +21,7 @@ const SearchResultItem = React.createClass({
                 <span className={ block('owner') }>{ item.uname }</span>
                 <span className={ block('start') }>{ item.dateStart }</span>
                 <span className={ block('end') }>{ item.dateEnd }</span>
-                <JoinButton data={ item } />
+                <JoinButton project={ item } />
             </div>
         );
     }
