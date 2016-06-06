@@ -1,110 +1,69 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import purebem from 'purebem';
-import promise from 'promise';
-import moment from 'moment';
 
-import {
-    firebaseRef,
-    getStatus
-} from 'app/utils';
-
-import {
-    ContentBox,
-    Spinner,
-    ViewHeader
-} from 'app/components';
+import { firebase } from 'app/firebase';
+import { Spinner, ViewHeader } from 'app/components';
+import { projectReset, projectUpdate } from 'app/redux/project';
 
 
 const block = purebem.of('project-view');
 
 const ProjectView = React.createClass({
 
-    propTypes: {
-        params: PropTypes.object
-    },
-
     contextTypes: {
         router: PropTypes.object
     },
 
-    getInitialState() {
-        return {
-            isLoading: true,
-            project: {}
-        };
+    propTypes: {
+        isLoading: PropTypes.bool.isRequired,
+        onReset: PropTypes.func.isRequired,
+        onUpdate: PropTypes.func.isRequired,
+        // ...
+        project: PropTypes.object,
+        params: PropTypes.object,
+        uid: PropTypes.string
     },
 
     componentWillMount() {
-        const uid = firebaseRef.getAuth().uid;
         const pid = this.props.params.id;
 
-        // this.membersRef = firebaseRef.child(`members/${pid}/active/${uid}`);
-        this.projectRef = firebaseRef.child(`projects/${this.props.params.id}`);
-
-        // this.memberAuth().then(() => {
-            this.projectRef.once('value', (snap) => {
-                console.log(snap.val());
-                this.setState({ project: snap.val(), isLoading: false });
-            });
-        // });
+        firebase.database().ref(`projects/${pid}`).once('value', (snap) => {
+            this.props.onUpdate({ project: snap.val(), isLoading: false });
+        });
     },
 
-    // memberAuth() {
-    //     return new promise((resolve, reject) => {
-    //         this.membersRef.once('value', (snap) => {
-    //             if (!snap.exists()) {
-    //                 this.context.router.push('/profile');
-    //                 return;
-    //             }
-    //             resolve();
-    //         });
-    //     });
-    // },
-
-    // renderStatus() {
-    //     const { title, dateStart, dateEnd } = this.state.project;
-    //     const status = getStatus(dateStart, dateEnd).toLowerCase();
-
-    //     let body;
-
-    //     switch (status) {
-    //         case 'active':
-    //             body = (<p>This project will end { moment.unix(dateEnd).format('MMMM D, YYYY') }.</p>);
-    //             break;
-    //         case 'pending':
-    //             body = (<p>This project will start { moment.unix(dateStart).format('MMMM D, YYYY') }.</p>);
-    //             break;
-    //         default:
-    //             body = (<p>This project ended { moment.unix(dateEnd).format('MMMM D, YYYY') }.</p>);
-    //     };
-
-    //     return (<ViewHeader title={ title }>{ body }</ViewHeader>);
-    // },
-
-    // renderCharts() {
-    //     return (
-    //         <div className={ block('charts')}>
-    //             <div className="container">
-    //                 <div className="one-third column">[chart]</div>
-    //                 <div className="one-third column">[chart]</div>
-    //                 <div className="one-third column">[chart]</div>
-    //             </div>
-    //         </div>
-    //     );
-    // },
+    componentWillUnmount() {
+        this.props.onReset();
+    },
 
     render() {
-        if (this.state.isLoading) {
+        if (this.props.isLoading) {
             return <Spinner />
         }
 
         return (
             <div className={ block() }>
-                { this.state.project.title }
+                { this.props.project.title }
             </div>
         );
     }
 
 });
 
-export default ProjectView;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.project.isLoading,
+        project: state.project.project,
+        uid: state.user.uid
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onReset: () => dispatch(projectReset()),
+        onUpdate: (data) => dispatch(projectUpdate(data))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectView);
