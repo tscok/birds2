@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 const Spinner = React.createClass({
 
     propTypes: {
-        type: PropTypes.string
+        type: PropTypes.oneOf(['linear', 'circle'])
     },
 
     getDefaultProps() {
