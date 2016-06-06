@@ -13,7 +13,10 @@ const List = React.createClass({
 
     renderItem(item, index) {
         return (
-            <this.props.item key={ index } item={ item } />
+            <this.props.item
+                index={ index }
+                item={ item }
+                key={ index } />
         );
     },
 
