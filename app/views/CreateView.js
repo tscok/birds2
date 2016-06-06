@@ -11,7 +11,7 @@ import { isDate, isEmpty } from 'app/utils';
 
 import { ButtonToggle, InputField, ModalContainer, ProjectSuccess, ViewHeader } from 'app/components';
 
-import { projectUpdate, projectReset, projectPrivacy } from 'app/redux/project';
+import { createUpdate, createReset, createPrivacy } from 'app/redux/create';
 
 
 const ERROR_DATES = 'Please make sure dates are in order.';
@@ -212,22 +212,22 @@ const CreateView = React.createClass({
 
 const mapStateToProps = (state) => {
     return {
-        data: state.project.data,
-        errorMessage: state.project.errorMessage,
-        isSubmitting: state.project.isSubmitting,
-        isSuccess: state.project.isSuccess,
-        isValid: state.project.isValid,
-        pid: state.project.projectId,
-        privacyTypes: state.project.types,
+        data: state.create.data,
+        errorMessage: state.create.errorMessage,
+        isSubmitting: state.create.isSubmitting,
+        isSuccess: state.create.isSuccess,
+        isValid: state.create.isValid,
+        pid: state.create.projectId,
+        privacyTypes: state.create.types,
         user: state.user
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onUpdate: (field, value) => dispatch(projectUpdate(field, value)),
-        onReset: () => dispatch(projectReset()),
-        onPrivacy: (value) => dispatch(projectPrivacy({ isPublic: !value }))
+        onUpdate: (field, value) => dispatch(createUpdate(field, value)),
+        onReset: () => dispatch(createReset()),
+        onPrivacy: (value) => dispatch(createPrivacy({ isPublic: !value }))
     };
 };
 
