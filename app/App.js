@@ -22,38 +22,40 @@ const App = React.createClass({
         onRefresh: PropTypes.func.isRequired,
         // ...
         children: PropTypes.node,
-        location: PropTypes.object
+        location: PropTypes.object,
+        user: PropTypes.shape({
+            uid: PropTypes.string,
+            name: PropTypes.string,
+            email: PropTypes.string,
+            photoURL: PropTypes.string
+        }).isRequired
     },
 
     componentWillMount() {
-        // Refresh user state on reload if logged in.
         firebase.auth().onAuthStateChanged((authData) => {
-            if (authData) {
+            const { pathname } = this.props.location;
+            const { uid } = this.props.user;
+
+            if (!authData && pathname !== '/login') {
+                console.log('[authChange] redirect to login');
+                this.context.router.push('/login');
+            }
+
+            if (!uid && authData && pathname !== '/login') {
+                console.log('[authChange] user refreshed');
                 this.props.onRefresh(getUser(authData));
-            } else {
-                console.log('no user found');
             }
         });
     },
 
-    componentWillUpdate() {
-        const { pathname } = this.props.location;
+    componentWillUpdate(nextProps) {
+        const { pathname } = nextProps.location;
+        const { uid } = nextProps.user;
 
-        // Prevent routing away from login if logged out.
-        if (pathname === '/login' && !firebase.auth().currentUser) {
+        if (!uid && pathname !== '/login') {
+            console.log('[willUpdate] redirect to login');
             this.context.router.push('/login');
         }
-    },
-
-    renderContent() {
-        if (this.props.location.pathname === '/login') {
-            return (
-                <ModalContainer>
-                    <LoginView />
-                </ModalContainer>
-            );
-        }
-        return this.props.children;
     },
 
     render() {
@@ -61,7 +63,7 @@ const App = React.createClass({
             <div className={ block() }>
                 <Navigation { ...this.props } />
                 <main className={ block('main') }>
-                    { this.renderContent() }
+                    { this.props.children }
                 </main>
             </div>
         );
@@ -69,10 +71,16 @@ const App = React.createClass({
 
 });
 
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         onRefresh: (user) => dispatch(userUpdate(user))
     };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

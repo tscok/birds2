@@ -2,33 +2,26 @@
  * Default state
  */
 const defaultState = {
-    uid: '',
-    name: '',
-    email: '',
-    photoURL: ''
+    error: '',
+    loading: false,
+    password: '',
+    username: ''
 };
 
 
 /**
  * Action types
  */
-const USER_UPDATE = 'USER_UPDATE';
-const USER_LOGOUT = 'USER_LOGOUT';
+const LOGIN_UPDATE = 'LOGIN_UPDATE';
 
 
 /**
  * Action creators
  */
-export const userUpdate = (payload) => {
+export const loginUpdate = (payload) => {
     return {
-        type: USER_UPDATE,
+        type: LOGIN_UPDATE,
         payload
-    };
-};
-
-export const userLogout = () => {
-    return {
-        type: USER_LOGOUT
     };
 };
 
@@ -38,7 +31,7 @@ export const userLogout = () => {
  */
 export const reducer = (state = defaultState, action) => {
     switch (action.type) {
-        case USER_UPDATE:
+        case LOGIN_UPDATE:
             return {
                 ...state,
                 ...action.payload

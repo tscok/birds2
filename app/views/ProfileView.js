@@ -33,28 +33,38 @@ const ProfileView = React.createClass({
         }).isRequired
     },
 
-    componentWillUnmount() {
-        this.usersRef.off('value');
-    },
-
     componentWillReceiveProps(nextProps) {
-        const { uid } = nextProps.user;
-        this.usersRef = firebase.database().ref(`users/${uid}/projects`);
-
-        if (uid) {
-            this.getProjects(nextProps.projects);
+        if (this.props.user.uid !== nextProps.user.uid) {
+            this.getProjects(nextProps.user.uid);
         }
     },
 
-    getProjects(nextProjects) {
-        this.usersRef.on('value', (snap) => {
-            const projects = snap.val();
+    componentWillMount() {
+        const { uid } = this.props.user;
 
-            if (!isEqual(nextProjects, projects)) {
-                const roles = uniq(map(projects, 'role'));
-                const activeTab = roles.length ? roles[0] : 'owner';
-                this.props.onUpdate({ activeTab, projects, isLoading: false });
+        this.usersRef = firebase.database().ref('users');
+
+        if (uid) {
+            this.getProjects(uid);
+        }
+    },
+
+    getProjects(uid) {
+        this.usersRef.child(`${uid}/projects`).on('value', (snap) => {
+            const projects = snap.val();
+            let roles = [];
+
+            if (snap.exists()) {
+                roles = uniq(map(projects, 'role'));
             }
+
+            const activeTab = roles.length ? roles[0] : 'owner';
+
+            this.props.onUpdate({
+                activeTab,
+                isLoading: false,
+                projects
+            });
         });
     },
 
