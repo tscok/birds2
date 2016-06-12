@@ -12,6 +12,10 @@
         margin: 0 3px;
         background-color: #ddd;
     }
+
+    &--white > div {
+        background-color: #fff;
+    }
 }
 
 /* Circle
@@ -20,7 +24,12 @@
     margin: 0;
     width: 20px;
     height: 20px;
-}
-.sk-circle .sk-child:before {
-    background-color: #ccc;
+
+    .sk-child:before {
+        background-color: #ccc;
+    }
+
+    &--white .sk-child:before {
+        background-color: #fff;
+    }
 }
