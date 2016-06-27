@@ -5,17 +5,17 @@ const defaultState = {
     data: {
         dateEnd: '',
         dateStart: '',
-        isPublic: true,
-        title: ''
+        title: '',
+        type: 'Public'
     },
-    errorMessage: '',
-    isSubmitting: false,
-    isSuccess: false,
-    isValid: {
+    error: {
         dateEnd: false,
         dateStart: false,
         title: false
     },
+    errorMessage: '',
+    isSubmitting: false,
+    isSuccess: false,
     pid: '',
     types: ['Public', 'Private']
 };
@@ -24,31 +24,30 @@ const defaultState = {
 /**
  * Action types
  */
-const CREATE_UPDATE = 'CREATE_UPDATE';
-const CREATE_RESET = 'CREATE_RESET';
-const CREATE_PRIVACY = 'CREATE_PRIVACY';
+const PROJECT_ERRORS = 'PROJECT_ERRORS';
+const PROJECT_RESET = 'PROJECT_RESET';
+const PROJECT_UPDATE = 'PROJECT_UPDATE';
 
 
 /**
  * Actions creators
  */
-export const createUpdate = (field, payload) => {
+export const projectErrors = (payload) => {
     return {
-        type: CREATE_UPDATE,
-        field,
+        type: PROJECT_ERRORS,
         payload
+    }
+}
+
+export const projectReset = () => {
+    return {
+        type: PROJECT_RESET
     };
 };
 
-export const createReset = () => {
+export const projectUpdate = (payload) => {
     return {
-        type: CREATE_RESET
-    };
-};
-
-export const createPrivacy = (payload) => {
-    return {
-        type: CREATE_PRIVACY,
+        type: PROJECT_UPDATE,
         payload
     };
 };
@@ -59,13 +58,7 @@ export const createPrivacy = (payload) => {
  */
 export const reducer = (state = defaultState, action) => {
     switch (action.type) {
-        case CREATE_UPDATE:
-            return {
-                ...state,
-                [action.field]: action.payload
-            };
-
-        case CREATE_PRIVACY:
+        case PROJECT_UPDATE:
             return {
                 ...state,
                 data: {
@@ -74,7 +67,16 @@ export const reducer = (state = defaultState, action) => {
                 }
             };
 
-        case CREATE_RESET:
+        case PROJECT_ERRORS:
+            return {
+                ...state,
+                error: {
+                    ...state.data,
+                    ...action.payload
+                }
+            };
+
+        case PROJECT_RESET:
             state = defaultState;
             return { ...state };
 

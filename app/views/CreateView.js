@@ -11,7 +11,7 @@ import { isDate, isEmpty } from 'app/utils';
 
 import { ButtonToggle, InputField, ModalContainer, ProjectSuccess, ViewHeader } from 'app/components';
 
-import { createUpdate, createReset, createPrivacy } from 'app/redux/create';
+import { projectErrors, projectReset, projectUpdate } from 'app/redux/create';
 
 
 const ERROR_DATES = 'Please make sure dates are in order.';
@@ -31,45 +31,45 @@ const CreateView = React.createClass({
             isPublic: PropTypes.bool,
             title: PropTypes.string
         }).isRequired,
-        errorMessage: PropTypes.string.isRequired,
-        isSubmitting: PropTypes.bool.isRequired,
-        isSuccess: PropTypes.bool.isRequired,
-        isValid: PropTypes.shape({
+        error: PropTypes.shape({
             dateEnd: PropTypes.bool.isRequired,
             dateStart: PropTypes.bool.isRequired,
             title: PropTypes.bool.isRequired
         }).isRequired,
-        onPrivacy: PropTypes.func.isRequired,
+        errorMessage: PropTypes.string.isRequired,
+        isSubmitting: PropTypes.bool.isRequired,
+        isSuccess: PropTypes.bool.isRequired,
+        onError: PropTypes.func.isRequired,
+        onInput: PropTypes.func.isRequired,
         onReset: PropTypes.func.isRequired,
-        onUpdate: PropTypes.func.isRequired,
-        pid: PropTypes.string,
+        onToggle: PropTypes.func.isRequired,
         privacyTypes: PropTypes.array.isRequired,
         user: PropTypes.shape({
             uid: PropTypes.string,
             name: PropTypes.string,
             email: PropTypes.string,
             photoURL: PropTypes.string
-        }).isRequired
+        }).isRequired,
+        // ...
+        pid: PropTypes.string
     },
 
-    isValidInput() {
-        const { isValid } = this.props;
-        return Object.keys(omitBy(isValid, (value) => value)).length === 0;
-    },
+    // isValidInput() {
+    //     const { error } = this.props;
+    //     return Object.keys(omitBy(error, (value) => value)).length === 0;
+    // },
 
-    handleInputChange(evt) {
+    handleInput(evt) {
         const { name, value } = evt.target;
-        const { isValid, data } = this.props;
+        this.props.onInput(name, value);
 
         if (name === 'title') {
-            data.title = value;
-            isValid.title = !isEmpty(value);
+            // this.props.onError('title', isEmpty(value));
+            console.log('title', isEmpty(value));
         } else {
-            data[name] = value;
-            isValid[name] = isDate(value);
+            // this.props.onError(name, !isDate(value));
+            console.log(name, isDate(value));
         }
-
-        this.props.onUpdate('data', data);
     },
 
     handleSubmit(evt) {
@@ -78,7 +78,8 @@ const CreateView = React.createClass({
         const { data } = this.props;
 
         if (data.dateStart >= data.dateEnd) {
-            this.props.onUpdate('errorMessage', ERROR_DATES);
+            console.log('display date error message…');
+            // this.props.onUpdate('errorMessage', ERROR_DATES);
             return;
         }
 
@@ -116,8 +117,8 @@ const CreateView = React.createClass({
         window.scrollTo(0,0);
     },
 
-    handleToggle() {
-        this.props.onPrivacy(this.props.data.isPublic);
+    handleToggle(type) {
+        this.props.onToggle(type);
     },
     
     renderSuccess() {
@@ -143,7 +144,7 @@ const CreateView = React.createClass({
     },
 
     renderPrivacyInfo() {
-        const { isPublic } = this.props.data;
+        const isPublic = this.props.data.type === 'Public';
         return (
             <p className={ block('body') }>{ isPublic ? INFO_PUBLIC : INFO_PRIVATE }</p>
         );
@@ -159,37 +160,36 @@ const CreateView = React.createClass({
                     <label>Project Name</label>
                     <InputField
                         name="title"
-                        onBlur={ this.handleInputBlur }
-                        onChange={ this.handleInputChange }
+                        onChange={ this.handleInput }
                         value={ data.title } />
                 </div>
                 <div className="form__group">
                     <label>Start Date<span className="label-body">- YYYYMMDD</span></label>
                     <InputField
+                        maxLength="8"
                         name="dateStart"
-                        onBlur={ this.handleInputBlur }
-                        onChange={ this.handleInputChange }
+                        onChange={ this.handleInput }
                         value={ data.dateStart } />
                 </div>
                 <div className="form__group">
                     <label>End Date<span className="label-body">- YYYYMMDD</span></label>
                     <InputField
+                        maxLength="8"
                         name="dateEnd"
-                        onBlur={ this.handleInputBlur }
-                        onChange={ this.handleInputChange }
+                        onChange={ this.handleInput }
                         value={ data.dateEnd } />
                 </div>
                 <div className={ block('privacy') }>
                     <ButtonToggle
+                        active={ data.type }
                         className={ block('toggle') }
-                        isActive={ data.isPublic }
                         options={ this.props.privacyTypes }
                         onClick={ this.handleToggle } />
                     { this.renderPrivacyInfo() }
                 </div>
                 { this.renderErrorMessage() }
                 <div className={ block('actions') }>
-                    <button type="submit" className={ buttonClass } disabled={ !this.isValidInput() }>Create Project</button>
+                    <button type="submit" className={ buttonClass }>Create Project</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
                 </div>
             </form>
@@ -213,10 +213,10 @@ const CreateView = React.createClass({
 const mapStateToProps = (state) => {
     return {
         data: state.create.data,
+        error: state.create.error,
         errorMessage: state.create.errorMessage,
         isSubmitting: state.create.isSubmitting,
         isSuccess: state.create.isSuccess,
-        isValid: state.create.isValid,
         pid: state.create.projectId,
         privacyTypes: state.create.types,
         user: state.user
@@ -225,9 +225,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onUpdate: (field, value) => dispatch(createUpdate(field, value)),
-        onReset: () => dispatch(createReset()),
-        onPrivacy: (value) => dispatch(createPrivacy({ isPublic: !value }))
+        onError: (field, value) => dispatch(projectErrors({ [field]: value })),
+        onInput: (field, value) => dispatch(projectUpdate({ [field]: value })),
+        onReset: () => dispatch(projectReset()),
+        onToggle: (type) => dispatch(projectUpdate({ type }))
     };
 };
 
