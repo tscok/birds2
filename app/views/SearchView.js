@@ -42,10 +42,23 @@ const SearchView = React.createClass({
         this.projectsRef.off('value');
     },
 
+    isNotNull(str) {
+        return !!str && str.trim() !== '';
+    },
+
     handleInput(evt) {
         const keyword = evt.target.value;
-        this.props.onUpdate({ keyword, isSearching: !this.props.isSearching });
-        debouncer(this.handleFiltering);
+        const isSearching = this.isNotNull(keyword);
+
+        let { results } = this.props;
+
+        if (this.isNotNull(keyword)) {
+            debouncer(this.handleFiltering);
+        } else {
+            results.length = 0;
+        }
+
+        this.props.onUpdate({ keyword, results, isSearching });
     },
 
     handleFiltering() {

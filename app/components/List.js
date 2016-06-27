@@ -16,7 +16,7 @@ const List = React.createClass({
             <this.props.item
                 index={ index }
                 item={ item }
-                key={ index } />
+                key={ item.pid } />
         );
     },
 

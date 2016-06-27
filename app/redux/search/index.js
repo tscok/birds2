@@ -13,6 +13,7 @@ const searchState = {
  * Action types
  */
 const SEARCH_UPDATE = 'SEARCH_UPDATE';
+const RESULT_UPDATE = 'RESULT_UPDATE';
 
 
 /**
@@ -25,6 +26,14 @@ export const searchUpdate = (payload) => {
     };
 };
 
+export const resultUpdate = (index, role) => {
+    return {
+        type: RESULT_UPDATE,
+        index,
+        role
+    }
+}
+
 
 /**
  * Reducer
@@ -35,6 +44,20 @@ export const reducer = (state = searchState, action) => {
             return {
                 ...state,
                 ...action.payload
+            };
+
+        case RESULT_UPDATE:
+            return {
+                ...state,
+                results: state.results.map((result, index) => {
+                    if (index === action.index) {
+                        return {
+                            ...result,
+                            role: action.role
+                        };
+                    }
+                    return result;
+                })
             };
 
         default:
