@@ -7,7 +7,7 @@ const block = purebem.of('button-toggle');
 const ButtonToggle = React.createClass({
 
     propTypes: {
-        isActive: PropTypes.bool.isRequired,
+        active: PropTypes.string.isRequired,
         onClick: PropTypes.func.isRequired,
         options: PropTypes.array.isRequired,
         // ...
@@ -20,31 +20,39 @@ const ButtonToggle = React.createClass({
         };
     },
 
-    onKeyDown(evt) {
-        switch (evt.which) {
-            case 13: // enter
-            case 32: // space
-                evt.preventDefault();
-                this.props.onClick();
+    onKeyDown(option) {
+        return (evt) => {
+            switch (evt.which) {
+                case 13: // enter
+                case 32: // space
+                    evt.preventDefault();
+                    this.props.onClick(option);
+            }
         }
     },
 
-    renderOption(option, index) {
-        const type = index === 0 ? 'on' : 'off';
-        const state = this.props.isActive ? 'on' : 'off';
-        const active = type === state;
+    renderOption(option, index, options) {
+        const active = option === this.props.active;
+        const first = index === 0;
+        const last = index === options.length - 1;
 
         return (
-            <div key={ index } className={ block('option', { type, active }) }>{ option }</div>
+            <div
+                key={ index }
+                className={ block('option', { first, last, active }) }
+                onClick={ () => this.props.onClick(option) }
+                onKeyDown={ this.onKeyDown(option) }
+                tabIndex="0">
+                { option }
+            </div>
         );
     },
 
     render() {
-        const active = this.props.isActive;
-        const classNames = purebem.many(block({ active }), this.props.className);
+        const classNames = purebem.many(block(), this.props.className);
 
         return (
-            <div className={ classNames } onClick={ this.props.onClick } onKeyDown={ this.onKeyDown } tabIndex="0">
+            <div className={ classNames }>
                 {
                     [].map.call(this.props.options, this.renderOption)
                 }

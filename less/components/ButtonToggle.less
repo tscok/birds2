@@ -1,33 +1,41 @@
 .button-toggle {
     display: flex;
-    overflow: hidden;
-    border-radius: 5px;
-    border: 1px solid @color-graye;
-    background-color: @color-graye;
     cursor: pointer;
+    .border-radius(5px);
 
     &__option {
         flex: 1;
         position: relative;
-        color: @color-gray8;
         text-align: center;
         line-height: 50px;
-        border: 1px solid transparent;
-        .border-radius(5px);
+        height: 50px;
+        background-color: @color-graye;
+        border: 1px solid @color-graye;
         .user-select;
+
+        &--first {
+            .border-radius(5px 0 0 5px);
+        }
+        &--last {
+            .border-radius(0 5px 5px 0);
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &:hover,
+        &:focus {
+            border-color: @color-gray9;
+        }
 
         &--active {
             color: inherit;
             background-color: @color-white;
+
+            &:focus {
+                border-color: @color-interactive;
+            }
         }
-    }
-
-    &:focus {
-        outline: none;
-    }
-
-    &:focus &__option--active,
-    &:hover &__option--active {
-        border-color: @color-interactive;
     }
 }
