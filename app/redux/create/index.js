@@ -17,7 +17,12 @@ const defaultState = {
     isSubmitting: false,
     isSuccess: false,
     pid: '',
-    types: ['Public', 'Private']
+    types: ['Public', 'Private'],
+    validated: {
+        dateEnd: false,
+        dateStart: false,
+        title: false
+    }
 };
 
 
@@ -27,6 +32,7 @@ const defaultState = {
 const PROJECT_ERRORS = 'PROJECT_ERRORS';
 const PROJECT_RESET = 'PROJECT_RESET';
 const PROJECT_UPDATE = 'PROJECT_UPDATE';
+const PROJECT_VALIDATION = 'PROJECT_VALIDATION';
 
 
 /**
@@ -52,6 +58,13 @@ export const projectUpdate = (payload) => {
     };
 };
 
+export const projectValidation = (payload) => {
+    return {
+        type: PROJECT_VALIDATION,
+        payload
+    };
+};
+
 
 /**
  * Reducer
@@ -72,6 +85,15 @@ export const reducer = (state = defaultState, action) => {
                 ...state,
                 error: {
                     ...state.data,
+                    ...action.payload
+                }
+            };
+
+        case PROJECT_VALIDATION:
+            return {
+                ...state,
+                validated: {
+                    ...state.validated,
                     ...action.payload
                 }
             };

@@ -7,11 +7,11 @@ import { firebase, getUser } from 'app/firebase';
 
 import { cloneDeep, omit, omitBy } from 'app/lodash';
 
-import { isDate, isEmpty } from 'app/utils';
+import { isDate, isEmpty, isString } from 'app/utils';
 
-import { ButtonToggle, InputField, ModalContainer, ProjectSuccess, ViewHeader } from 'app/components';
+import { ButtonToggle, InputField, Overlay, ProjectSuccess, ViewHeader } from 'app/components';
 
-import { projectErrors, projectReset, projectUpdate } from 'app/redux/create';
+import { projectErrors, projectReset, projectUpdate, projectValidation } from 'app/redux/create';
 
 
 const ERROR_DATES = 'Please make sure dates are in order.';
@@ -50,26 +50,26 @@ const CreateView = React.createClass({
             email: PropTypes.string,
             photoURL: PropTypes.string
         }).isRequired,
+        validated: PropTypes.shape({
+            dateEnd: PropTypes.bool.isRequired,
+            dateStart: PropTypes.bool.isRequired,
+            title: PropTypes.bool.isRequired
+        }).isRequired,
         // ...
         pid: PropTypes.string
     },
 
-    // isValidInput() {
-    //     const { error } = this.props;
-    //     return Object.keys(omitBy(error, (value) => value)).length === 0;
-    // },
+    isFormInvalid() {
+        const { validated } = this.props;
+        const invalidated = omitBy(validated, (valid) => valid);
+        return Object.keys(invalidated).length !== 0;
+    },
 
     handleInput(evt) {
         const { name, value } = evt.target;
+        const isValid = name === 'title' ? isString(value) : isDate(value);
         this.props.onInput(name, value);
-
-        if (name === 'title') {
-            // this.props.onError('title', isEmpty(value));
-            console.log('title', isEmpty(value));
-        } else {
-            // this.props.onError(name, !isDate(value));
-            console.log(name, isDate(value));
-        }
+        this.props.onValidation(name, isValid);
     },
 
     handleSubmit(evt) {
@@ -112,7 +112,7 @@ const CreateView = React.createClass({
         this.props.onReset();
     },
 
-    handleModalClose() {
+    handleOverlayClose() {
         this.handleReset();
         window.scrollTo(0,0);
     },
@@ -126,11 +126,11 @@ const CreateView = React.createClass({
             return null;
         }
         return (
-            <ModalContainer onClose={ this.handleModalClose }>
+            <Overlay onClose={ this.handleOverlayClose }>
                 <ProjectSuccess
                     projectId={ this.props.pid }
-                    onClose={ this.handleModalClose } />
-            </ModalContainer>
+                    onClose={ this.handleOverlayClose } />
+            </Overlay>
         );
     },
 
@@ -189,7 +189,7 @@ const CreateView = React.createClass({
                 </div>
                 { this.renderErrorMessage() }
                 <div className={ block('actions') }>
-                    <button type="submit" className={ buttonClass }>Create Project</button>
+                    <button type="submit" className={ buttonClass } disabled={ this.isFormInvalid() }>Create Project</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
                 </div>
             </form>
@@ -219,7 +219,8 @@ const mapStateToProps = (state) => {
         isSuccess: state.create.isSuccess,
         pid: state.create.projectId,
         privacyTypes: state.create.types,
-        user: state.user
+        user: state.user,
+        validated: state.create.validated
     };
 };
 
@@ -228,7 +229,8 @@ const mapDispatchToProps = (dispatch) => {
         onError: (field, value) => dispatch(projectErrors({ [field]: value })),
         onInput: (field, value) => dispatch(projectUpdate({ [field]: value })),
         onReset: () => dispatch(projectReset()),
-        onToggle: (type) => dispatch(projectUpdate({ type }))
+        onToggle: (type) => dispatch(projectUpdate({ type })),
+        onValidation: (field, value) => dispatch(projectValidation({ [field]: value }))
     };
 };
 
