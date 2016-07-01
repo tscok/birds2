@@ -12,7 +12,7 @@ import { ClickOutside } from 'app/components';
 
 const block = purebem.of('modal-container');
 
-const ModalContainer = React.createClass({
+const Overlay = React.createClass({
 
     propTypes: {
         children: PropTypes.node.isRequired,
@@ -48,4 +48,4 @@ const ModalContainer = React.createClass({
 
 });
 
-export default ModalContainer;
+export default Overlay;

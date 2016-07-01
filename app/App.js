@@ -5,7 +5,6 @@ import purebem from 'purebem';
 import { firebase, getUser } from 'app/firebase';
 
 import { LoginView, Navigation } from './views';
-import { ModalContainer } from './components';
 
 import { userUpdate } from 'app/redux/user';
 

@@ -7,8 +7,8 @@ import Divider from './components/Divider';
 import InputField from './components/InputField';
 import JoinButton from './components/JoinButton';
 import List from './components/List';
-import ModalContainer from './components/ModalContainer';
 import NavLink from './components/NavLink';
+import Overlay from './components/Overlay';
 import PendingCount from './components/PendingCount';
 import ProjectListItem from './components/ProjectListItem';
 import ProjectMap from './components/ProjectMap';
@@ -33,8 +33,8 @@ export {
     InputField,
     JoinButton,
     List,
-    ModalContainer,
     NavLink,
+    Overlay,
     PendingCount,
     ProjectListItem,
     ProjectMap,
