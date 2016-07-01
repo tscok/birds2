@@ -149,6 +149,7 @@ const LoginView = React.createClass({
         return (
             <div className={ block() }>
                 { this.renderPasswordLogin() }
+                <div className={ block('divider') } />
                 { this.renderFacebookLogin() }
             </div>
         );

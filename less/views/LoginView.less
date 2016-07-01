@@ -1,9 +1,6 @@
 .login-view {
-
-    .content-box {
-        max-width: 440px;
-        margin: 0 auto;
-    }
+    max-width: 400px;
+    margin: 100px auto 0;
 
     .spinner {
         margin: 0 auto;
@@ -20,6 +17,26 @@
             &:hover, &:focus, &:active {
                 background-color: darken(@color-facebook, 10%);
             }
+        }
+    }
+
+    &__divider {
+        text-align: center;
+        &:before {
+            content: "";
+            height: 1px;
+            display: block;
+            background-color: @color-grayd;
+            position: relative;
+            top: 14px;
+            z-index: -1;
+        }
+        &:after {
+            content: "or";
+            padding: 5px 10px;
+            color: @color-gray9;
+            font-style: italic;
+            background-color: @color-grayf9;
         }
     }
 
