@@ -41,15 +41,32 @@ const ProfileView = React.createClass({
 
     componentWillMount() {
         const { uid } = this.props.user;
-
         this.usersRef = firebase.database().ref('users');
+        this.updateUser(uid);
+        this.getProjects(uid);
+    },
 
-        if (uid) {
-            this.getProjects(uid);
+    updateUser(uid) {
+        if (!uid) {
+            return;
         }
+        const { user } = this.props;
+        const userRef = this.usersRef.child(`${uid}/data`);
+        userRef.once('value', (snap) => {
+            if (!snap.exists()) {
+                userRef.update({
+                    email: user.email,
+                    name: user.name,
+                    photoURL: user.photoURL
+                });
+            }
+        });
     },
 
     getProjects(uid) {
+        if (!uid) {
+            return;
+        }
         this.usersRef.child(`${uid}/projects`).on('value', (snap) => {
             const projects = snap.val();
             let roles = [];
