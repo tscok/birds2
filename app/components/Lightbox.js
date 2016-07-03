@@ -10,9 +10,9 @@ import {
 import { ClickOutside } from 'app/components';
 
 
-const block = purebem.of('modal-container');
+const block = purebem.of('lightbox');
 
-const Overlay = React.createClass({
+const Lightbox = React.createClass({
 
     propTypes: {
         children: PropTypes.node.isRequired,
@@ -48,4 +48,4 @@ const Overlay = React.createClass({
 
 });
 
-export default Overlay;
+export default Lightbox;

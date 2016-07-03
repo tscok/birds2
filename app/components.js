@@ -6,9 +6,9 @@ import ContentBox from './components/ContentBox';
 import Divider from './components/Divider';
 import InputField from './components/InputField';
 import JoinButton from './components/JoinButton';
+import Lightbox from './components/Lightbox';
 import List from './components/List';
 import NavLink from './components/NavLink';
-import Overlay from './components/Overlay';
 import PendingCount from './components/PendingCount';
 import ProjectListItem from './components/ProjectListItem';
 import ProjectMap from './components/ProjectMap';
@@ -32,9 +32,9 @@ export {
     Divider,
     InputField,
     JoinButton,
+    Lightbox,
     List,
     NavLink,
-    Overlay,
     PendingCount,
     ProjectListItem,
     ProjectMap,
