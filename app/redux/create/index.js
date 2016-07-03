@@ -3,7 +3,6 @@
  */
 const defaultState = {
     error: '',
-    isSubmitting: false,
     isValid: {
         dateEnd: false,
         dateStart: false,
@@ -26,7 +25,6 @@ const defaultState = {
 const ERROR = 'ERROR';
 const RESET = 'RESET';
 const UPDATE = 'UPDATE';
-const SUCCESS = 'SUCCESS';
 
 
 /**

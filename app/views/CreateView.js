@@ -24,7 +24,6 @@ const CreateView = React.createClass({
 
     propTypes: {
         error: PropTypes.string.isRequired,
-        isSubmitting: PropTypes.bool.isRequired,
         isValid: PropTypes.shape({
             dateEnd: PropTypes.bool.isRequired,
             dateStart: PropTypes.bool.isRequired,
@@ -201,7 +200,6 @@ const CreateView = React.createClass({
 const mapStateToProps = (state) => {
     return {
         error: state.create.error,
-        isSubmitting: state.create.isSubmitting,
         isValid: state.create.isValid,
         project: state.create.project,
         types: state.create.types,
