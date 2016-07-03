@@ -3,19 +3,17 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 import moment from 'moment';
 
-import { firebase, getUser } from 'app/firebase';
+import { firebase } from 'app/firebase';
+import { omit, omitBy } from 'app/lodash';
+import { isDate, isString } from 'app/utils';
 
-import { cloneDeep, omit, omitBy } from 'app/lodash';
+import { ButtonToggle, InputField, Lightbox, ProjectSuccess, ViewHeader } from 'app/components';
 
-import { isDate, isEmpty, isString } from 'app/utils';
-
-import { ButtonToggle, InputField, Overlay, ProjectSuccess, ViewHeader } from 'app/components';
-
-import { projectErrors, projectReset, projectUpdate, projectValidation } from 'app/redux/create';
+import { error, reset, update } from 'app/redux/create';
 
 
 const ERROR_DATES = 'Please make sure dates are in order.';
-const ERROR_WRITE = 'Sorry! The project could not be created.'
+const ERROR_WRITE = 'Sorry! The project could not be created. Please try again later.'
 
 const INFO_PUBLIC = 'Public projects aim at collaboration. Users can find, and may request to join, your project.';
 const INFO_PRIVATE = 'Private projects aim at privacy. Users can not find, nor request to join, your project.';
@@ -25,86 +23,76 @@ const block = purebem.of('create-view');
 const CreateView = React.createClass({
 
     propTypes: {
-        data: PropTypes.shape({
-            dateEnd: PropTypes.string,
-            dateStart: PropTypes.string,
-            isPublic: PropTypes.bool,
-            title: PropTypes.string
-        }).isRequired,
-        error: PropTypes.shape({
+        error: PropTypes.string.isRequired,
+        isSubmitting: PropTypes.bool.isRequired,
+        isValid: PropTypes.shape({
             dateEnd: PropTypes.bool.isRequired,
             dateStart: PropTypes.bool.isRequired,
             title: PropTypes.bool.isRequired
         }).isRequired,
-        errorMessage: PropTypes.string.isRequired,
-        isSubmitting: PropTypes.bool.isRequired,
-        isSuccess: PropTypes.bool.isRequired,
-        onError: PropTypes.func.isRequired,
+        project: PropTypes.shape({
+            dateEnd: PropTypes.string,
+            dateStart: PropTypes.string,
+            isPublic: PropTypes.bool,
+            title: PropTypes.string,
+            id: PropTypes.string
+        }).isRequired,
+        types: PropTypes.array.isRequired,
+        // ...
         onInput: PropTypes.func.isRequired,
         onReset: PropTypes.func.isRequired,
         onToggle: PropTypes.func.isRequired,
-        privacyTypes: PropTypes.array.isRequired,
+        // ...
         user: PropTypes.shape({
             uid: PropTypes.string,
             name: PropTypes.string,
             email: PropTypes.string,
             photoURL: PropTypes.string
-        }).isRequired,
-        validated: PropTypes.shape({
-            dateEnd: PropTypes.bool.isRequired,
-            dateStart: PropTypes.bool.isRequired,
-            title: PropTypes.bool.isRequired
-        }).isRequired,
-        // ...
-        pid: PropTypes.string
+        }).isRequired
     },
 
     isFormInvalid() {
-        const { validated } = this.props;
-        const invalidated = omitBy(validated, (valid) => valid);
-        return Object.keys(invalidated).length !== 0;
+        const { isValid } = this.props;
+        const invalid = omitBy(isValid, (valid) => valid);
+        return Object.keys(invalid).length !== 0;
     },
 
     handleInput(evt) {
         const { name, value } = evt.target;
         const isValid = name === 'title' ? isString(value) : isDate(value);
-        this.props.onInput(name, value);
-        this.props.onValidation(name, isValid);
+        this.props.onInput(name, value, isValid);
     },
 
     handleSubmit(evt) {
         evt.preventDefault();
 
-        const { data } = this.props;
-
-        if (data.dateStart >= data.dateEnd) {
-            console.log('display date error message…');
-            // this.props.onUpdate('errorMessage', ERROR_DATES);
+        if (this.props.project.dateStart >= this.props.project.dateEnd) {
+            this.props.onError(ERROR_DATES);
             return;
         }
 
-        console.log('handleSubmit', data);
+        const projectRef = firebase.database().ref('projects').push();
+        const { user } = this.props;
+        const { dateStart, dateEnd } = this.props.project;
+        const project = {
+            ...omit(this.props.project, ['dateStart', 'dateEnd']),
+            dates: {
+                begin: moment(dateStart, 'YYYYMMDD').unix(),
+                expire: moment(dateEnd, 'YYYYMMDD').unix(),
+                timestamp: moment().unix()
+            },
+            id: projectRef.key,
+            owner: user.name,
+            ownerId: user.uid
+        };
 
-        // const projectRef = firebase.database().child('projects').push();
-
-        // project.pid = projectRef.key();
-        // project.uid = this.userData.uid;
-        // project.uname = this.userData.uname;
-
-        // projectRef.set(project).then(() => {
-        //     const { pid } = project;
-        //     const { uid } = this.userData;
-
-        //     project.role = 'owner';
-
-        //     firebase.database().child(`members/${pid}/${uid}`).set(this.userData);
-        //     firebase.database().child(`users/${uid}/projects/${pid}`).set(project);
-
-        //     this.setState({ showSuccess: true, projectId: pid });
-        // },
-        // (error) => {
-        //     this.props.onUpdate('errorMessage', error.message);
-        // });
+        projectRef.set(project).then(() => {
+            firebase.database().ref(`groups/${project.id}/owner/${user.uid}`).set(true);
+            firebase.database().ref(`users/${user.uid}/owner/${project.id}`).set(true);
+            this.props.onSuccess(project.id);
+        }, (error) => {
+            this.props.onError(ERROR_WRITE);
+        });
     },
 
     handleReset() {
@@ -112,7 +100,7 @@ const CreateView = React.createClass({
         this.props.onReset();
     },
 
-    handleOverlayClose() {
+    handleLightboxClose() {
         this.handleReset();
         window.scrollTo(0,0);
     },
@@ -122,29 +110,29 @@ const CreateView = React.createClass({
     },
     
     renderSuccess() {
-        if (!this.props.showSuccess) {
+        if (this.props.project.id === '') {
             return null;
         }
         return (
-            <Overlay onClose={ this.handleOverlayClose }>
+            <Lightbox onClose={ this.handleLightboxClose }>
                 <ProjectSuccess
-                    projectId={ this.props.pid }
-                    onClose={ this.handleOverlayClose } />
-            </Overlay>
+                    projectId={ this.props.project.id }
+                    onClose={ this.handleLightboxClose } />
+            </Lightbox>
         );
     },
 
     renderErrorMessage() {
-        if (this.props.errorMessage === '') {
+        if (this.props.error === '') {
             return null;
         }
         return (
-            <p className={ block('body', ['error']) }>{ this.props.errorMessage }</p>
+            <p className={ block('body', ['error']) }>{ this.props.error }</p>
         );
     },
 
     renderPrivacyInfo() {
-        const isPublic = this.props.data.type === 'Public';
+        const isPublic = this.props.project.type === 'Public';
         return (
             <p className={ block('body') }>{ isPublic ? INFO_PUBLIC : INFO_PRIVATE }</p>
         );
@@ -152,7 +140,7 @@ const CreateView = React.createClass({
 
     renderForm() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
-        const { data } = this.props;
+        const { project } = this.props;
 
         return (
             <form className={ block('form') } onSubmit={ this.handleSubmit } ref={ (form) => this.form = form }>
@@ -161,7 +149,7 @@ const CreateView = React.createClass({
                     <InputField
                         name="title"
                         onChange={ this.handleInput }
-                        value={ data.title } />
+                        value={ project.title } />
                 </div>
                 <div className="form__group">
                     <label>Start Date<span className="label-body">- YYYYMMDD</span></label>
@@ -169,7 +157,7 @@ const CreateView = React.createClass({
                         maxLength="8"
                         name="dateStart"
                         onChange={ this.handleInput }
-                        value={ data.dateStart } />
+                        value={ project.dateStart } />
                 </div>
                 <div className="form__group">
                     <label>End Date<span className="label-body">- YYYYMMDD</span></label>
@@ -177,13 +165,13 @@ const CreateView = React.createClass({
                         maxLength="8"
                         name="dateEnd"
                         onChange={ this.handleInput }
-                        value={ data.dateEnd } />
+                        value={ project.dateEnd } />
                 </div>
                 <div className={ block('privacy') }>
                     <ButtonToggle
-                        active={ data.type }
+                        active={ project.type }
                         className={ block('toggle') }
-                        options={ this.props.privacyTypes }
+                        options={ this.props.types }
                         onClick={ this.handleToggle } />
                     { this.renderPrivacyInfo() }
                 </div>
@@ -212,25 +200,26 @@ const CreateView = React.createClass({
 
 const mapStateToProps = (state) => {
     return {
-        data: state.create.data,
         error: state.create.error,
-        errorMessage: state.create.errorMessage,
         isSubmitting: state.create.isSubmitting,
-        isSuccess: state.create.isSuccess,
-        pid: state.create.projectId,
-        privacyTypes: state.create.types,
-        user: state.user,
-        validated: state.create.validated
+        isValid: state.create.isValid,
+        project: state.create.project,
+        types: state.create.types,
+        user: state.user
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onError: (field, value) => dispatch(projectErrors({ [field]: value })),
-        onInput: (field, value) => dispatch(projectUpdate({ [field]: value })),
-        onReset: () => dispatch(projectReset()),
-        onToggle: (type) => dispatch(projectUpdate({ type })),
-        onValidation: (field, value) => dispatch(projectValidation({ [field]: value }))
+        onError: (message) => dispatch(error(message)),
+        onInput: (field, value, isValid) => {
+            dispatch(update('project', { [field]: value }));
+            dispatch(update('isValid', { [field]: isValid }));
+            dispatch(error());
+        },
+        onReset: () => dispatch(reset()),
+        onSuccess: (id) => dispatch(update('project', { id })),
+        onToggle: (type) => dispatch(update('project', { type }))
     };
 };
 
