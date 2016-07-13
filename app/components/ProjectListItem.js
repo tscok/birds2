@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 import moment from 'moment';
 
-import { NavLink, PendingCount } from 'app/components';
+import { capitalize } from 'app/utils';
 
 
 const block = purebem.of('project-list-item');
@@ -14,8 +14,7 @@ const ProjectListItem = React.createClass({
     },
 
     propTypes: {
-        item: PropTypes.object.isRequired,
-        type: PropTypes.string.isRequired
+        item: PropTypes.object.isRequired
     },
 
     handleClick() {
@@ -23,8 +22,8 @@ const ProjectListItem = React.createClass({
     },
 
     getOwner() {
-        const { item, type } = this.props;
-        const owner = type === 'owner' ? 'you' : item.owner;
+        const { item } = this.props;
+        const owner = item.role === 'owner' ? 'you' : item.owner;
 
         return (
             <span className={ block('owner') }>{ owner }</span>
@@ -32,17 +31,23 @@ const ProjectListItem = React.createClass({
     },
 
     render() {
-        const { item, type } = this.props;
+        const { item } = this.props;
         const day = moment.unix(item.dates.timestamp);
         const date = day.format('MMMM Do, YYYY');
+        const role = item.role;
 
         return (
-            <div className={ block() } onClick={ this.handleClick }>
-                <div className={ block('title', { type }) }>
-                    { item.title }
+            <div className={ block({ role }) } onClick={ this.handleClick }>
+                <div className={ block('details') }>
+                    <div className={ block('title') }>
+                        { item.title }
+                    </div>
+                    <div className={ block('body') }>
+                        Created by { this.getOwner() } on { date }
+                    </div>
                 </div>
-                <div className={ block('body') }>
-                    Created by { this.getOwner() } on { date }
+                <div className={ block('status', { role }) }>
+                    { capitalize(role) }
                 </div>
             </div>
         );

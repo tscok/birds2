@@ -1,14 +1,29 @@
 .project-list-item {
-    padding: 10px;
+    padding: 10px 15px;
+    margin-bottom: 1px;
     background: @color-white;
-    border-bottom: 1px solid @color-graye;
+    border-left: 4px solid @color-grayc;
+    box-shadow: 0 1px @color-graye;
+    display: flex;
+    flex-direction: column;
+
+    &--member {
+        border-color: @color-green;
+    }
+    &--pending {
+        border-color: @color-yellow;
+    }
+
+    &__details {
+        flex: 1;
+    }
 
     &__title {
         font-weight: bold;
         color: @color-gray5;
     }
 
-    &__body {
+    &__body, &__status {
         font-weight: 400;
         font-style: italic;
         font-size: 14px;
@@ -19,8 +34,28 @@
         color: @color-gray5;
     }
 
+    &__status {
+        display: flex;
+        align-items: center;
+
+        &--member {
+            color: @color-green;
+        }
+        &--pending {
+            color: @color-yellow;
+        }
+    }
+
     &:hover {
         cursor: pointer;
         background-color: @color-grayfc;
     }
 }
+
+.tablet-layout({
+
+    .project-list-item {
+        flex-direction: row;
+    }
+
+});
