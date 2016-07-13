@@ -32,19 +32,23 @@ const ProfileView = React.createClass({
 
     componentWillReceiveProps(nextProps) {
         if (!!nextProps.user.uid && nextProps.user.uid !== this.props.user.uid) {
-            this.init(nextProps.user.uid);
+            this.getProjects(nextProps.user.uid);
         }
     },
 
     componentWillMount() {
         const { uid } = this.props.user;
         if (uid) {
-            this.init(uid);
-            this.setUser();
+            this.getProjects(uid);
+            this.setUserProfile();
         }
     },
 
-    setUser() {
+    componentWillUnmount() {
+        this.projectsRef.off('value', this.handleSnap);
+    },
+
+    setUserProfile() {
         const { user } = this.props;
         const profileRef = firebase.database().ref(`users/${user.uid}/profile`);
         profileRef.once('value', (snap) => {
@@ -58,7 +62,7 @@ const ProfileView = React.createClass({
         });
     },
 
-    init(uid) {
+    getProjects(uid) {
         this.projectsRef = firebase.database().ref(`users/${uid}/projects`);
         this.projectsRef.on('value', this.handleSnap);
     },
