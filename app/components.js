@@ -10,7 +10,6 @@ import Lightbox from './components/Lightbox';
 import List from './components/List';
 import NavLink from './components/NavLink';
 import PendingCount from './components/PendingCount';
-import ProjectList from './components/ProjectList';
 import ProjectListItem from './components/ProjectListItem';
 import ProjectMap from './components/ProjectMap';
 import ProjectSites from './components/ProjectSites';
@@ -37,7 +36,6 @@ export {
     List,
     NavLink,
     PendingCount,
-    ProjectList,
     ProjectListItem,
     ProjectMap,
     ProjectSites,
