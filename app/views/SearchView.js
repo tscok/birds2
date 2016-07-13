@@ -2,17 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
 import promise from 'promise';
-import moment from 'moment';
 
 import { firebase, getUser } from 'app/firebase';
-
-import { filter } from 'app/lodash';
-
-import { debouncer, getStatus, isEmpty } from 'app/utils';
-
+import { map } from 'app/lodash';
+import { debouncer } from 'app/utils';
 import { InputField, List, SearchResultItem, ViewHeader } from 'app/components';
-
-import { searchUpdate } from 'app/redux/search';
+import { reset, update } from 'app/redux/search';
 
 
 const block = purebem.of('search-view');
@@ -20,69 +15,79 @@ const block = purebem.of('search-view');
 const SearchView = React.createClass({
 
     propTypes: {
-        data: PropTypes.object.isRequired,
         isSearching: PropTypes.bool.isRequired,
         keyword: PropTypes.string.isRequired,
+        onReset: PropTypes.func.isRequired,
+        onUpdate: PropTypes.func.isRequired,
         results: PropTypes.array.isRequired
     },
 
     componentDidMount() {
-        this.projectsRef = firebase.database().ref('projects').orderByChild('isPublic').equalTo(true);
-
-        this.projectsRef.on('value', (snap) => {
-            if (snap.numChildren() === 0) {
-                this.props.onUpdate({ data: {}, isSearching: false });
-                return;
-            }
-            this.props.onUpdate({ data: snap.val(), isSearching: false });
-        });
+        this.projectsRef = firebase.database().ref('projects').orderByChild('type').equalTo('Public');
     },
 
     componentWillUnmount() {
         this.projectsRef.off('value');
+        this.props.onReset();
     },
 
-    isNotNull(str) {
+    getResults() {
+        const { keyword } = this.props;
+        const projects = [];
+
+        new Promise((resolve, reject) => {
+            this.projectsRef.on('child_added', (snap) => {
+                const project = snap.val();
+                const isMatch = ['title', 'owner'].some((val) => this.isMatch(keyword, project[val]));
+                if (isMatch) {
+                    projects.push(project);
+                }
+                resolve(projects);
+            });
+        }).then(this.setResults);
+    },
+
+    setResults(results=[]) {
+        this.props.onUpdate({
+            isSearching: false,
+            results
+        });
+    },
+
+    isMatch(key, str) {
+        const pattern = new RegExp(`${key}`, 'i');
+        return pattern.test(str);
+    },
+
+    isString(str) {
         return !!str && str.trim() !== '';
     },
 
     handleInput(evt) {
-        const keyword = evt.target.value;
-        const isSearching = this.isNotNull(keyword);
+        let keyword = evt.target.value;
+        const isString = this.isString(keyword);
 
-        let { results } = this.props;
-
-        if (this.isNotNull(keyword)) {
-            debouncer(this.handleFiltering);
+        if (isString) {
+            debouncer(this.getResults);
         } else {
-            results.length = 0;
+            this.setResults();
         }
-
-        this.props.onUpdate({ keyword, results, isSearching });
-    },
-
-    handleFiltering() {
-        if (this.props.keyword === '') {
-            this.props.onUpdate({ results: [], isSearching: false });
-            return;
-        }
-
-        const { keyword, data } = this.props;
-        const pattern = new RegExp(keyword, 'i');
-        const results = filter(data, (project) => {
-            return pattern.test(project.title) || pattern.test(project.uname);
+        
+        this.props.onUpdate({
+            isSearching: isString,
+            keyword
         });
-        this.props.onUpdate({ results, isSearching: false });
     },
 
     renderResults() {
-        if (this.props.results.length === 0) {
+        const { results } = this.props;
+
+        if (!results.length) {
             return null;
         }
+        
         return (
-            <List
-                list={ this.props.results }
-                item={ SearchResultItem } />
+            <List list={ results } listItem={ SearchResultItem } />
         );
     },
 
@@ -108,7 +113,6 @@ const SearchView = React.createClass({
 
 const mapStateToProps = (state) => {
     return {
-        data: state.search.data,
         isSearching: state.search.isSearching,
         keyword: state.search.keyword,
         results: state.search.results
@@ -117,7 +121,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onUpdate: (data) => dispatch(searchUpdate(data))
+        onReset: () => dispatch(reset()),
+        onUpdate: (data) => dispatch(update(data))
     };
 };
 

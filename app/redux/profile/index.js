@@ -3,7 +3,7 @@
  */
 const profileState = {
     isLoading: true,
-    projects: null
+    projects: []
 };
 
 

@@ -6,8 +6,9 @@ import { firebase } from 'app/firebase';
 import { isEmpty } from 'app/lodash';
 import { update } from 'app/redux/profile';
 import {
+    List,
     NavLink,
-    ProjectList,
+    ProjectListItem,
     Spinner,
     ViewHeader
 } from 'app/components';
@@ -20,7 +21,7 @@ const ProfileView = React.createClass({
     propTypes: {
         isLoading: PropTypes.bool.isRequired,
         onUpdate: PropTypes.func.isRequired,
-        projects: PropTypes.object,
+        projects: PropTypes.array.isRequired,
         // ...
         user: PropTypes.shape({
             uid: PropTypes.string,
@@ -68,21 +69,18 @@ const ProfileView = React.createClass({
     },
 
     handleSnap(snap) {
-        const projects = {};
+        const projects = [];
 
         new Promise((resolve, reject) => {
             if (!snap.exists()) {
                 resolve(projects);
             }
             snap.forEach((childSnap) => {
-                projects[childSnap.key] = [];
-                childSnap.forEach((ref) => {
-                    this.getProject(ref.key).then((data) => {
-                        projects[childSnap.key].push(data);
-                        if (childSnap.numChildren() === projects[childSnap.key].length) {
-                            resolve(projects);
-                        }
-                    });
+                this.getProject(childSnap.key).then((data) => {
+                    projects.push({ ...childSnap.val(), ...data });
+                    if (snap.numChildren() === projects.length) {
+                        resolve(projects);
+                    }
                 });
             });
         }).then((data) => {
@@ -109,7 +107,9 @@ const ProfileView = React.createClass({
         }
 
         return (
-            <ProjectList data={ projects } />
+            <List
+                list={ projects }
+                listItem={ ProjectListItem } />
         );
     },
 

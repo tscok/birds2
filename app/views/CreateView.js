@@ -50,6 +50,10 @@ const CreateView = React.createClass({
         }).isRequired
     },
 
+    componentWillUnmount() {
+        this.handleReset();
+    },
+
     isFormInvalid() {
         const { isValid } = this.props;
         const invalid = omitBy(isValid, (valid) => valid);
@@ -86,8 +90,8 @@ const CreateView = React.createClass({
         };
 
         projectRef.set(project).then(() => {
-            firebase.database().ref(`groups/${project.id}/owner/${user.uid}`).set(true);
-            firebase.database().ref(`users/${user.uid}/projects/owner/${project.id}`).set(true);
+            firebase.database().ref(`groups/${project.id}/${user.uid}`).set({ role: 'owner' });
+            firebase.database().ref(`users/${user.uid}/projects/${project.id}`).set({ role: 'owner' });
             this.props.onSuccess(project.id);
         }, (error) => {
             this.props.onError(ERROR_WRITE);

@@ -1,8 +1,7 @@
 /**
  * Default state
  */
-const searchState = {
-    data: {},
+const defaultState = {
     isSearching: false,
     keyword: '',
     results: []
@@ -12,53 +11,41 @@ const searchState = {
 /**
  * Action types
  */
-const SEARCH_UPDATE = 'SEARCH_UPDATE';
-const RESULT_UPDATE = 'RESULT_UPDATE';
+const UPDATE = 'UPDATE';
+const RESET = 'RESET';
 
 
 /**
  * Action creators
  */
-export const searchUpdate = (payload) => {
+export const update = (payload) => {
     return {
-        type: SEARCH_UPDATE,
+        type: UPDATE,
         payload
     };
 };
 
-export const resultUpdate = (index, role) => {
+export const reset = () => {
     return {
-        type: RESULT_UPDATE,
-        index,
-        role
-    }
-}
+        type: RESET
+    };
+};
 
 
 /**
  * Reducer
  */
-export const reducer = (state = searchState, action) => {
+export const reducer = (state = defaultState, action) => {
     switch (action.type) {
-        case SEARCH_UPDATE:
+        case UPDATE:
             return {
                 ...state,
                 ...action.payload
             };
 
-        case RESULT_UPDATE:
-            return {
-                ...state,
-                results: state.results.map((result, index) => {
-                    if (index === action.index) {
-                        return {
-                            ...result,
-                            role: action.role
-                        };
-                    }
-                    return result;
-                })
-            };
+        case RESET:
+            state = defaultState;
+            return { ...state };
 
         default:
             return { ...state };
