@@ -62,7 +62,9 @@ const App = React.createClass({
             <div className={ block() }>
                 <Navigation { ...this.props } />
                 <main className={ block('main') }>
-                    { this.props.children }
+                    <div className="container">
+                        { this.props.children }
+                    </div>
                 </main>
             </div>
         );
