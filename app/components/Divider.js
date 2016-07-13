@@ -7,20 +7,33 @@ const block = purebem.of('divider');
 const Divider = React.createClass({
 
     propTypes: {
-        className: PropTypes.string
+        className: PropTypes.string,
+        text: PropTypes.string
     },
 
     getDefaultProps() {
         return {
-            className: null
+            className: null,
+            text: ''
         };
+    },
+
+    renderText() {
+        if (this.props.text === '') {
+            return null;
+        }
+        return (
+            <span className={ block('text') }>{ this.props.text }</span>
+        );
     },
 
     render() {
         const classNames = purebem.many(block(), this.props.className);
 
         return (
-            <hr className={ classNames } />
+            <div className={ classNames }>
+                { this.renderText() }
+            </div>
         );
     }
 

@@ -1,14 +1,22 @@
 .divider {
-    border: 0;
-    height: 1px;
-    margin: 5px 20px;
-    background-color: @color-graye;
-}
+    display: flex;
+    align-items: center;
+    height: 30px;
 
-.desktop-layout({
-
-    .divider {
-        margin: 10px 0;
+    &::before, &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: @color-grayd;
     }
 
-});
+    &__text {
+        padding: 0 15px;
+        margin-top: -2px;
+        color: @color-gray9;
+        font-style: italic;
+        line-height: 30px;
+        cursor: default;
+        .user-select;
+    }
+}
