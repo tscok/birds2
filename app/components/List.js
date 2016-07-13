@@ -7,16 +7,15 @@ const block = purebem.of('list');
 const List = React.createClass({
 
     propTypes: {
-        item: PropTypes.any.isRequired,
-        list: PropTypes.array.isRequired
+        list: PropTypes.array.isRequired,
+        listItem: PropTypes.any.isRequired
     },
 
-    renderItem(item, index) {
+    renderListItem(item, index) {
         return (
-            <this.props.item
-                index={ index }
-                item={ item }
-                key={ item.pid } />
+            <this.props.listItem { ...this.props }
+                key={ index }
+                item={ item } />
         );
     },
 
@@ -24,7 +23,7 @@ const List = React.createClass({
         return (
             <div className={ block() }>
                 {
-                    [].map.call(this.props.list, this.renderItem)
+                    [].map.call(this.props.list, this.renderListItem)
                 }
             </div>
         );

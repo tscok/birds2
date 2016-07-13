@@ -2,7 +2,6 @@
  * Default state
  */
 const profileState = {
-    activeTab: 'owner',
     isLoading: true,
     projects: null
 };
@@ -11,15 +10,15 @@ const profileState = {
 /**
  * Action types
  */
-const PROFILE_UPDATE = 'PROFILE_UPDATE';
+const UPDATE = 'UPDATE';
 
 
 /**
  * Action creators
  */
-export const profileUpdate = (payload) => {
+export const update = (payload) => {
     return {
-        type: PROFILE_UPDATE,
+        type: UPDATE,
         payload
     };
 };
@@ -30,7 +29,7 @@ export const profileUpdate = (payload) => {
  */
 export const reducer = (state = profileState, action) => {
     switch (action.type) {
-        case PROFILE_UPDATE:
+        case UPDATE:
             return {
                 ...state,
                 ...action.payload

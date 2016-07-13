@@ -1,3 +1,21 @@
 .tabs {
+    display: flex;
+    padding: 0 10px;
+    border-bottom: 1px solid @color-graye;
+    margin-bottom: 20px;
 
+    &__tab {
+        flex: 0;
+        padding: 5px 10px;
+        border: 1px solid @color-graye;
+        margin-bottom: -1px;
+
+        &--active {
+            background-color: @color-white;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }

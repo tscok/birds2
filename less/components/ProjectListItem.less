@@ -1,11 +1,26 @@
 .project-list-item {
-    display: flex;
+    padding: 10px;
+    background: @color-white;
+    border-bottom: 1px solid @color-graye;
 
-    &__column {
-        position: relative;
+    &__title {
+        font-weight: bold;
+        color: @color-gray5;
+    }
 
-        &--right {
-            flex: 1;
-        }
+    &__body {
+        font-weight: 400;
+        font-style: italic;
+        font-size: 14px;
+        color: @color-gray9;
+    }
+
+    &__owner {
+        color: @color-gray5;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: @color-grayfc;
     }
 }

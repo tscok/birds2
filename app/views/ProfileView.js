@@ -1,30 +1,27 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
-import promise from 'promise';
 
 import { firebase } from 'app/firebase';
-
-import { filter, isEqual, map, uniq } from 'app/lodash';
-
-import { List, NavLink, ProjectListItem, Spinner, Tabs, ViewHeader } from 'app/components';
-
-import { profileUpdate } from 'app/redux/profile';
+import { isEmpty } from 'app/lodash';
+import { update } from 'app/redux/profile';
+import {
+    NavLink,
+    ProjectList,
+    Spinner,
+    ViewHeader
+} from 'app/components';
 
 
 const block = purebem.of('profile-view');
 
 const ProfileView = React.createClass({
 
-    contextTypes: {
-        router: React.PropTypes.object
-    },
-
     propTypes: {
-        activeTab: PropTypes.string.isRequired,
         isLoading: PropTypes.bool.isRequired,
-        // ...
+        onUpdate: PropTypes.func.isRequired,
         projects: PropTypes.object,
+        // ...
         user: PropTypes.shape({
             uid: PropTypes.string,
             name: PropTypes.string,
@@ -34,27 +31,25 @@ const ProfileView = React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.uid !== nextProps.user.uid) {
-            this.getProjects(nextProps.user.uid);
+        if (!!nextProps.user.uid && nextProps.user.uid !== this.props.user.uid) {
+            this.init(nextProps.user.uid);
         }
     },
 
     componentWillMount() {
         const { uid } = this.props.user;
-        this.usersRef = firebase.database().ref('users');
-        this.updateUser(uid);
-        this.getProjects(uid);
+        if (uid) {
+            this.init(uid);
+            this.setUser();
+        }
     },
 
-    updateUser(uid) {
-        if (!uid) {
-            return;
-        }
+    setUser() {
         const { user } = this.props;
-        const userRef = this.usersRef.child(`${uid}/data`);
-        userRef.once('value', (snap) => {
+        const profileRef = firebase.database().ref(`users/${user.uid}/profile`);
+        profileRef.once('value', (snap) => {
             if (!snap.exists()) {
-                userRef.update({
+                profileRef.update({
                     email: user.email,
                     name: user.name,
                     photoURL: user.photoURL
@@ -63,33 +58,62 @@ const ProfileView = React.createClass({
         });
     },
 
-    getProjects(uid) {
-        if (!uid) {
-            return;
-        }
-        this.usersRef.child(`${uid}/projects`).on('value', (snap) => {
-            const projects = snap.val();
-            let roles = [];
+    init(uid) {
+        this.projectsRef = firebase.database().ref(`users/${uid}/projects`);
+        this.projectsRef.on('value', this.handleSnap);
+    },
 
-            if (snap.exists()) {
-                roles = uniq(map(projects, 'role'));
+    handleSnap(snap) {
+        const projects = {};
+
+        new Promise((resolve, reject) => {
+            if (!snap.exists()) {
+                resolve(projects);
             }
-
-            const activeTab = roles.length ? roles[0] : 'owner';
-
+            snap.forEach((childSnap) => {
+                projects[childSnap.key] = [];
+                childSnap.forEach((ref) => {
+                    this.getProject(ref.key).then((data) => {
+                        projects[childSnap.key].push(data);
+                        if (childSnap.numChildren() === projects[childSnap.key].length) {
+                            resolve(projects);
+                        }
+                    });
+                });
+            });
+        }).then((data) => {
             this.props.onUpdate({
-                activeTab,
                 isLoading: false,
-                projects
+                projects: data
             });
         });
     },
 
-    handleTabClick(activeTab) {
-        this.props.onUpdate({ activeTab });
+    getProject(pid) {
+        return new Promise((resolve, reject) => {
+            firebase.database().ref(`projects/${pid}`).on('value', (snap) => {
+                resolve(snap.val());
+            });
+        });
+    },
+
+    renderProjects() {
+        const { projects } = this.props;
+
+        if (isEmpty(projects)) {
+            return null;
+        }
+
+        return (
+            <ProjectList data={ projects } />
+        );
     },
 
     renderEmpty() {
+        if (!isEmpty(this.props.projects)) {
+            return null;
+        }
+
         const searchClass = purebem.many(block('button', ['search']), 'button');
         const createClass = purebem.many(block('button', ['create']), 'button');
 
@@ -105,27 +129,14 @@ const ProfileView = React.createClass({
     },
 
     render() {
-        const { projects, activeTab, isLoading } = this.props;
-
-        if (isLoading) {
+        if (this.props.isLoading) {
             return <Spinner />;
-        }
-
-        if (!projects) {
-            return this.renderEmpty();
         }
 
         return (
             <div className={ block() }>
-                <div className="container">
-                    <Tabs
-                        activeTab={ activeTab }
-                        tabs={ uniq(map(projects, 'role')) }
-                        onClick={ this.handleTabClick } />
-                    <List
-                        list={ filter(projects, { 'role': activeTab }) }
-                        item={ ProjectListItem } />
-                </div>
+                { this.renderEmpty() }
+                { this.renderProjects() }
             </div>
         );
     }
@@ -134,7 +145,6 @@ const ProfileView = React.createClass({
 
 const mapStateToProps = (state) => {
     return {
-        activeTab: state.profile.activeTab,
         isLoading: state.profile.isLoading,
         projects: state.profile.projects,
         user: state.user
@@ -143,7 +153,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onUpdate: (data) => dispatch(profileUpdate(data))
+        onUpdate: (data) => dispatch(update(data))
     };
 };
 
