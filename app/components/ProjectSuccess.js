@@ -15,18 +15,12 @@ const ProjectSuccess = React.createClass({
         onClose: PropTypes.func.isRequired
     },
 
-    getDefaultProps() {
-        return {
-            projectId: ''
-        };
-    },
-
     handleReroute() {
         this.context.router.push(`project/${this.props.projectId}`);
     },
 
     render() {
-        const primary = purebem.many(block('button', ['primary']), 'button', 'button-primary');
+        const primary = purebem.many(block('button', ['primary']), 'button-primary');
         
         return (
             <div className={ block() }>
