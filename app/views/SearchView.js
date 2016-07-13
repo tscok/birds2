@@ -89,19 +89,17 @@ const SearchView = React.createClass({
     render() {
         return (
             <div className={ block() }>
-                <div className="container">
-                    <ViewHeader title="Find Projects">
-                        <p>Find public projects by title or username.</p>
-                        <InputField
-                            iconClass="icon-search"
-                            iconClick={ this.handleSearch }
-                            isLoading={ this.props.isSearching }
-                            onChange={ this.handleInput }
-                            placeholder="Project title or username"
-                            value={ this.props.keyword } />
-                    </ViewHeader>
-                    { this.renderResults() }
-                </div>
+                <ViewHeader title="Find Projects">
+                    <p>Find public projects by title or username.</p>
+                    <InputField
+                        iconClass="icon-search"
+                        iconClick={ this.handleSearch }
+                        isLoading={ this.props.isSearching }
+                        onChange={ this.handleInput }
+                        placeholder="Project title or username"
+                        value={ this.props.keyword } />
+                </ViewHeader>
+                { this.renderResults() }
             </div>
         );
     }

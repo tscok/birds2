@@ -87,7 +87,7 @@ const CreateView = React.createClass({
 
         projectRef.set(project).then(() => {
             firebase.database().ref(`groups/${project.id}/owner/${user.uid}`).set(true);
-            firebase.database().ref(`users/${user.uid}/owner/${project.id}`).set(true);
+            firebase.database().ref(`users/${user.uid}/projects/owner/${project.id}`).set(true);
             this.props.onSuccess(project.id);
         }, (error) => {
             this.props.onError(ERROR_WRITE);
@@ -174,8 +174,8 @@ const CreateView = React.createClass({
                         onClick={ this.handleToggle } />
                     { this.renderPrivacyInfo() }
                 </div>
-                { this.renderErrorMessage() }
                 <div className={ block('actions') }>
+                    { this.renderErrorMessage() }
                     <button type="submit" className={ buttonClass } disabled={ this.isFormInvalid() }>Create Project</button>
                     <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
                 </div>
@@ -186,10 +186,8 @@ const CreateView = React.createClass({
     render() {
         return (
             <div className={ block() }>
-                <div className="container">
-                    <ViewHeader title="Create Project" />
-                    { this.renderForm() }
-                </div>
+                <ViewHeader title="Create Project" />
+                { this.renderForm() }
                 { this.renderSuccess() }
             </div>
         );

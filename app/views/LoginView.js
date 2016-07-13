@@ -5,7 +5,7 @@ import promise from 'promise';
 
 import { firebase, getUser } from 'app/firebase';
 import { overlayAdd } from 'app/utils';
-import { ContentBox, InputField, Spinner } from 'app/components';
+import { ContentBox, Divider, InputField, Spinner } from 'app/components';
 
 import { loginUpdate } from 'app/redux/login';
 import { userUpdate, userLogout } from 'app/redux/user';
@@ -137,7 +137,7 @@ const LoginView = React.createClass({
     },
 
     renderFacebookLogin() {
-        const buttonClass = purebem.many(block('button', ['facebook']), 'button-primary');
+        const buttonClass = purebem.many(block('button', ['facebook']));
         return (
             <div className={ block('social-login') }>
                 <button type="button" className={ buttonClass } onClick={ this.handleFacebookLogin }>Continue with Facebook</button>
@@ -149,7 +149,7 @@ const LoginView = React.createClass({
         return (
             <div className={ block() }>
                 { this.renderPasswordLogin() }
-                <div className={ block('divider') } />
+                <Divider className={ block('divider') } text="or" />
                 { this.renderFacebookLogin() }
             </div>
         );

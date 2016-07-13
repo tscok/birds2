@@ -58,10 +58,10 @@ input[type="button"] {
     text-transform: none;
 
     outline: 0;
+    border: 0;
     border-radius: 5px;
     color: @color-text;
     background-color: transparent;
-    border: 1px solid @color-grayd;
 
     &:hover, &:focus {
         color: @color-text;
@@ -71,6 +71,10 @@ input[type="button"] {
     &[disabled], &[disabled]:hover {
         color: @color-grayc;
         border-color: @color-grayd;
+    }
+
+    &.button-outline {
+        border: 1px solid @color-grayd;
     }
 
     &.button-primary {

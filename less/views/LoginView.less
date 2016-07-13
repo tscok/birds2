@@ -1,42 +1,38 @@
 .login-view {
     max-width: 400px;
-    margin: 100px auto 0;
+    margin: 0 auto;
 
     .spinner {
         margin: 0 auto;
     }
 
-    button&__button {
+    form {
+        margin: 0;
+    }
+
+    &__password-login {
+        margin-bottom: 3rem;
+    }
+
+    &__social-login {
+        margin-top: 3rem;
+    }
+
+    &__button {
         width: 100%;
         display: block;
-        margin-top: 3rem;
 
         &--facebook {
             background-color: @color-facebook;
 
+            &, &:hover {
+                font-weight: 600;
+                color: @color-white;
+            }
+
             &:hover, &:focus, &:active {
                 background-color: darken(@color-facebook, 10%);
             }
-        }
-    }
-
-    &__divider {
-        text-align: center;
-        &:before {
-            content: "";
-            height: 1px;
-            display: block;
-            background-color: @color-grayd;
-            position: relative;
-            top: 14px;
-            z-index: -1;
-        }
-        &:after {
-            content: "or";
-            padding: 5px 10px;
-            color: @color-gray9;
-            font-style: italic;
-            background-color: @color-grayf9;
         }
     }
 
@@ -45,3 +41,11 @@
         color: @color-red-dark;
     }
 }
+
+.tablet-layout({
+
+    .login-view {
+        margin-top: 100px;
+    }
+
+});
