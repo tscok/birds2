@@ -18,6 +18,9 @@ const ProjectListItem = React.createClass({
     },
 
     handleClick() {
+        if (this.props.item.role === 'pending') {
+            return;
+        }
         this.context.router.push(`project/${this.props.item.id}`);
     },
 
