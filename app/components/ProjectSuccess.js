@@ -21,6 +21,7 @@ const ProjectSuccess = React.createClass({
 
     render() {
         const primary = purebem.many(block('button', ['primary']), 'button-primary');
+        const outline = purebem.many(block('button'), 'button-outline');
         
         return (
             <div className={ block() }>
@@ -31,7 +32,7 @@ const ProjectSuccess = React.createClass({
                     <p><strong>The project was successfully created!</strong><br />How would you like to proceed?</p>
                     <div className={ block('actions') }>
                         <button className={ primary } onClick={ this.handleReroute }>Go to project</button>
-                        <button className={ block('button') } onClick={ this.props.onClose }>Create another</button>
+                        <button className={ outline } onClick={ this.props.onClose }>Create another</button>
                     </div>
                 </div>
             </div>
