@@ -9,6 +9,7 @@ import isNull from 'lodash.isnull';
 import map from 'lodash.map';
 import omit from 'lodash.omit';
 import omitBy from 'lodash.omitby';
+import orderBy from 'lodash.orderby';
 import pick from 'lodash.pick';
 import pickBy from 'lodash.pickby';
 import uniq from 'lodash.uniq';
@@ -26,6 +27,7 @@ export {
     map,
     omit,
     omitBy,
+    orderBy,
     pick,
     pickBy,
     uniq,
