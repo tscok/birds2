@@ -11,23 +11,23 @@ const defaultState = {
 /**
  * Action types
  */
-const UPDATE = 'UPDATE';
-const RESET = 'RESET';
+const SEARCH_UPDATE = 'SEARCH_UPDATE';
+const SEARCH_RESET = 'SEARCH_RESET';
 
 
 /**
  * Action creators
  */
-export const update = (payload) => {
+export const searchUpdate = (payload) => {
     return {
-        type: UPDATE,
+        type: SEARCH_UPDATE,
         payload
     };
 };
 
-export const reset = () => {
+export const searchReset = () => {
     return {
-        type: RESET
+        type: SEARCH_RESET
     };
 };
 
@@ -37,13 +37,13 @@ export const reset = () => {
  */
 export const reducer = (state = defaultState, action) => {
     switch (action.type) {
-        case UPDATE:
+        case SEARCH_UPDATE:
             return {
                 ...state,
                 ...action.payload
             };
 
-        case RESET:
+        case SEARCH_RESET:
             state = defaultState;
             return { ...state };
 

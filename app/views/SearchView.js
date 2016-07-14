@@ -1,13 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
-import promise from 'promise';
 
-import { firebase, getUser } from 'app/firebase';
-import { map } from 'app/lodash';
+import { firebase } from 'app/firebase';
 import { debouncer } from 'app/utils';
 import { InputField, List, SearchResultItem, ViewHeader } from 'app/components';
-import { reset, update } from 'app/redux/search';
+import { searchReset, searchUpdate } from 'app/redux/search';
 
 
 const block = purebem.of('search-view');
@@ -121,8 +119,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onReset: () => dispatch(reset()),
-        onUpdate: (data) => dispatch(update(data))
+        onReset: () => dispatch(searchReset()),
+        onUpdate: (data) => dispatch(searchUpdate(data))
     };
 };
 
