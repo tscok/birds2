@@ -1,24 +1,30 @@
 /**
  * Default state
  */
-const defaultState = {
-    loading: true
-};
+const defaultState = {};
 
 
 /**
  * Action types
  */
 const JOIN_UPDATE = 'JOIN_UPDATE';
+const JOIN_RESET = 'JOIN_RESET';
 
 
 /**
  * Action creators
  */
-export const roleUpdate = (payload) => {
+export const joinUpdate = (pid, payload) => {
     return {
         type: JOIN_UPDATE,
+        pid,
         payload
+    };
+};
+
+export const joinReset = () => {
+    return {
+        type: JOIN_RESET
     };
 };
 
@@ -31,7 +37,10 @@ export const reducer = (state = defaultState, action) => {
         case JOIN_UPDATE:
             return {
                 ...state,
-                ...action.payload
+                [action.pid]: {
+                    ...state[action.pid],
+                    ...action.payload
+                }
             };
 
         default:

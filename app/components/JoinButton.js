@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
-import { Spinner } from 'app/components';
+import { joinUpdate } from 'app/redux/join';
 
 
 const block = purebem.of('join-button');
@@ -11,14 +11,11 @@ const block = purebem.of('join-button');
 const JoinButton = React.createClass({
 
     propTypes: {
+        onUpdate: PropTypes.func.isRequired,
         project: PropTypes.object.isRequired,
-        user: PropTypes.object.isRequired
-    },
-
-    getInitialState() {
-        return {
-            loading: true
-        };
+        user: PropTypes.object.isRequired,
+        // ...
+        button: PropTypes.object
     },
 
     componentWillMount() {
@@ -28,53 +25,53 @@ const JoinButton = React.createClass({
     },
 
     handleSnap(snap) {
-        if (!snap.exists()) {
-            this.setState({ loading: false });
-            return;
-        }
-        
-        const { role } = snap.val();
-        console.log(role);
+        new Promise((resolve, reject) => {
+            if (!snap.exists()) {
+                resolve('n/a');
+            }
+            resolve(snap.val().role);
+        }).then((role) => {
+            const visible = role !== 'owner' && role !== 'member';
+
+            this.props.onUpdate(snap.key, {
+                loading: false,
+                role,
+                visible
+            });
+        });
     },
 
-    handleJoin() {
-        console.log('request to join');
-    },
+    handleClick() {
+        const { button, project, user } = this.props;
+        const data = button.role === 'pending' ? null : { role: 'pending' };
 
-    handleCancel() {
-        console.log('cancel request');
-    },
-
-    isOwnProject() {
-        const { project, user } = this.props;
-        return project.ownerId === user.uid;
+        firebase.database().ref(`users/${user.uid}/projects/${project.id}`).set(data);
+        firebase.database().ref(`groups/${project.id}/${user.uid}`).set(data);
+        this.props.onUpdate(project.id, { loading: true });
     },
 
     renderButton() {
-        if (this.state.loading) {
-            return null;
-        }
-
-        const classNames = purebem.many(block('button'), 'button-primary');
+        const { role } = this.props.button;
+        const label = role === 'pending' ? 'Leave' : 'Join';
+        const style = role === 'pending' ? 'outline' : 'primary';
+        const classes = purebem.many(block('button'), `button-${style}`);
 
         return (
-            <button type="button" className={ classNames } onClick={ this.handleClick }>Join</button>
-        );
-    },
-
-    renderSpinner() {
-        if (!this.state.loading) {
-            return null;
-        }
-        return (
-            <Spinner type="circle" />
+            <button type="button" className={ classes } onClick={ this.handleClick }>
+                { label }
+            </button>
         );
     },
 
     render() {
+        const { button } = this.props;
+
+        if (!button || button && !button.visible) {
+            return null;
+        }
+
         return (
             <div className={ block() }>
-                { this.renderSpinner() }
                 { this.renderButton() }
             </div>
         );
@@ -82,10 +79,17 @@ const JoinButton = React.createClass({
 
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
     return {
+        button: state.join[props.project.id],
         user: state.user
     };
 };
 
-export default connect(mapStateToProps)(JoinButton);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUpdate: (pid, data) => dispatch(joinUpdate(pid, data))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(JoinButton);
