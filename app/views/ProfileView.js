@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
-import { isEmpty } from 'app/lodash';
+import { isEmpty, orderBy } from 'app/lodash';
 import { update } from 'app/redux/profile';
 import {
     List,
@@ -109,7 +109,7 @@ const ProfileView = React.createClass({
 
         return (
             <List
-                list={ projects }
+                list={ orderBy(projects, ['role'], 'asc') }
                 listItem={ ProjectListItem } />
         );
     },
