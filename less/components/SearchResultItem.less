@@ -3,6 +3,7 @@
     background: @color-white;
     border-bottom: 1px solid @color-graye;
     display: flex;
+    flex-direction: column;
 
     &__details {
         flex: 1;
@@ -11,7 +12,6 @@
     &__action {
         display: flex;
         align-items: center;
-        justify-content: center;
     }
 
     &__title {
@@ -31,3 +31,11 @@
     }
 
 }
+
+.tablet-layout({
+
+    .search-result-item {
+        flex-direction: row;
+    }
+
+});

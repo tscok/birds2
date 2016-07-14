@@ -1,17 +1,16 @@
 .project-list-item {
     padding: 10px 15px;
-    margin-bottom: 1px;
     background: @color-white;
     border-left: 4px solid @color-grayc;
-    box-shadow: 0 1px @color-graye;
+    border-bottom: 1px solid @color-graye;
     display: flex;
     flex-direction: column;
 
     &--member {
-        border-color: @color-green;
+        border-left-color: @color-green;
     }
     &--pending {
-        border-color: @color-yellow;
+        border-left-color: @color-yellow;
     }
 
     &__details {
