@@ -64,6 +64,7 @@ const ProfileView = React.createClass({
     },
 
     getProjects(uid) {
+        this.props.onUpdate({ isLoading: true });
         this.projectsRef = firebase.database().ref(`users/${uid}/projects`);
         this.projectsRef.on('value', this.handleSnap);
     },
@@ -102,7 +103,7 @@ const ProfileView = React.createClass({
     renderProjects() {
         const { projects } = this.props;
 
-        if (isEmpty(projects)) {
+        if (isEmpty(projects) || this.props.isLoading) {
             return null;
         }
 
@@ -114,7 +115,7 @@ const ProfileView = React.createClass({
     },
 
     renderEmpty() {
-        if (!isEmpty(this.props.projects)) {
+        if (!isEmpty(this.props.projects) || this.props.isLoading) {
             return null;
         }
 
@@ -132,13 +133,22 @@ const ProfileView = React.createClass({
         );
     },
 
-    render() {
-        if (this.props.isLoading) {
-            return <Spinner />;
+    renderSpinner() {
+        if (!this.props.isLoading) {
+            return null;
         }
+        
+        return (
+            <div className={ block('spinner') }>
+                <Spinner />
+            </div>
+        );
+    },
 
+    render() {
         return (
             <div className={ block() }>
+                { this.renderSpinner() }
                 { this.renderEmpty() }
                 { this.renderProjects() }
             </div>
