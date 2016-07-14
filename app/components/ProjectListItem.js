@@ -3,6 +3,7 @@ import purebem from 'purebem';
 import moment from 'moment';
 
 import { capitalize } from 'app/utils';
+import { PendingCount } from 'app/components';
 
 
 const block = purebem.of('project-list-item');
@@ -33,6 +34,13 @@ const ProjectListItem = React.createClass({
         );
     },
 
+    renderPendingCount() {
+        if (this.props.item.role !== 'owner') {
+            return null;
+        }
+        return (<PendingCount project={ this.props.item } />);
+    },
+
     render() {
         const { item } = this.props;
         const day = moment.unix(item.dates.timestamp);
@@ -44,6 +52,7 @@ const ProjectListItem = React.createClass({
                 <div className={ block('details') }>
                     <div className={ block('title') }>
                         { item.title }
+                        { this.renderPendingCount() }
                     </div>
                     <div className={ block('body') }>
                         Created by { this.getOwner() } on { date }

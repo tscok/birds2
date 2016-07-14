@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
-import { filter } from 'app/lodash';
+import { pendingUpdate } from 'app/redux/pending';
 
 
 const block = purebem.of('pending-count');
@@ -11,47 +11,46 @@ const block = purebem.of('pending-count');
 const PendingCount = React.createClass({
 
     propTypes: {
-        project: PropTypes.object.isRequired,
-        user: PropTypes.shape({
-            uid: PropTypes.string,
-            name: PropTypes.string,
-            email: PropTypes.string,
-            photoURL: PropTypes.string
-        }).isRequired
-    },
-
-    getInitialState() {
-        return {
-            pending: 0
-        };
+        count: PropTypes.number.isRequired,
+        onUpdate: PropTypes.func.isRequired,
+        project: PropTypes.object.isRequired
     },
 
     componentWillMount() {
-        const { pid } = this.props.project;
-        firebase.database().ref(`members/${pid}`).on('value', (snap) => {
-            const pending = filter(snap.val(), { 'role': 'pending' }).length;
-            this.setState({ pending });
-        });
+        const { project } = this.props;
+        const groupsRef = firebase.database().ref(`groups/${project.id}`);
+        groupsRef.orderByChild('role').equalTo('pending').on('value', this.handleSnap);
+    },
+
+    handleSnap(snap) {
+        const count = snap.numChildren();
+        this.props.onUpdate(snap.key, { count });
     },
 
     render() {
-        const { project, user } = this.props;
-
-        if (project.uid !== user.uid || this.state.pending === 0) {
-            return null;
-        }
-
+        const show = this.props.count > 0;
         return (
-            <span className={ block() }>{ this.state.pending }</span>
+            <div className={ block() }>
+                <div className={ block('count', { show }) }>
+                    { this.props.count }
+                </div>
+            </div>
         );
     }
 
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
+    const data = state.pending[props.project.id];
     return {
-        user: state.user
+        count: data ? data.count : 0
     };
 };
 
-export default connect(mapStateToProps)(PendingCount);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUpdate: (pid, data) => dispatch(pendingUpdate(pid, data))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PendingCount);

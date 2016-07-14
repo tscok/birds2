@@ -1,15 +1,28 @@
 .pending-count {
+    display: inline-block;
     position: absolute;
-    top: -2px;
-    left: -4px;
-    width: 18px;
-    height: 18px;
-    line-height: 18px;
-    background-color: @color-gray6;
-    border-radius: 100%;
-    color: @color-white;
-    font-weight: 700;
-    font-family: sans-serif;
-    font-size: 10px;
-    text-align: center;
+
+    &__count {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 16px;
+        height: 16px;
+        margin-left: 6px;
+
+        font-size: 9px;
+        color: @color-white;
+        background-color: @color-red;
+        .border-radius(100%);
+
+        .transform(scale(0));
+        .transition(150ms);
+        .opacity(0);
+
+        &--show {
+            .transform(scale(1));
+            .opacity(1);
+        }
+    }
 }
