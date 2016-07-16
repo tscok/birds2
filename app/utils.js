@@ -15,7 +15,7 @@ export function getStatus(start, end) {
 };
 
 export function isString(str) {
-    return str !== '' && str.trim().length !== 0;
+    return !!str && str.trim() !== '';
 };
 
 export function isEmpty(str) {

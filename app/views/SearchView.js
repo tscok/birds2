@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
-import { debouncer } from 'app/utils';
+import { debouncer, isString } from 'app/utils';
 import { InputField, List, SearchResultItem, ViewHeader } from 'app/components';
 import { searchReset, searchUpdate } from 'app/redux/search';
 
@@ -57,22 +57,18 @@ const SearchView = React.createClass({
         return pattern.test(str);
     },
 
-    isString(str) {
-        return !!str && str.trim() !== '';
-    },
-
     handleInput(evt) {
         let keyword = evt.target.value;
-        const isString = this.isString(keyword);
+        const isSearching = isString(keyword);
 
-        if (isString) {
+        if (isSearching) {
             debouncer(this.getResults);
         } else {
             this.setResults();
         }
         
         this.props.onUpdate({
-            isSearching: isString,
+            isSearching,
             keyword
         });
     },
