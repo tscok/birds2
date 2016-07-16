@@ -1,41 +1,10 @@
 .project-list-item {
-    padding: 10px 15px;
-    background: @color-white;
-    border-left: 4px solid @color-grayc;
-    border-bottom: 1px solid @color-graye;
-    display: flex;
-    flex-direction: column;
 
-    &--member {
-        border-left-color: @color-green;
-    }
-    &--pending {
-        border-left-color: @color-yellow;
-    }
-
-    &__details {
-        flex: 1;
-    }
-
-    &__title {
-        font-weight: bold;
-        color: @color-gray5;
-    }
-
-    &__body, &__status {
+    &__status {
         font-weight: 400;
         font-style: italic;
         font-size: 14px;
         color: @color-gray9;
-    }
-
-    &__owner {
-        color: @color-gray5;
-    }
-
-    &__status {
-        display: flex;
-        align-items: center;
 
         &--member {
             color: @color-green;
@@ -50,11 +19,3 @@
         background-color: @color-grayfc;
     }
 }
-
-.tablet-layout({
-
-    .project-list-item {
-        flex-direction: row;
-    }
-
-});

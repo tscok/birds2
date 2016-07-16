@@ -3,7 +3,7 @@ import purebem from 'purebem';
 import moment from 'moment';
 
 import { capitalize } from 'app/utils';
-import { PendingCount } from 'app/components';
+import { ListItem, PendingCount } from 'app/components';
 
 
 const block = purebem.of('project-list-item');
@@ -19,49 +19,62 @@ const ProjectListItem = React.createClass({
     },
 
     handleClick() {
-        if (this.props.item.role === 'pending') {
+        const { item } = this.props;
+        if (item.status === 'pending') {
             return;
         }
-        this.context.router.push(`project/${this.props.item.id}`);
+        this.context.router.push(`project/${item.id}`);
     },
 
     getOwner() {
         const { item } = this.props;
-        const owner = item.role === 'owner' ? 'you' : item.owner;
-
-        return (
-            <span className={ block('owner') }>{ owner }</span>
-        );
+        const owner = item.status === 'owner' ? 'you' : item.owner;
+        return (<strong>{ owner }</strong>);
     },
 
     renderPendingCount() {
-        if (this.props.item.role !== 'owner') {
+        if (this.props.item.status !== 'owner') {
             return null;
         }
-        return (<PendingCount project={ this.props.item } />);
+        return (<PendingCount projectId={ this.props.item.id } />);
+    },
+
+    renderTitle() {
+        return (
+            <div>
+                { this.props.item.title }
+                { this.renderPendingCount() }
+            </div>
+        );
+    },
+
+    renderBody() {
+        const day = moment.unix(this.props.item.dates.timestamp);
+        const date = day.format('MMMM Do, YYYY');
+        return (
+            <div>Created by { this.getOwner() } on { date }</div>
+        );
+    },
+
+    renderAside() {
+        const { status } = this.props.item;
+        return (
+            <div className={ block('status', { status }) }>
+                { capitalize(status) }
+            </div>
+        );
     },
 
     render() {
-        const { item } = this.props;
-        const day = moment.unix(item.dates.timestamp);
-        const date = day.format('MMMM Do, YYYY');
-        const role = item.role;
-
+        const status = this.props.item.status;
         return (
-            <div className={ block({ role }) } onClick={ this.handleClick }>
-                <div className={ block('details') }>
-                    <div className={ block('title') }>
-                        { item.title }
-                        { this.renderPendingCount() }
-                    </div>
-                    <div className={ block('body') }>
-                        Created by { this.getOwner() } on { date }
-                    </div>
-                </div>
-                <div className={ block('status', { role }) }>
-                    { capitalize(role) }
-                </div>
-            </div>
+            <ListItem
+                title={ this.renderTitle() }
+                body={ this.renderBody() }
+                aside={ this.renderAside() }
+                className={ block({ status }) }
+                modifier={ status }
+                onClick={ this.handleClick } />
         );
     }
 

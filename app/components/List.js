@@ -8,14 +8,17 @@ const List = React.createClass({
 
     propTypes: {
         list: PropTypes.array.isRequired,
-        listItem: PropTypes.any.isRequired
+        listItem: PropTypes.any.isRequired,
+        // ...
+        listItemProps: PropTypes.object
     },
 
     renderListItem(item, index) {
         return (
-            <this.props.listItem { ...this.props }
+            <this.props.listItem { ...this.props } { ...this.props.listItemProps }
                 key={ index }
-                item={ item } />
+                item={ item }
+                index={ index } />
         );
     },
 

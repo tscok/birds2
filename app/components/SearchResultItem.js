@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 import moment from 'moment';
 
-import { JoinButton } from 'app/components';
+import { JoinButton, ListItem } from 'app/components';
 
 
 const block = purebem.of('search-result-item');
@@ -13,25 +13,25 @@ const SearchResultItem = React.createClass({
         item: PropTypes.object.isRequired
     },
 
-    render() {
+    renderBody() {
         const { item } = this.props;
         const day = moment.unix(item.dates.timestamp);
         const date = day.format('MMMM Do, YYYY');
-
         return (
-            <div className={ block() }>
-                <div className={ block('details') }>
-                    <div className={ block('title') }>
-                        { item.title }
-                    </div>
-                    <div className={ block('body') }>
-                        Created by <span className={ block('owner') }>{ item.owner }</span> on { date }
-                    </div>
-                </div>
-                <div className={ block('action') }>
-                    <JoinButton project={ item } />
-                </div>
-            </div>
+            <div>Created by <strong>{ item.owner }</strong> on { date }</div>
+        );
+    },
+
+    renderAside() {
+        return (<JoinButton projectId={ this.props.item.id } />);
+    },
+
+    render() {
+        return (
+            <ListItem
+                title={ this.props.item.title }
+                body={ this.renderBody() }
+                aside={ this.renderAside() } />
         );
     }
 

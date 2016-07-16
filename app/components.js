@@ -8,6 +8,9 @@ import InputField from './components/InputField';
 import JoinButton from './components/JoinButton';
 import Lightbox from './components/Lightbox';
 import List from './components/List';
+import ListItem from './components/ListItem';
+import MemberListItem from './components/MemberListItem';
+import MemberListItemForm from './components/MemberListItemForm';
 import NavLink from './components/NavLink';
 import PendingCount from './components/PendingCount';
 import ProjectListItem from './components/ProjectListItem';
@@ -34,6 +37,9 @@ export {
     JoinButton,
     Lightbox,
     List,
+    ListItem,
+    MemberListItem,
+    MemberListItemForm,
     NavLink,
     PendingCount,
     ProjectListItem,
