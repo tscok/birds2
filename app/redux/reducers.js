@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import { reducer as create } from './create';
 import { reducer as join } from './join';
 import { reducer as login } from './login';
+import { reducer as members } from './members';
 import { reducer as menu } from './menu';
 import { reducer as pending } from './pending';
 import { reducer as profile } from './profile';
@@ -15,6 +16,7 @@ const appReducer = combineReducers({
     create,
     join,
     login,
+    members,
     menu,
     pending,
     profile,
