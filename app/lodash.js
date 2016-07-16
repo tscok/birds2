@@ -2,6 +2,7 @@ import assign from 'lodash.assign';
 import cloneDeep from 'lodash.clonedeep';
 import debounce from 'lodash.debounce';
 import filter from 'lodash.filter';
+import find from 'lodash.find';
 import forEach from 'lodash.foreach';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
@@ -20,6 +21,7 @@ export {
     cloneDeep,
     debounce,
     filter,
+    find,
     forEach,
     isEmpty,
     isEqual,

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
-import { orderBy } from 'app/lodash';
+import { find, orderBy } from 'app/lodash';
 import { memberUpdate, membersUpdate } from 'app/redux/members';
 import { List, MemberListItem, Spinner, ViewHeader } from 'app/components';
 
@@ -21,6 +21,12 @@ const ProjectMembersView = React.createClass({
         members: PropTypes.array.isRequired,
         onExpand: PropTypes.func.isRequired,
         onUpdate: PropTypes.func.isRequired,
+        user: PropTypes.shape({
+            uid: PropTypes.string,
+            name: PropTypes.string,
+            email: PropTypes.string,
+            photoURL: PropTypes.string
+        }).isRequired,
         // ...
         params: PropTypes.object
     },
@@ -48,8 +54,12 @@ const ProjectMembersView = React.createClass({
     },
 
     handleExpand(uid, expanded=false) {
-        console.log(uid, expanded);
         this.props.onExpand(uid, expanded);
+    },
+
+    isProjectOwner() {
+        const owner = find(this.props.members, { status: 'owner' });
+        return this.props.user.uid === owner.uid;
     },
 
     getMember(uid) {
@@ -62,6 +72,7 @@ const ProjectMembersView = React.createClass({
 
     getListItemProps() {
         return {
+            isOwner: this.isProjectOwner(),
             onExpand: this.handleExpand,
             projectId: this.props.params.id
         };
@@ -103,7 +114,8 @@ const ProjectMembersView = React.createClass({
 const mapStateToProps = (state) => {
     return {
         loading: state.members.loading,
-        members: state.members.members
+        members: state.members.members,
+        user: state.user
     };
 };
 

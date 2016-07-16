@@ -9,6 +9,7 @@
     "lodash.clonedeep": "^4.3.1",
     "lodash.debounce": "^4.0.3",
     "lodash.filter": "^4.2.1",
+    "lodash.find": "^4.4.0",
     "lodash.foreach": "^4.2.0",
     "lodash.isempty": "^4.2.1",
     "lodash.isequal": "^4.2.0",
