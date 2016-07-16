@@ -13,13 +13,13 @@ const PendingCount = React.createClass({
     propTypes: {
         count: PropTypes.number.isRequired,
         onUpdate: PropTypes.func.isRequired,
-        project: PropTypes.object.isRequired
+        projectId: PropTypes.string.isRequired
     },
 
     componentWillMount() {
-        const { project } = this.props;
-        const groupsRef = firebase.database().ref(`groups/${project.id}`);
-        groupsRef.orderByChild('role').equalTo('pending').on('value', this.handleSnap);
+        const { projectId } = this.props;
+        const groupsRef = firebase.database().ref(`groups/${projectId}`);
+        groupsRef.orderByChild('status').equalTo('pending').on('value', this.handleSnap);
     },
 
     handleSnap(snap) {
@@ -41,7 +41,7 @@ const PendingCount = React.createClass({
 });
 
 const mapStateToProps = (state, props) => {
-    const data = state.pending[props.project.id];
+    const data = state.pending[props.projectId];
     return {
         count: data ? data.count : 0
     };

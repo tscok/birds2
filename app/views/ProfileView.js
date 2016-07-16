@@ -109,7 +109,7 @@ const ProfileView = React.createClass({
 
         return (
             <List
-                list={ orderBy(projects, ['role'], 'asc') }
+                list={ orderBy(projects, ['status']) }
                 listItem={ ProjectListItem } />
         );
     },

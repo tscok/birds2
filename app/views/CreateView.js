@@ -90,8 +90,8 @@ const CreateView = React.createClass({
         };
 
         projectRef.set(project).then(() => {
-            firebase.database().ref(`groups/${project.id}/${user.uid}`).set({ role: 'owner' });
-            firebase.database().ref(`users/${user.uid}/projects/${project.id}`).set({ role: 'owner' });
+            firebase.database().ref(`groups/${project.id}/${user.uid}`).set({ status: 'owner' });
+            firebase.database().ref(`users/${user.uid}/projects/${project.id}`).set({ status: 'owner' });
             this.props.onSuccess(project.id);
         }, (error) => {
             this.props.onError(ERROR_WRITE);

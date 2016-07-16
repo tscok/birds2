@@ -85,7 +85,9 @@ const SearchView = React.createClass({
         }
         
         return (
-            <List list={ results } listItem={ SearchResultItem } />
+            <List
+                list={ results }
+                listItem={ SearchResultItem } />
         );
     },
 

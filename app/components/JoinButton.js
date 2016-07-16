@@ -12,15 +12,15 @@ const JoinButton = React.createClass({
 
     propTypes: {
         onUpdate: PropTypes.func.isRequired,
-        project: PropTypes.object.isRequired,
+        projectId: PropTypes.string.isRequired,
         user: PropTypes.object.isRequired,
         // ...
         button: PropTypes.object
     },
 
     componentWillMount() {
-        const { project, user } = this.props;
-        this.projectRef = firebase.database().ref(`users/${user.uid}/projects/${project.id}`);
+        const { projectId, user } = this.props;
+        this.projectRef = firebase.database().ref(`users/${user.uid}/projects/${projectId}`);
         this.projectRef.on('value', this.handleSnap);
     },
 
@@ -29,31 +29,31 @@ const JoinButton = React.createClass({
             if (!snap.exists()) {
                 resolve('n/a');
             }
-            resolve(snap.val().role);
-        }).then((role) => {
-            const visible = role !== 'owner' && role !== 'member';
+            resolve(snap.val().status);
+        }).then((status) => {
+            const visible = status !== 'owner' && status !== 'member';
 
             this.props.onUpdate(snap.key, {
                 loading: false,
-                role,
+                status,
                 visible
             });
         });
     },
 
     handleClick() {
-        const { button, project, user } = this.props;
-        const data = button.role === 'pending' ? null : { role: 'pending' };
+        const { button, projectId, user } = this.props;
+        const data = button.status === 'pending' ? null : { status: 'pending' };
 
-        firebase.database().ref(`users/${user.uid}/projects/${project.id}`).set(data);
-        firebase.database().ref(`groups/${project.id}/${user.uid}`).set(data);
-        this.props.onUpdate(project.id, { loading: true });
+        firebase.database().ref(`users/${user.uid}/projects/${projectId}`).set(data);
+        firebase.database().ref(`groups/${projectId}/${user.uid}`).set(data);
+        this.props.onUpdate(projectId, { loading: true });
     },
 
     renderButton() {
-        const { role } = this.props.button;
-        const label = role === 'pending' ? 'Leave' : 'Join';
-        const style = role === 'pending' ? 'outline' : 'primary';
+        const { status } = this.props.button;
+        const label = status === 'pending' ? 'Leave' : 'Join';
+        const style = status === 'pending' ? 'outline' : 'primary';
         const classes = purebem.many(block('button'), `button-${style}`);
 
         return (
@@ -81,7 +81,7 @@ const JoinButton = React.createClass({
 
 const mapStateToProps = (state, props) => {
     return {
-        button: state.join[props.project.id],
+        button: state.join[props.projectId],
         user: state.user
     };
 };
