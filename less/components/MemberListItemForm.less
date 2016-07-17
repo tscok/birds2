@@ -1,0 +1,39 @@
+.member-list-item-form {
+    display: flex;
+    flex-direction: column;
+
+    > div {
+        margin-top: 15px;
+    }
+
+    &__toggle {
+        min-width: 200px;
+    }
+
+    &__input {
+        flex: 1;
+    }
+}
+
+.tablet-layout({
+
+    .member-list-item-form {
+        &__save {
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+
+});
+
+.desktop-layout({
+
+    .member-list-item-form {
+        flex-direction: row;
+
+        &__input {
+            margin: 0 15px;
+        }
+    }
+
+});
