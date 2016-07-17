@@ -1,9 +1,11 @@
 import Avatar from './components/Avatar';
+import Button from './components/Button';
 import ButtonRadio from './components/ButtonRadio';
 import ButtonToggle from './components/ButtonToggle';
 import ClickOutside from './components/ClickOutside';
 import ContentBox from './components/ContentBox';
 import Divider from './components/Divider';
+import FormGroup from './components/FormGroup';
 import InputField from './components/InputField';
 import JoinButton from './components/JoinButton';
 import Lightbox from './components/Lightbox';
@@ -28,11 +30,13 @@ import ViewHeader from './components/ViewHeader';
 
 export {
     Avatar,
+    Button,
     ButtonRadio,
     ButtonToggle,
     ClickOutside,
     ContentBox,
     Divider,
+    FormGroup,
     InputField,
     JoinButton,
     Lightbox,

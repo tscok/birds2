@@ -12,27 +12,31 @@
         width: 16px;
         height: 16px;
         margin: 0 3px;
-        background-color: #ddd;
+        background-color: @color-grayd;
         display: inline-block;
     }
 
     &--white > div {
-        background-color: #fff;
+        background-color: @color-white;
     }
 }
 
 /* Circle
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .sk-circle {
-    margin: 0;
+    margin: 0 auto;
     width: 20px;
     height: 20px;
 
     .sk-child:before {
-        background-color: #ccc;
+        background-color: @color-grayc;
+    }
+
+    &--black .sk-child:before {
+        background-color: @color-text;
     }
 
     &--white .sk-child:before {
-        background-color: #fff;
+        background-color: @color-white;
     }
 }
