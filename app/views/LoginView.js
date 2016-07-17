@@ -5,7 +5,7 @@ import promise from 'promise';
 
 import { firebase, getUser } from 'app/firebase';
 import { overlayAdd } from 'app/utils';
-import { ContentBox, Divider, InputField, Spinner } from 'app/components';
+import { Button, ContentBox, Divider, FormGroup, InputField, Spinner } from 'app/components';
 
 import { loginUpdate } from 'app/redux/login';
 import { userUpdate, userLogout } from 'app/redux/user';
@@ -100,37 +100,34 @@ const LoginView = React.createClass({
         );
     },
 
-    renderButtonContent() {
-        if (this.props.loading) {
-            return (<Spinner type="circle" color="white" />);
-        }
-        return <span>Login</span>
-    },
-
     renderPasswordLogin() {
         const buttonClass = purebem.many(block('button', ['submit']), 'button-primary');
         return (
             <div className={ block('password-login') }>
                 <form onSubmit={ this.handleSubmit }>
-                    <div className="form__group">
-                        <label>Username</label>
+                    <FormGroup label="Username">
                         <InputField
                             name="username"
                             onChange={ this.handleChange }
+                            stretched={ true }
                             value={ this.props.username } />
-                    </div>
-                    <div className="form__group">
-                        <label>Password</label>
+                    </FormGroup>
+                    <FormGroup label="Password">
                         <InputField
                             name="password"
                             onChange={ this.handleChange }
+                            stretched={ true }
                             type="password"
                             value={ this.props.password } />
-                    </div>
+                    </FormGroup>
                     { this.renderError() }
-                    <button type="submit" className={ buttonClass } disabled={ this.props.loading }>
-                        { this.renderButtonContent() }
-                    </button>
+                    <Button
+                        loading={ this.props.loading }
+                        stretched={ true }
+                        style="neutral"
+                        type="submit">
+                        Login
+                    </Button>
                 </form>
             </div>
         );
@@ -140,7 +137,12 @@ const LoginView = React.createClass({
         const buttonClass = purebem.many(block('button', ['facebook']));
         return (
             <div className={ block('social-login') }>
-                <button type="button" className={ buttonClass } onClick={ this.handleFacebookLogin }>Continue with Facebook</button>
+                <Button
+                    onClick={ this.handleFacebookLogin }
+                    stretched={ true }
+                    style="facebook">
+                    Continue with Facebook
+                </Button>
             </div>
         );
     },

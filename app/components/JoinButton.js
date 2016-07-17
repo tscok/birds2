@@ -4,6 +4,7 @@ import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
 import { joinUpdate } from 'app/redux/join';
+import { Button } from 'app/components';
 
 
 const block = purebem.of('join-button');
@@ -52,14 +53,15 @@ const JoinButton = React.createClass({
 
     renderButton() {
         const { status } = this.props.button;
-        const label = status === 'pending' ? 'Leave' : 'Join';
-        const style = status === 'pending' ? 'outline' : 'primary';
-        const classes = purebem.many(block('button'), `button-${style}`);
+        const label = status === 'pending' ? 'Cancel' : 'Join';
+        const style = status === 'pending' ? 'default' : 'success';
 
         return (
-            <button type="button" className={ classes } onClick={ this.handleClick }>
+            <Button
+                onClick={ this.handleClick }
+                style={ style }>
                 { label }
-            </button>
+            </Button>
         );
     },
 

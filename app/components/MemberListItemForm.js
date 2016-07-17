@@ -5,7 +5,7 @@ import purebem from 'purebem';
 import { firebase } from 'app/firebase';
 import { isString } from 'app/utils';
 import { memberUpdate } from 'app/redux/members';
-import { ButtonToggle, InputField } from 'app/components';
+import { Button, ButtonToggle, InputField } from 'app/components';
 
 
 const block = purebem.of('member-list-item-form');
@@ -14,6 +14,7 @@ const MemberListItemForm = React.createClass({
 
     propTypes: {
         member: PropTypes.object.isRequired,
+        onClose: PropTypes.func.isRequired,
         onInput: PropTypes.func.isRequired,
         onToggle: PropTypes.func.isRequired,
         projectId: PropTypes.string.isRequired
@@ -24,41 +25,43 @@ const MemberListItemForm = React.createClass({
         firebase.database().ref(`groups/${projectId}/${member.uid}`)
             .update({
                 role: member.role,
-                sign: member.sign || null
+                sign: member.sign && member.role === 'ringer' ? member.sign : null
             });
     },
 
     handleToggle(role) {
-        this.props.onToggle(role);
+        this.props.onToggle(role.toLowerCase());
     },
 
     handleInput(evt) {
         this.props.onInput(evt.target.value);
     },
 
-    renderInput() {
-        const { member } = this.props;
-        return (
-            <InputField
-                disabled={ member.role === 'assistant' }
-                onChange={ this.handleInput }
-                placeholder="Signature, e.g. MCN"
-                value={ member.sign } />
-        );
-    },
-
     render() {
+        const { member } = this.props;
         const roles = ['assistant', 'ringer'];
 
         return (
             <div className={ block() }>
-                <ButtonToggle
-                    active={ this.props.member.role }
-                    className={ block('toggle') }
-                    onClick={ this.handleToggle }
-                    options={ roles } />
-                { this.renderInput() }
-                <button type="button" className="button-outline" onClick={ this.handleSave }>Save</button>
+                <div className={ block('toggle') }>
+                    <ButtonToggle
+                        active={ member.role }
+                        className={ block('toggle') }
+                        onClick={ this.handleToggle }
+                        options={ roles } />
+                </div>
+                <div className={ block('input') }>
+                    <InputField
+                        disabled={ member.role === 'assistant' }
+                        onChange={ this.handleInput }
+                        placeholder="Ringer sign."
+                        stretched={ true }
+                        value={ member.sign } />
+                </div>
+                <div className={ block('save') }>
+                    <Button onClick={ this.handleSave } style="neutral">Save</Button>
+                    <Button onClick={ this.props.onClose }>Cancel</Button>
+                </div>
             </div>
         );
     }

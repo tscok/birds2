@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
+import { Button } from 'app/components';
+
 
 const block = purebem.of('project-success');
 
@@ -31,8 +33,18 @@ const ProjectSuccess = React.createClass({
                 <div className={ block('body') }>
                     <p><strong>The project was successfully created!</strong><br />How would you like to proceed?</p>
                     <div className={ block('actions') }>
-                        <button className={ primary } onClick={ this.handleReroute }>Go to project</button>
-                        <button className={ outline } onClick={ this.props.onClose }>Create another</button>
+                        <Button
+                            onClick={ this.handleReroute }
+                            stretched={ true }
+                            style="neutral">
+                            Go to project
+                        </Button>
+                        <Button
+                            onClick={ this.props.onClose }
+                            stretched={ true }
+                            style="default">
+                            Create another
+                        </Button>
                     </div>
                 </div>
             </div>

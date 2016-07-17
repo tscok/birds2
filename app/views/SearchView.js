@@ -98,6 +98,7 @@ const SearchView = React.createClass({
                         isLoading={ this.props.isSearching }
                         onChange={ this.handleInput }
                         placeholder="Project title or username"
+                        stretched={ true }
                         value={ this.props.keyword } />
                 </ViewHeader>
                 { this.renderResults() }

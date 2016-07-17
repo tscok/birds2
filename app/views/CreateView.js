@@ -7,7 +7,7 @@ import { firebase } from 'app/firebase';
 import { omit, omitBy } from 'app/lodash';
 import { isDate, isString } from 'app/utils';
 
-import { ButtonToggle, InputField, Lightbox, ProjectSuccess, ViewHeader } from 'app/components';
+import { Button, ButtonToggle, FormGroup, InputField, Lightbox, ProjectSuccess, ViewHeader } from 'app/components';
 
 import { error, reset, update } from 'app/redux/create';
 
@@ -16,7 +16,7 @@ const ERROR_DATES = 'Please make sure dates are in order.';
 const ERROR_WRITE = 'Sorry! The project could not be created. Please try again later.'
 
 const INFO_PUBLIC = 'Public projects aim at collaboration. Users can find, and may request to join, your project.';
-const INFO_PRIVATE = 'Private projects aim at privacy. Users can not find, nor request to join, your project.';
+const INFO_PRIVATE = 'Private projects aim at privacy. Users cannot find, nor request to join, your project.';
 
 const block = purebem.of('create-view');
 
@@ -66,7 +66,7 @@ const CreateView = React.createClass({
         this.props.onInput(name, value, isValid);
     },
 
-    handleSubmit(evt) {
+    handleCreate(evt) {
         evt.preventDefault();
 
         if (this.props.project.dateStart >= this.props.project.dateEnd) {
@@ -90,7 +90,7 @@ const CreateView = React.createClass({
         };
 
         projectRef.set(project).then(() => {
-            firebase.database().ref(`groups/${project.id}/${user.uid}`).set({ status: 'owner' });
+            firebase.database().ref(`groups/${project.id}/${user.uid}`).set({ status: 'owner', role: 'assistant' });
             firebase.database().ref(`users/${user.uid}/projects/${project.id}`).set({ status: 'owner' });
             this.props.onSuccess(project.id);
         }, (error) => {
@@ -99,7 +99,6 @@ const CreateView = React.createClass({
     },
 
     handleReset() {
-        this.form.reset();
         this.props.onReset();
     },
 
@@ -146,30 +145,34 @@ const CreateView = React.createClass({
         const { project } = this.props;
 
         return (
-            <form className={ block('form') } onSubmit={ this.handleSubmit } ref={ (form) => this.form = form }>
-                <div className="form__group">
-                    <label>Project Name</label>
+            <form className={ block('form') } onSubmit={ this.handleCreate }>
+                <FormGroup label="Project Title">
                     <InputField
                         name="title"
                         onChange={ this.handleInput }
+                        stretched={ true }
                         value={ project.title } />
-                </div>
-                <div className="form__group">
-                    <label>Start Date<span className="label-body">- YYYYMMDD</span></label>
+                </FormGroup>
+                <FormGroup
+                    label="Start Date"
+                    description="YYYYMMDD">
                     <InputField
                         maxLength="8"
                         name="dateStart"
                         onChange={ this.handleInput }
+                        stretched={ true }
                         value={ project.dateStart } />
-                </div>
-                <div className="form__group">
-                    <label>End Date<span className="label-body">- YYYYMMDD</span></label>
+                </FormGroup>
+                <FormGroup
+                    label="End Date"
+                    description="YYYYMMDD">
                     <InputField
                         maxLength="8"
                         name="dateEnd"
                         onChange={ this.handleInput }
+                        stretched={ true }
                         value={ project.dateEnd } />
-                </div>
+                </FormGroup>
                 <div className={ block('privacy') }>
                     <ButtonToggle
                         active={ project.type }
@@ -180,8 +183,18 @@ const CreateView = React.createClass({
                 </div>
                 <div className={ block('actions') }>
                     { this.renderErrorMessage() }
-                    <button type="submit" className={ buttonClass } disabled={ this.isFormInvalid() }>Create Project</button>
-                    <button type="button" className={ block('button', ['reset']) } onClick={ this.handleReset }>Reset</button>
+                    <Button
+                        disabled={ this.isFormInvalid() }
+                        style="success"
+                        type="submit">
+                        Create Project
+                    </Button>
+                    <Button
+                        onClick={ this.handleReset }
+                        style="default"
+                        type="reset">
+                        Reset
+                    </Button>
                 </div>
             </form>
         );

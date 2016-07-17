@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
 import { capitalize } from 'app/utils';
-import { ListItem, MemberListItemForm } from 'app/components';
+import { Button, ListItem, MemberListItemForm } from 'app/components';
 
 
 const block = purebem.of('member-list-item');
@@ -41,10 +41,17 @@ const MemberListItem = React.createClass({
     renderPendingActions() {
         return (
             <div className={ block('actions') }>
-                <button type="button" className={ purebem.many(block('button'), 'button-primary') } onClick={ this.handleAccept }>Approve</button>
-                <button type="button" className={ purebem.many(block('button'), 'button-outline') } onClick={ this.handleDecline }>Decline</button>
+                <Button onClick={ this.handleAccept } style="success">Accept</Button>
+                <Button onClick={ this.handleDecline }>Deny</Button>
             </div>
         );
+    },
+
+    renderRevoke() {
+        if (this.props.item.status === 'owner') {
+            return null;
+        }
+        return (<Button onClick={ this.handleRevoke }>Revoke</Button>);
     },
 
     renderMemberActions() {
@@ -53,8 +60,8 @@ const MemberListItem = React.createClass({
         }
         return (
             <div className={ block('actions') }>
-                <button type="button" className={ purebem.many(block('button'), 'button-outline') } onClick={ this.handleExpand }>Edit</button>
-                <button type="button" className={ purebem.many(block('button'), 'button-outline') } onClick={ this.handleRevoke }>Revoke</button>
+                <Button onClick={ this.handleExpand }>Edit</Button>
+                { this.renderRevoke() }
             </div>
         );
     },
@@ -69,13 +76,24 @@ const MemberListItem = React.createClass({
         return this.renderMemberActions();
     },
 
+    renderSummary(item) {
+        if (item.expanded) {
+            return null;
+        }
+        return (
+            <div>
+                <div><strong>Role:</strong> { item.role ? capitalize(item.role) : '' }</div>
+                <div><strong>Sign:</strong> { item.sign ? item.sign : '' }</div>
+            </div>
+        );
+    },
+
     renderBody() {
         const { item } = this.props;
         return (
             <div>
                 <div><strong>Status:</strong> { capitalize(item.status) }</div>
-                <div><strong>Role:</strong> { item.role ? capitalize(item.role) : '' }</div>
-                <div><strong>Sign:</strong> { item.sign ? item.sign : '' }</div>
+                { this.renderSummary(item) }
             </div>
         );
     },
@@ -87,6 +105,7 @@ const MemberListItem = React.createClass({
         return (
             <MemberListItemForm
                 member={ this.props.item }
+                onClose={ this.handleExpand }
                 projectId={ this.props.projectId } />
         );
     },
