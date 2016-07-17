@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
+import { capitalize } from 'app/utils';
+
 
 const block = purebem.of('button-toggle');
 
@@ -43,7 +45,7 @@ const ButtonToggle = React.createClass({
                 onClick={ () => this.props.onClick(option) }
                 onKeyDown={ this.onKeyDown(option) }
                 tabIndex="0">
-                { option }
+                { capitalize(option) }
             </div>
         );
     },

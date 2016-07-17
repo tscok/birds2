@@ -1,23 +1,26 @@
 .button-toggle {
+    @radius: 3px;
+
     display: flex;
     cursor: pointer;
-    .border-radius(5px);
+    .border-radius(@radius);
 
     &__option {
         flex: 1;
         position: relative;
+        height: 44px;
+        line-height: 44px;
+        font-size: 15px;
         text-align: center;
-        line-height: 50px;
-        height: 50px;
-        background-color: @color-graye;
-        border: 1px solid @color-graye;
+        background-color: @color-white;
+        border: 1px solid @color-grayd;
         .user-select;
 
         &--first {
-            .border-radius(5px 0 0 5px);
+            .border-radius(@radius 0 0 @radius);
         }
         &--last {
-            .border-radius(0 5px 5px 0);
+            .border-radius(0 @radius @radius 0);
         }
 
         &:focus {
@@ -26,16 +29,12 @@
 
         &:hover,
         &:focus {
-            border-color: @color-gray9;
+            border-color: @color-grayb;
         }
 
         &--active {
-            color: inherit;
-            background-color: @color-white;
-
-            &:focus {
-                border-color: @color-interactive;
-            }
+            background-color: @color-grayf9;
+            .box-shadow(~'inset 0 1px 2px -1px rgba(0,0,0,.2)');
         }
     }
 }
