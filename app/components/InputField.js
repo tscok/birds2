@@ -12,22 +12,26 @@ const InputField = React.createClass({
     propTypes: {
         onChange: PropTypes.func.isRequired,
         // ...
+        disabled: PropTypes.bool,
         error: PropTypes.string,
         iconClass: PropTypes.string,
         iconClick: PropTypes.func,
         isLoading: PropTypes.bool,
         placeholder: PropTypes.string,
+        stretched: PropTypes.bool,
         type: PropTypes.string,
         value: PropTypes.string
     },
 
     getDefaultProps() {
         return {
+            disabled: false,
             error: '',
             iconClass: '',
             iconClick: noop,
             isLoading: false,
             placeholder: '',
+            stretched: false,
             type: 'text',
             value: ''
         };
@@ -58,17 +62,22 @@ const InputField = React.createClass({
     },
 
     renderInput() {
-        const { error, iconClass } = this.props;
+        const { disabled, error, iconClass, stretched } = this.props;
 
-        const inputClass = purebem.many(
-            block('input', { icon: !!iconClass }),
+        const classNames = purebem.many(
+            block('input',
+            {
+                disabled,
+                icon: !!iconClass,
+                stretched
+            }),
             !!error ? 'error' : ''
         );
 
         return (
             <input { ...this.props }
                 autoComplete="off"
-                className={ inputClass }
+                className={ classNames }
                 name={ this.props.name }
                 onChange={ this.props.onChange }
                 placeholder={ this.props.placeholder }
