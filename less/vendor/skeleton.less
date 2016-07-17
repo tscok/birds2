@@ -1,7 +1,7 @@
 // Skeleton
 // http://getskeleton.com/
 @import "normalize.css";
-@import "skeleton.css";
+@import "skeleton_customized.css";
 
 // Customization
 
@@ -9,6 +9,7 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 body {
   font-size: 1.6em;
+  line-height: 1.5;
   font-weight: 300;
   color: @color-text;
 }
@@ -35,137 +36,5 @@ a {
     color: @color-interactive;
     &:hover {
         color: darken(@color-interactive--hover, 15%);
-    }
-}
-
-/* Buttons
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-
-.button,
-button,
-input[type="submit"],
-input[type="reset"],
-input[type="button"] {
-    display: inline-block;
-    height: 50px;
-    width: 100%;
-    min-width: 120px;
-    
-    font-size: 1.5rem;
-    font-weight: 400;
-    line-height: 50px;
-    text-align: center;
-    text-transform: none;
-
-    outline: 0;
-    border: 0;
-    border-radius: 5px;
-    color: @color-text;
-    background-color: transparent;
-
-    &:hover, &:focus {
-        color: @color-text;
-        border-color: @color-gray9;
-    }
-
-    &[disabled], &[disabled]:hover {
-        color: @color-grayc;
-        border-color: @color-grayd;
-    }
-
-    &.button-outline {
-        border: 1px solid @color-grayd;
-    }
-
-    &.button-primary {
-        font-weight: 600;
-        color: @color-white;
-        background-color: @color-green;
-        border: none;
-        .transition(background-color @timing-normal);
-
-        &:hover, &:focus {
-            background-color: @color-green-dark;
-        }
-
-        &:active {
-            background-color: @color-green-dark;
-        }
-
-        &[disabled], &[disabled]:hover {
-            color: @color-white;
-            background-color: @color-grayc;
-            border: none;
-        }
-    }
-}
-
-/* Forms
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="text"],
-input[type="tel"],
-input[type="url"],
-input[type="password"],
-textarea,
-select {
-    width: 100%;
-    height: 50px;
-    margin: 0;
-    padding: 0 10px;
-    
-    font-weight: 300;
-    font-size: 1.2em;
-    line-height: 50px;
-    
-    .border-radius(5px);
-    border: 1px solid @color-graye;
-    background-color: @color-white;
-    box-shadow: none;
-    outline: 0;
-
-    &:focus {
-        border-color: @color-interactive;
-    }
-
-    &.error {
-        border-color: @color-red;
-    }
-}
-
-label {
-    display: block;
-    padding-left: .5rem;
-    font-weight: 400;
-
-    > .label-body {
-        font-size: .75em;
-        color: @color-gray9;
-    }
-}
-
-/* Spacing
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-
-button,
-.button {
-    margin-bottom: 0;
-}
-label,
-input,
-textarea,
-select,
-fieldset {
-    margin-bottom: 0;
-}
-form
-.form {
-    margin-bottom: 4rem;
-
-    &__group {
-        margin-bottom: 2rem;
     }
 }
