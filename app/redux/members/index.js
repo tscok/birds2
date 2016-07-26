@@ -12,6 +12,7 @@ const defaultState = {
  */
 const MEMBERS_UPDATE = 'MEMBERS_UPDATE';
 const MEMBER_UPDATE = 'MEMBER_UPDATE';
+const MEMBER_EXPAND = 'MEMBER_EXPAND';
 
 
 /**
@@ -29,6 +30,14 @@ export const  memberUpdate = (uid, payload) => {
         type: MEMBER_UPDATE,
         uid,
         payload
+    };
+};
+
+export const memberExpand = (uid, expanded) => {
+    return {
+        type: MEMBER_EXPAND,
+        uid,
+        expanded
     };
 };
 
@@ -57,6 +66,23 @@ export const reducer = (state = defaultState, action) => {
                     return member;
                 })
             };
+
+        case MEMBER_EXPAND:
+            return {
+                ...state,
+                members: state.members.map((member) => {
+                    if (member.uid === action.uid) {
+                        return {
+                            ...member,
+                            ...action.expanded
+                        };
+                    }
+                    return {
+                        ...member,
+                        expanded: false
+                    };
+                })
+            }
 
         default:
             return { ...state };

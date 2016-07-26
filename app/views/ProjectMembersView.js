@@ -4,7 +4,7 @@ import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
 import { find, orderBy } from 'app/lodash';
-import { memberUpdate, membersUpdate } from 'app/redux/members';
+import { memberUpdate, membersUpdate, memberExpand } from 'app/redux/members';
 import { List, MemberListItem, Spinner, ViewHeader } from 'app/components';
 
 
@@ -122,7 +122,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onUpdate: (data) => dispatch(membersUpdate(data)),
-        onExpand: (uid, expanded) => dispatch(memberUpdate(uid, { expanded: !expanded }))
+        onExpand: (uid, expanded) => dispatch(memberExpand(uid, { expanded: !expanded }))
     };
 };
 
