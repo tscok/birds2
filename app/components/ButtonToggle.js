@@ -13,11 +13,13 @@ const ButtonToggle = React.createClass({
         onClick: PropTypes.func.isRequired,
         options: PropTypes.array.isRequired,
         // ...
+        center: PropTypes.bool,
         className: PropTypes.string
     },
 
     getDefaultProps() {
         return {
+            center: false,
             className: null
         };
     },
@@ -51,7 +53,11 @@ const ButtonToggle = React.createClass({
     },
 
     render() {
-        const classNames = purebem.many(block(), this.props.className);
+        const { center, className } = this.props;
+        const classNames = purebem.many(
+            block({ center }),
+            className
+        );
 
         return (
             <div className={ classNames }>

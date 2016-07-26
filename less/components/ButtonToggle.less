@@ -2,18 +2,22 @@
     @radius: 3px;
 
     display: flex;
-    cursor: pointer;
     .border-radius(@radius);
+
+    &--center {
+        justify-content: center;
+    }
 
     &__option {
         flex: 1;
-        position: relative;
         height: 44px;
         line-height: 44px;
         font-size: 15px;
         text-align: center;
+        padding: 0 20px;
         background-color: @color-white;
         border: 1px solid @color-grayd;
+        cursor: pointer;
         .user-select;
 
         &--first {
@@ -38,3 +42,12 @@
         }
     }
 }
+
+.tablet-layout({
+
+    .button-toggle__option {
+        flex: inherit;
+        min-width: 100px;
+    }
+
+});
