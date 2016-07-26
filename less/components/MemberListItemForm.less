@@ -6,21 +6,24 @@
         margin-top: 15px;
     }
 
-    &__toggle {
-        min-width: 200px;
+    &__form-input {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
-    &__input {
-        flex: 1;
-    }
 }
 
 .tablet-layout({
 
     .member-list-item-form {
-        &__save {
-            display: flex;
-            justify-content: flex-end;
+        &__form-input {
+            flex-direction: row;
+        }
+
+        &__sign {
+            flex: initial;
+            margin-left: 15px;
         }
     }
 
@@ -31,8 +34,21 @@
     .member-list-item-form {
         flex-direction: row;
 
-        &__input {
-            margin: 0 15px;
+        > div {
+            margin-top: 0;
+        }
+
+        &__sign {
+            flex: initial;
+        }
+
+        &__form-input {
+            flex: 1;
+            display: flex;
+        }
+
+        &__form-actions {
+            padding-top: 30px;
         }
     }
 

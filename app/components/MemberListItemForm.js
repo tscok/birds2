@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
-import { isString } from 'app/utils';
+import { isString, capitalize } from 'app/utils';
+import { isEqual } from 'app/lodash';
 import { memberUpdate } from 'app/redux/members';
-import { Button, ButtonToggle, InputField } from 'app/components';
+import { Button, ButtonToggle, InputField, FormGroup } from 'app/components';
 
 
 const block = purebem.of('member-list-item-form');
@@ -16,51 +17,107 @@ const MemberListItemForm = React.createClass({
         member: PropTypes.object.isRequired,
         onClose: PropTypes.func.isRequired,
         onInput: PropTypes.func.isRequired,
+        onRevoke: PropTypes.func.isRequired,
         onToggle: PropTypes.func.isRequired,
         projectId: PropTypes.string.isRequired
     },
 
-    handleSave() {
-        const { member, projectId } = this.props;
-        firebase.database().ref(`groups/${projectId}/${member.uid}`)
-            .update({
-                role: member.role,
-                sign: member.sign && member.role === 'ringer' ? member.sign : null
-            });
+    getInitialState() {
+        return {
+            initialMember: this.props.member
+        };
     },
 
-    handleToggle(role) {
-        this.props.onToggle(role.toLowerCase());
+    isRinger() {
+        const { member } = this.props;
+        return isString(member.sign) && member.role === 'ringer';
     },
 
     handleInput(evt) {
-        this.props.onInput(evt.target.value);
+        const value = evt.target.value.trim().toUpperCase();
+        this.props.onInput(value);
+    },
+
+    handleCancel() {
+        const { initialMember } = this.state;
+        this.props.onToggle(initialMember.role);
+        this.props.onInput(initialMember.sign || null);
+        this.props.onClose();
+    },
+
+    handleSave() {
+        const { initialMember } = this.state;
+        const { member } = this.props;
+
+        if (!isEqual(initialMember, member)) {
+            this.handleUpdate();
+        }
+
+        this.props.onClose();
+    },
+
+    handleToggle(option) {
+        if (option === 'assistant') {
+            this.props.onInput('');
+        }
+        this.props.onToggle(option);
+    },
+
+    handleUpdate() {
+        const { member, projectId } = this.props;
+
+        firebase.database().ref(`groups/${projectId}/${member.uid}`)
+            .update({
+                role: this.isRinger() ? 'ringer' : 'assistant',
+                sign: this.isRinger() ? member.sign : null
+            });
+    },
+
+    renderRevoke() {
+        if (this.props.member.status === 'owner') {
+            return null;
+        }
+        return (
+            <Button onClick={ this.props.onRevoke } style="danger">Remove</Button>
+        );
     },
 
     render() {
         const { member } = this.props;
-        const roles = ['assistant', 'ringer'];
+        const isDisabled = !isString(member.sign) && member.role === 'ringer';
 
         return (
             <div className={ block() }>
-                <div className={ block('toggle') }>
-                    <ButtonToggle
-                        active={ member.role }
-                        className={ block('toggle') }
-                        onClick={ this.handleToggle }
-                        options={ roles } />
+                <div className={ block('form-input') }>
+                    <FormGroup
+                        className={ block('role') }
+                        label="Role">
+                        <ButtonToggle
+                            active={ member.role }
+                            className={ block('toggle') }
+                            onClick={ this.handleToggle }
+                            options={ ['assistant', 'ringer'] } />
+                    </FormGroup>
+                    <FormGroup
+                        className={ block('sign') }
+                        label="Signature">
+                        <InputField
+                            disabled={ member.role !== 'ringer' }
+                            onChange={ this.handleInput }
+                            placeholder="i.e. 'MCN'"
+                            stretched={ true }
+                            value={ member.sign } />
+                    </FormGroup>
                 </div>
-                <div className={ block('input') }>
-                    <InputField
-                        disabled={ member.role === 'assistant' }
-                        onChange={ this.handleInput }
-                        placeholder="Ringer sign."
-                        stretched={ true }
-                        value={ member.sign } />
-                </div>
-                <div className={ block('save') }>
-                    <Button onClick={ this.handleSave } style="neutral">Save</Button>
-                    <Button onClick={ this.props.onClose }>Cancel</Button>
+                <div className={ block('form-actions') }>
+                    <FormGroup>
+                        <Button
+                            disabled={ isDisabled }
+                            onClick={ this.handleSave }
+                            style="neutral">Save</Button>
+                        { this.renderRevoke() }
+                        <Button onClick={ this.handleCancel }>Cancel</Button>
+                    </FormGroup>
                 </div>
             </div>
         );

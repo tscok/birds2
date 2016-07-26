@@ -40,60 +40,45 @@ const MemberListItem = React.createClass({
 
     renderPendingActions() {
         return (
-            <div className={ block('actions') }>
+            <div>
                 <Button onClick={ this.handleAccept } style="success">Accept</Button>
                 <Button onClick={ this.handleDecline }>Deny</Button>
             </div>
         );
     },
 
-    renderRevoke() {
-        if (this.props.item.status === 'owner') {
-            return null;
-        }
-        return (<Button onClick={ this.handleRevoke }>Revoke</Button>);
-    },
-
     renderMemberActions() {
         if (this.props.item.expanded) {
             return null;
         }
-        return (
-            <div className={ block('actions') }>
-                <Button onClick={ this.handleExpand }>Edit</Button>
-                { this.renderRevoke() }
-            </div>
-        );
+        return (<Button onClick={ this.handleExpand }>Edit</Button>);
     },
 
     renderActions() {
-        if (!this.props.isOwner) {
-            return null;
-        }
-        if (this.props.item.status === 'pending') {
-            return this.renderPendingActions();
-        }
-        return this.renderMemberActions();
-    },
-
-    renderSummary(item) {
-        if (item.expanded) {
-            return null;
-        }
         return (
-            <div>
-                <div><strong>Role:</strong> { item.role ? capitalize(item.role) : '' }</div>
-                <div><strong>Sign:</strong> { item.sign ? item.sign : '' }</div>
+            <div className={ block('actions') }>
+                {
+                    this.props.item.status !== 'pending'
+                        ? this.renderMemberActions()
+                        : this.renderPendingActions()
+                }
             </div>
         );
     },
 
     renderBody() {
         const { item } = this.props;
+        const role = item.role ? `, ${capitalize(item.role)}` : '';
+        const sign = item.sign ? `(${item.sign})` : '';
+
+        if (item.expanded) {
+            return null;
+        }
+
         return (
             <div>
-                <div><strong>Status:</strong> { capitalize(item.status) }</div>
-                { this.renderSummary(item) }
+                <span>{ capitalize(item.status) }</span>
+                <span>{ role } { sign }</span>
             </div>
         );
     },
@@ -106,22 +91,22 @@ const MemberListItem = React.createClass({
             <MemberListItemForm
                 member={ this.props.item }
                 onClose={ this.handleExpand }
+                onRevoke={ this.handleRevoke }
                 projectId={ this.props.projectId } />
         );
     },
 
     render() {
         const { item } = this.props;
+
         return (
-            <div className={ block() }>
-                <ListItem
-                    title={ item.name || item.email }
-                    body={ this.renderBody() }
-                    aside={ this.renderActions() }
-                    modifier={ item.status }>
-                    { this.renderExpanded() }
-                </ListItem>
-            </div>
+            <ListItem
+                title={ item.name || item.email }
+                body={ this.renderBody() }
+                aside={ this.renderActions() }
+                modifier={ item.status }>
+                { this.renderExpanded() }
+            </ListItem>
         );
     }
 
