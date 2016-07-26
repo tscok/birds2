@@ -146,7 +146,7 @@ const CreateView = React.createClass({
 
         return (
             <form className={ block('form') } onSubmit={ this.handleCreate }>
-                <FormGroup label="Project Title">
+                <FormGroup label="Title">
                     <InputField
                         name="title"
                         onChange={ this.handleInput }
@@ -176,6 +176,7 @@ const CreateView = React.createClass({
                 <div className={ block('privacy') }>
                     <ButtonToggle
                         active={ project.type }
+                        center={ true }
                         className={ block('toggle') }
                         options={ this.props.types }
                         onClick={ this.handleToggle } />
