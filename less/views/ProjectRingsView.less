@@ -1,0 +1,21 @@
+.project-rings-view {
+    &__form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+.tablet-layout({
+
+    .project-rings-view {
+        &__form {
+            flex-direction: row;
+
+            > div + div {
+                margin-left: 15px;
+            }
+        }
+    }
+
+});
