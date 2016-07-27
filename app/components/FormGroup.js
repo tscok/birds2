@@ -10,14 +10,19 @@ const FormGroup = React.createClass({
         children: PropTypes.node,
         className: PropTypes.string,
         description: PropTypes.string,
-        label: PropTypes.string
+        label: PropTypes.string,
+        type: PropTypes.oneOf([
+            'block',
+            'inline'
+        ])
     },
 
     getDefaultProps() {
         return {
             className: null,
             description: '',
-            label: ''
+            label: '',
+            type: 'block'
         };
     },
 
@@ -45,9 +50,9 @@ const FormGroup = React.createClass({
     },
 
     render() {
-        const { className } = this.props;
+        const { className, type } = this.props;
         const classNames = purebem.many(
-            block(),
+            block({ type }),
             className
         );
 

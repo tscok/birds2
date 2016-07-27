@@ -5,6 +5,11 @@
         display: block;
     }
 
+    &__label, &__description {
+        line-height: 30px;
+        font-size: 14px;
+    }
+
     &__description {
         font-weight: normal;
         font-size: 13px;
@@ -17,8 +22,18 @@
             margin-right: 4px;
         }
     }
-
-    &__label, &__description {
-        line-height: 1.875em;
-    }
 }
+
+.tablet-layout({
+
+    .form-group {
+        &--inline {
+            margin-bottom: 0;
+        }
+
+        &--inline + &--inline {
+            margin-left: 15px;
+        }
+    }
+
+});
