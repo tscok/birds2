@@ -16,22 +16,29 @@ const MemberListItem = React.createClass({
         projectId: PropTypes.string.isRequired
     },
 
-    handleAccept() {
+    handleUserUpdate(data) {
         const { item, projectId } = this.props;
-        firebase.database().ref(`users/${item.uid}/projects/${projectId}`).update({ status: 'member' });
-        firebase.database().ref(`groups/${projectId}/${item.uid}`).update({ status: 'member', role: 'assistant' });
+        firebase.database().ref(`users/${item.uid}/projects/${projectId}`).update(data);
+    },
+
+    handleMemberUpdate(data) {
+        const { item, projectId } = this.props;
+        firebase.database().ref(`groups/${projectId}/${item.uid}`).update(data);
+    },
+
+    handleAccept() {
+        this.handleUserUpdate({ status: 'member' });
+        this.handleMemberUpdate({ status: 'member', role: 'assistant' });
     },
 
     handleDecline() {
-        const { item, projectId } = this.props;
-        firebase.database().ref(`users/${item.uid}/projects/${projectId}`).update({ status: null });
-        firebase.database().ref(`groups/${projectId}/${item.uid}`).update({ status: null });
+        this.handleUserUpdate({ status: null });
+        this.handleMemberUpdate({ status: null });
     },
 
     handleRevoke() {
-        const { item, projectId } = this.props;
-        firebase.database().ref(`users/${item.uid}/projects/${projectId}`).update({ status: 'pending' });
-        firebase.database().ref(`groups/${projectId}/${item.uid}`).update({ status: 'pending', role: null, sign: null });
+        this.handleUserUpdate({ status: 'pending' });
+        this.handleMemberUpdate({ status: 'pending', role: null, sign: null });
     },
 
     handleExpand() {
@@ -39,6 +46,9 @@ const MemberListItem = React.createClass({
     },
 
     renderPendingActions() {
+        if (this.props.item.status !== 'pending') {
+            return null;
+        }
         return (
             <div>
                 <Button onClick={ this.handleAccept } style="success">Accept</Button>
@@ -48,7 +58,8 @@ const MemberListItem = React.createClass({
     },
 
     renderMemberActions() {
-        if (this.props.item.expanded) {
+        const { item } = this.props;
+        if (item.expanded || item.status === 'pending') {
             return null;
         }
         return (<Button onClick={ this.handleExpand }>Edit</Button>);
@@ -57,11 +68,8 @@ const MemberListItem = React.createClass({
     renderActions() {
         return (
             <div className={ block('actions') }>
-                {
-                    this.props.item.status !== 'pending'
-                        ? this.renderMemberActions()
-                        : this.renderPendingActions()
-                }
+                { this.renderPendingActions() }
+                { this.renderMemberActions() }
             </div>
         );
     },
