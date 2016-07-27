@@ -91,7 +91,8 @@ const MemberListItemForm = React.createClass({
                 <div className={ block('form-input') }>
                     <FormGroup
                         className={ block('role') }
-                        label="Role">
+                        label="Role"
+                        type="inline">
                         <ButtonToggle
                             active={ member.role }
                             className={ block('toggle') }
@@ -100,24 +101,22 @@ const MemberListItemForm = React.createClass({
                     </FormGroup>
                     <FormGroup
                         className={ block('sign') }
-                        label="Signature">
+                        label="Signature"
+                        type="inline">
                         <InputField
                             disabled={ member.role !== 'ringer' }
                             onChange={ this.handleInput }
                             placeholder="i.e. 'MCN'"
-                            stretched={ true }
                             value={ member.sign } />
                     </FormGroup>
                 </div>
                 <div className={ block('form-actions') }>
-                    <FormGroup>
-                        <Button
-                            disabled={ isDisabled }
-                            onClick={ this.handleSave }
-                            style="neutral">Save</Button>
-                        { this.renderRevoke() }
-                        <Button onClick={ this.handleCancel }>Cancel</Button>
-                    </FormGroup>
+                    <Button
+                        disabled={ isDisabled }
+                        onClick={ this.handleSave }
+                        style="neutral">Save</Button>
+                    { this.renderRevoke() }
+                    <Button onClick={ this.handleCancel }>Cancel</Button>
                 </div>
             </div>
         );

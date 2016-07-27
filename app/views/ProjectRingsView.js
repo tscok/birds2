@@ -25,13 +25,13 @@ const ProjectRingsView = React.createClass({
             <div className={ block() }>
                 <ViewHeader title="Rings &amp; Serial Numbers" />
                 <form className={ block('form') }>
-                    <FormGroup label="Ring Size">
+                    <FormGroup label="Ring Size" type="inline">
                         <InputField onChange={ this.onInput } />
                     </FormGroup>
-                    <FormGroup label="Serial Number">
+                    <FormGroup label="Serial Number" type="inline">
                         <InputField onChange={ this.onInput } />
                     </FormGroup>
-                    <FormGroup label="&nbsp;">
+                    <FormGroup label="&nbsp;" type="inline">
                         <Button style="success">Save</Button>
                     </FormGroup>
                 </form>
