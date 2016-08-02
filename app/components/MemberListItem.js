@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
+import { firebase } from 'app/firebase';
 import { capitalize } from 'app/utils';
 import { Button, ListItem, MemberListItemForm } from 'app/components';
 

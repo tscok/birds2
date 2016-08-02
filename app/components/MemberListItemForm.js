@@ -106,7 +106,7 @@ const MemberListItemForm = React.createClass({
                         <InputField
                             disabled={ member.role !== 'ringer' }
                             onChange={ this.handleInput }
-                            placeholder="i.e. 'MCN'"
+                            placeholder="e.g., 'MCN'"
                             value={ member.sign } />
                     </FormGroup>
                 </div>
