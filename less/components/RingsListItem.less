@@ -1,0 +1,42 @@
+.rings-list-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border-bottom: 1px solid @color-graye;
+    background-color: @color-white;
+
+    &__label {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    &__data--serial &__value {
+        font-style: italic;
+    }
+}
+
+.tablet-layout({
+
+    .rings-list-item {
+        flex-direction: row;
+        align-items: center;
+
+        &__data {
+            min-width: 100px;
+
+            &--serial {
+                flex: 1;
+            }
+        }
+
+        &__data + &__data {
+            margin-left: 15px;
+        }
+
+        &__label {
+            display: none;
+        }
+
+    }
+
+});
