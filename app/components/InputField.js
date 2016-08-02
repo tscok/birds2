@@ -17,6 +17,7 @@ const InputField = React.createClass({
         iconClass: PropTypes.string,
         iconClick: PropTypes.func,
         isLoading: PropTypes.bool,
+        onKeyDown: PropTypes.func,
         placeholder: PropTypes.string,
         stretched: PropTypes.bool,
         type: PropTypes.string,
@@ -30,6 +31,7 @@ const InputField = React.createClass({
             iconClass: '',
             iconClick: noop,
             isLoading: false,
+            onKeyDown: noop,
             placeholder: '',
             stretched: false,
             type: 'text',
@@ -80,6 +82,7 @@ const InputField = React.createClass({
                 className={ classNames }
                 name={ this.props.name }
                 onChange={ this.props.onChange }
+                onKeyDown={ this.props.onKeyDown }
                 placeholder={ this.props.placeholder }
                 type={ this.props.type } />
         );

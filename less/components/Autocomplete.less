@@ -1,0 +1,23 @@
+.autocomplete {
+    position: relative;
+
+    &__results {
+        width: 100%;
+        position: absolute;
+        top: 42px;
+        border: 1px solid @color-grayd;
+        background-color: @color-white;
+        overflow: hidden;
+        .border-radius(0 0 2px 2px);
+        .box-shadow(~'0 4px 12px -4px rgba(0, 0, 0, 0.2)');
+    }
+
+    &__result {
+        padding: 10px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: @color-grayf9;
+        }
+    }
+}
