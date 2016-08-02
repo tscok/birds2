@@ -10,7 +10,15 @@ const List = React.createClass({
         list: PropTypes.array.isRequired,
         listItem: PropTypes.any.isRequired,
         // ...
+        listHeader: PropTypes.any,
         listItemProps: PropTypes.object
+    },
+
+    renderListHeader() {
+        if (!this.props.listHeader) {
+            return null;
+        }
+        return (<this.props.listHeader />);
     },
 
     renderListItem(item, index) {
@@ -25,6 +33,7 @@ const List = React.createClass({
     render() {
         return (
             <div className={ block() }>
+                { this.renderListHeader() }
                 {
                     [].map.call(this.props.list, this.renderListItem)
                 }
