@@ -8,6 +8,7 @@ import { reducer as menu } from './menu';
 import { reducer as pending } from './pending';
 import { reducer as profile } from './profile';
 import { reducer as project } from './project';
+import { reducer as rings } from './rings';
 import { reducer as search } from './search';
 import { reducer as user } from './user';
 
@@ -21,6 +22,7 @@ const appReducer = combineReducers({
     pending,
     profile,
     project,
+    rings,
     search,
     user
 });

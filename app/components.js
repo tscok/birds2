@@ -1,3 +1,4 @@
+import Autocomplete from './components/Autocomplete';
 import Avatar from './components/Avatar';
 import Button from './components/Button';
 import ButtonRadio from './components/ButtonRadio';
@@ -19,6 +20,8 @@ import ProjectListItem from './components/ProjectListItem';
 import ProjectMap from './components/ProjectMap';
 import ProjectSites from './components/ProjectSites';
 import ProjectSuccess from './components/ProjectSuccess';
+import RingsListHeader from './components/RingsListHeader';
+import RingsListItem from './components/RingsListItem';
 import SearchResultItem from './components/SearchResultItem';
 import Spinner from './components/Spinner';
 import Table from './components/Table';
@@ -29,6 +32,7 @@ import User from './components/User';
 import ViewHeader from './components/ViewHeader';
 
 export {
+    Autocomplete,
     Avatar,
     Button,
     ButtonRadio,
@@ -50,6 +54,8 @@ export {
     ProjectMap,
     ProjectSites,
     ProjectSuccess,
+    RingsListHeader,
+    RingsListItem,
     SearchResultItem,
     Spinner,
     Table,
