@@ -1,0 +1,29 @@
+.rings-list-header {
+    display: none;
+}
+
+.tablet-layout({
+
+    .rings-list-header {
+        display: flex;
+        padding: 5px 15px;
+        background-color: @color-graye;
+        border-bottom: 1px solid @color-grayd;
+
+        &__label {
+            min-width: 100px;
+            font-size: 14px;
+            line-height: 30px;
+            color: @color-gray6;
+
+            &--serial {
+                flex: 1;
+            }
+        }
+
+        &__label + &__label {
+            margin-left: 15px;
+        }
+    }
+
+});
