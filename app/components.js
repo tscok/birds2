@@ -20,6 +20,7 @@ import ProjectListItem from './components/ProjectListItem';
 import ProjectMap from './components/ProjectMap';
 import ProjectSites from './components/ProjectSites';
 import ProjectSuccess from './components/ProjectSuccess';
+import RingsForm from './components/RingsForm';
 import RingsList from './components/RingsList';
 import RingsListHeader from './components/RingsListHeader';
 import RingsListItem from './components/RingsListItem';
@@ -55,6 +56,7 @@ export {
     ProjectMap,
     ProjectSites,
     ProjectSuccess,
+    RingsForm,
     RingsList,
     RingsListHeader,
     RingsListItem,
