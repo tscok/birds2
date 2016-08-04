@@ -2,23 +2,28 @@
  * Default state
  */
 const defaultState = {
-    autocomplete: [],
+    autocomplete: {
+        expanded: false,
+        list: []
+    },
     form: {
         size: '',
         serial: ''
     },
-    list: [],
-    loading: true
+    sizes: {
+        list: [],
+        loading: true
+    }
 };
 
 
 /**
  * Action types
  */
-const RINGS_FORM_RESET = 'RINGS_FORM_RESET';
-const RINGS_FORM_UPDATE = 'RINGS_FORM_UPDATE';
 const RINGS_UPDATE = 'RINGS_UPDATE';
+const RINGS_FORM_RESET = 'RINGS_FORM_RESET';
 const RINGS_ITEM_EXPAND = 'RINGS_ITEM_EXPAND';
+const RINGS_AUTOCOMPLETE_SELECT = 'RINGS_AUTOCOMPLETE_SELECT';
 
 
 /**
@@ -30,16 +35,10 @@ export const ringsFormReset = () => {
     };
 };
 
-export const ringsFormUpdate = (payload) => {
-    return {
-        type: RINGS_FORM_UPDATE,
-        payload
-    };
-};
-
-export const ringsUpdate = (payload) => {
+export const ringsUpdate = (branch, payload) => {
     return {
         type: RINGS_UPDATE,
+        branch,
         payload
     };
 };
@@ -49,6 +48,14 @@ export const ringsItemExpand = (size, expanded) => {
         type: RINGS_ITEM_EXPAND,
         size,
         expanded
+    };
+};
+
+export const ringsAutocompleteSelect = (index, payload) => {
+    return {
+        type: RINGS_AUTOCOMPLETE_SELECT,
+        index,
+        payload
     };
 };
 
@@ -64,37 +71,54 @@ export const reducer = (state = defaultState, action) => {
                 form: defaultState.form
             };
 
-        case RINGS_FORM_UPDATE:
-            return {
-                ...state,
-                form: {
-                    ...state.form,
-                    ...action.payload
-                }
-            };
-
         case RINGS_UPDATE:
             return {
                 ...state,
-                ...action.payload
+                [action.branch]: {
+                    ...state[action.branch],
+                    ...action.payload
+                }
             };
 
         case RINGS_ITEM_EXPAND:
             return {
                 ...state,
-                list: state.list.map((item) => {
-                    if (item.size === action.size) {
+                sizes: {
+                    ...state.sizes,
+                    list: state.sizes.list.map((item) => {
+                        if (item.size === action.size) {
+                            return {
+                                ...item,
+                                ...action.expanded
+                            };
+                        }
                         return {
                             ...item,
-                            ...action.expanded
+                            expanded: false
                         };
-                    }
-                    return {
-                        ...item,
-                        expanded: false
-                    };
-                })
+                    })
+                }
             };
+
+        case RINGS_AUTOCOMPLETE_SELECT:
+            return {
+                ...state,
+                autocomplete: {
+                    ...state.autocomplete,
+                    list: state.autocomplete.list.map((item, index) => {
+                        if (index === action.index) {
+                            return {
+                                ...item,
+                                ...action.payload
+                            };
+                        }
+                        return {
+                            ...item,
+                            selected: false
+                        };
+                    })
+                }
+            }
 
         default:
             return { ...state };

@@ -4,9 +4,9 @@ import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
 import { isString } from 'app/utils';
-import { filter, map, orderBy } from 'app/lodash';
-import { Autocomplete, Button, FormGroup, InputField, List, RingsListHeader, RingsListItem, Spinner, ViewHeader } from 'app/components';
-import { ringsFormReset, ringsFormUpdate, ringsUpdate, ringsItemExpand } from 'app/redux/rings';
+import { filter, map } from 'app/lodash';
+import { Autocomplete, Button, FormGroup, InputField, RingsList, Spinner, ViewHeader } from 'app/components';
+import { ringsItemExpand, ringsFormReset, ringsUpdate, ringsAutocompleteSelect } from 'app/redux/rings';
 
 
 const block = purebem.of('project-rings-view');
@@ -14,31 +14,31 @@ const block = purebem.of('project-rings-view');
 const ProjectRingsView = React.createClass({
 
     propTypes: {
-        autocomplete: PropTypes.array.isRequired,
-        list: PropTypes.array.isRequired,
-        loading: PropTypes.bool.isRequired,
-        onExpand: PropTypes.func.isRequired,
-        onInput: PropTypes.func.isRequired,
-        onReset: PropTypes.func.isRequired,
-        onUpdate: PropTypes.func.isRequired,
-        // ...
+        autocomplete: PropTypes.shape({
+            expanded: PropTypes.bool,
+            list: PropTypes.array
+        }).isRequired,
         form: PropTypes.shape({
             size: PropTypes.string,
             serial: PropTypes.string
-        })
+        }).isRequired,
+        onAutocompleteUpdate: PropTypes.func.isRequired,
+        onAutocompleteExpand: PropTypes.func.isRequired,
+        onAutocompleteSelect: PropTypes.func.isRequired,
+        onItemExpand: PropTypes.func.isRequired,
+        onInput: PropTypes.func.isRequired,
+        onFetch: PropTypes.func.isRequired,
+        onReset: PropTypes.func.isRequired,
+        sizes: PropTypes.shape({
+            list: PropTypes.array,
+            loading: PropTypes.bool
+        }).isRequired
     },
 
     componentWillMount() {
         const pid = this.props.params.id;
         this.ringsRef = firebase.database().ref(`rings/${pid}`);
         this.ringsRef.on('value', this.handleSnap);
-    },
-
-    getListItemProps() {
-        return {
-            onExpand: this.props.onExpand,
-            projectId: this.props.params.id
-        };
     },
 
     getTrimmedValue(evt) {
@@ -55,11 +55,11 @@ const ProjectRingsView = React.createClass({
 
     handleSnap(snap) {
         if (!snap.exists()) {
-            this.props.onUpdate({ list: [] });
+            this.props.onFetch([]);
             return;
         }
 
-        const list = map(snap.val(), (val, key) => {
+        const sizes = map(snap.val(), (val, key) => {
             return {
                 ...val,
                 id: key,
@@ -67,7 +67,7 @@ const ProjectRingsView = React.createClass({
             };
         });
 
-        this.props.onUpdate({ list });
+        this.props.onFetch(sizes);
     },
 
     handleInput(evt) {
@@ -80,11 +80,11 @@ const ProjectRingsView = React.createClass({
 
         const { name, value } = evt.target;
         const pattern = new RegExp(value);
-        const autocomplete = filter(this.props.list, (item) => {
-            return value && pattern.test(item.size);
+        const matches = filter(this.props.sizes, (o) => {
+            return value && pattern.test(o.size);
         });
 
-        this.props.onUpdate({ autocomplete });
+        this.props.onAutocompleteUpdate(matches);
     },
 
     handleSubmit(evt) {
@@ -96,14 +96,18 @@ const ProjectRingsView = React.createClass({
             return;
         }
 
-        const size = Number(form.size).toFixed(1).replace('.','_');
+        const size = form.size.replace('.', '_');
         this.ringsRef.child(`${size}`).update({ serial: form.serial });
         this.ringsRef.child(`${size}/history/${form.serial}`).set(true);
         this.props.onReset();
     },
 
     renderForm() {
-        const { autocomplete, form } = this.props;
+        const { autocomplete, form, sizes } = this.props;
+
+        if (sizes.loading) {
+            return null;
+        }
 
         return (
             <form className={ block('form') } onSubmit={ this.handleSubmit }>
@@ -112,8 +116,12 @@ const ProjectRingsView = React.createClass({
                     type="inline">
                     <Autocomplete
                         name="size"
+                        expanded={ autocomplete.expanded }
                         onChange={ this.handleAutocomplete }
-                        results={ autocomplete }
+                        onClick={ (value) => this.props.onInput('size', value) }
+                        onExpand={ this.props.onAutocompleteExpand }
+                        onSelect={ this.props.onAutocompleteSelect }
+                        list={ autocomplete.list }
                         value={ form.size } />
                 </FormGroup>
                 <FormGroup
@@ -136,23 +144,28 @@ const ProjectRingsView = React.createClass({
     },
 
     renderList() {
-        const { list, loading } = this.props;
+        const { onItemExpand, params, sizes } = this.props;
+        const listItemProps = {
+            onExpand: onItemExpand,
+            projectId: params.id
+        };
 
-        if (!list.length && loading) {
-            return (<Spinner />);
-        }
-
-        if (!list.length && !loading) {
-            return (<div>[empty]</div>);
+        if (sizes.loading) {
+            return null;
         }
 
         return (
-            <List
-                list={ orderBy(list, ['size']) }
-                listHeader={ RingsListHeader }
-                listItem={ RingsListItem }
-                listItemProps={ this.getListItemProps() } />
+            <RingsList
+                list={ sizes.list }
+                listItemProps={ listItemProps } />
         );
+    },
+
+    renderSpinner() {
+        if (!this.props.sizes.loading) {
+            return null;
+        }
+        return (<Spinner />);
     },
 
     render() {
@@ -161,6 +174,7 @@ const ProjectRingsView = React.createClass({
                 <ViewHeader title="Ring Sizes &amp; Serial Numbers" />
                 { this.renderForm() }
                 { this.renderList() }
+                { this.renderSpinner() }
             </div>
         );
     }
@@ -170,17 +184,19 @@ const mapStateToProps = (state) => {
     return {
         autocomplete: state.rings.autocomplete,
         form: state.rings.form,
-        list: state.rings.list,
-        loading: state.rings.loading
+        sizes: state.rings.sizes
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onExpand: (size, expanded) => dispatch(ringsItemExpand(size, { expanded: !expanded })),
-        onInput: (name, value) => dispatch(ringsFormUpdate({ [name]: value })),
+        onItemExpand: (size, expanded) => dispatch(ringsItemExpand(size, { expanded: !expanded })),
+        onInput: (name, value) => dispatch(ringsUpdate('form', { [name]: value })),
+        onFetch: (list) => dispatch(ringsUpdate('sizes', { list, loading: false })),
         onReset: () => dispatch(ringsFormReset()),
-        onUpdate: (data) => dispatch(ringsUpdate({ ...data, loading: false }))
+        onAutocompleteUpdate: (list) => dispatch(ringsUpdate('autocomplete', { list, expanded: !!list.length })),
+        onAutocompleteExpand: (expanded) => dispatch(ringsUpdate('autocomplete', { expanded })),
+        onAutocompleteSelect: (index) => dispatch(ringsAutocompleteSelect(index, { selected: true }))
     };
 };
 
