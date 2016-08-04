@@ -1,7 +1,7 @@
 .autocomplete {
     position: relative;
 
-    &__results {
+    &__list {
         width: 100%;
         position: absolute;
         top: 42px;
@@ -12,12 +12,16 @@
         .box-shadow(~'0 4px 12px -4px rgba(0, 0, 0, 0.2)');
     }
 
-    &__result {
+    &__item {
         padding: 10px;
 
         &:hover {
             cursor: pointer;
             background-color: @color-grayf9;
+        }
+
+        &--selected, &--selected:hover {
+            background-color: @color-graye;
         }
     }
 }
