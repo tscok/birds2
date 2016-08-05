@@ -67,6 +67,9 @@ const MemberListItem = React.createClass({
     },
 
     renderActions() {
+        if (!this.props.isOwner) {
+            return null;
+        }
         return (
             <div className={ block('actions') }>
                 { this.renderPendingActions() }
