@@ -10,9 +10,10 @@ const defaultState = {
 /**
  * Action types
  */
-const MEMBERS_UPDATE = 'MEMBERS_UPDATE';
-const MEMBER_UPDATE = 'MEMBER_UPDATE';
 const MEMBER_EXPAND = 'MEMBER_EXPAND';
+const MEMBER_UPDATE = 'MEMBER_UPDATE';
+const MEMBERS_RESET = 'MEMBERS_RESET';
+const MEMBERS_UPDATE = 'MEMBERS_UPDATE';
 
 
 /**
@@ -22,6 +23,12 @@ export const membersUpdate = (payload) => {
     return {
         type: MEMBERS_UPDATE,
         payload
+    };
+};
+
+export const membersReset = () => {
+    return {
+        type: MEMBERS_RESET
     };
 };
 
@@ -51,6 +58,12 @@ export const reducer = (state = defaultState, action) => {
             return {
                 ...state,
                 ...action.payload
+            };
+
+        case MEMBERS_RESET:
+            state = defaultState;
+            return {
+                ...state
             };
 
         case MEMBER_UPDATE:

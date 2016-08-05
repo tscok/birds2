@@ -20,26 +20,33 @@ const defaultState = {
 /**
  * Action types
  */
-const RINGS_UPDATE = 'RINGS_UPDATE';
+const RINGS_AUTOCOMPLETE_SELECT = 'RINGS_AUTOCOMPLETE_SELECT';
 const RINGS_FORM_RESET = 'RINGS_FORM_RESET';
 const RINGS_ITEM_EXPAND = 'RINGS_ITEM_EXPAND';
-const RINGS_AUTOCOMPLETE_SELECT = 'RINGS_AUTOCOMPLETE_SELECT';
+const RINGS_RESET = 'RINGS_RESET';
+const RINGS_UPDATE = 'RINGS_UPDATE';
 
 
 /**
  * Action creators
  */
-export const ringsFormReset = () => {
-    return {
-        type: RINGS_FORM_RESET
-    };
-};
-
 export const ringsUpdate = (branch, payload) => {
     return {
         type: RINGS_UPDATE,
         branch,
         payload
+    };
+};
+
+export const ringsReset = () => {
+    return {
+        type: RINGS_RESET
+    };
+};
+
+export const ringsFormReset = () => {
+    return {
+        type: RINGS_FORM_RESET
     };
 };
 
@@ -65,12 +72,6 @@ export const ringsAutocompleteSelect = (index, payload) => {
  */
 export const reducer = (state = defaultState, action) => {
     switch (action.type) {
-        case RINGS_FORM_RESET:
-            return {
-                ...state,
-                form: defaultState.form
-            };
-
         case RINGS_UPDATE:
             return {
                 ...state,
@@ -78,6 +79,18 @@ export const reducer = (state = defaultState, action) => {
                     ...state[action.branch],
                     ...action.payload
                 }
+            };
+
+        case RINGS_RESET:
+            state = defaultState;
+            return {
+                ...state
+            };
+
+        case RINGS_FORM_RESET:
+            return {
+                ...state,
+                form: defaultState.form
             };
 
         case RINGS_ITEM_EXPAND:

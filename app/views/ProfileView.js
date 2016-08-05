@@ -4,7 +4,6 @@ import purebem from 'purebem';
 
 import { firebase } from 'app/firebase';
 import { isEmpty, orderBy } from 'app/lodash';
-import { update } from 'app/redux/profile';
 import {
     List,
     NavLink,
@@ -12,6 +11,10 @@ import {
     Spinner,
     ViewHeader
 } from 'app/components';
+
+import { update } from 'app/redux/profile';
+import { membersReset } from 'app/redux/members';
+import { ringsReset } from 'app/redux/rings';
 
 
 const block = purebem.of('profile-view');
@@ -22,6 +25,7 @@ const ProfileView = React.createClass({
         isLoading: PropTypes.bool.isRequired,
         onUpdate: PropTypes.func.isRequired,
         projects: PropTypes.array.isRequired,
+        projectReset: PropTypes.func.isRequired,
         // ...
         user: PropTypes.shape({
             uid: PropTypes.string,
@@ -42,11 +46,14 @@ const ProfileView = React.createClass({
         if (uid) {
             this.getProjects(uid);
             this.setUserProfile();
+            this.props.projectReset();
         }
     },
 
     componentWillUnmount() {
-        this.projectsRef.off('value', this.handleSnap);
+        if (this.projectsRef) {
+            this.projectsRef.off('value', this.handleSnap);
+        }
     },
 
     setUserProfile() {
@@ -167,6 +174,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        projectReset: () => {
+            dispatch(membersReset());
+            dispatch(ringsReset());
+        },
         onUpdate: (data) => dispatch(update(data))
     };
 };
