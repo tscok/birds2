@@ -58,7 +58,7 @@ const RingsForm = React.createClass({
     },
 
     handleAutocomplete(value) {
-        const pattern = new RegExp(value);
+        const pattern = new RegExp(`^${value}`);
         const matches = filter(this.props.sizes, (o) => {
             return value && pattern.test(o.size);
         });
