@@ -46,6 +46,11 @@ const RingsForm = React.createClass({
         }
     },
 
+    getDecimalValue(value) {
+        const pattern = /\.[0-9]+/;
+        return pattern.test(value) ? value : `${value}.0`;
+    },
+
     handleInput(evt) {
         const { name, value } = evt.target;
         const trimmedValue = this.getTrimmedValue(name, value);
@@ -75,7 +80,7 @@ const RingsForm = React.createClass({
             return;
         }
 
-        const size = form.size.replace('.', '_');
+        const size = this.getDecimalValue(form.size).replace('.', '_');
         this.ringsRef.child(`${size}`).update({ serial: form.serial });
         this.ringsRef.child(`${size}/history/${form.serial}`).set(true);
         this.props.onReset();
