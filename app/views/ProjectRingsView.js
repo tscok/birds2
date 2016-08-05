@@ -85,7 +85,7 @@ const ProjectRingsView = React.createClass({
     render() {
         return (
             <div className={ block() }>
-                <ViewHeader title="Ring Sizes &amp; Serial Numbers" />
+                <ViewHeader title="Rings" />
                 { this.renderForm() }
                 { this.renderList() }
                 { this.renderSpinner() }

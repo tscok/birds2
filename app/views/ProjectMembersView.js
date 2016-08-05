@@ -78,14 +78,6 @@ const ProjectMembersView = React.createClass({
         };
     },
 
-    renderHeader() {
-        return (
-            <ViewHeader title="Members Manager">
-                <p>Shows the project owner, members and users awaiting membership.</p>
-            </ViewHeader>
-        );
-    },
-
     renderMembers() {
         const { members } = this.props;
 
@@ -104,7 +96,7 @@ const ProjectMembersView = React.createClass({
     render() {
         return (
             <div className={ block() }>
-                { this.renderHeader() }
+                <ViewHeader title="Members" />
                 { this.renderMembers() }
             </div>
         );
