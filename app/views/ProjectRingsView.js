@@ -5,7 +5,7 @@ import purebem from 'purebem';
 import { firebase } from 'app/firebase';
 import { map } from 'app/lodash';
 import { RingsForm, RingsList, Spinner, ViewHeader } from 'app/components';
-import { ringsItemExpand, ringsFormReset, ringsUpdate, ringsAutocompleteSelect } from 'app/redux/rings';
+import { ringsItemExpand, ringsUpdate } from 'app/redux/rings';
 
 
 const block = purebem.of('project-rings-view');
