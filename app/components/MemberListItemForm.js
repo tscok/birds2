@@ -90,7 +90,6 @@ const MemberListItemForm = React.createClass({
             <div className={ block() }>
                 <div className={ block('form-input') }>
                     <FormGroup
-                        className={ block('role') }
                         label="Role"
                         type="inline">
                         <ButtonToggle
@@ -101,7 +100,6 @@ const MemberListItemForm = React.createClass({
                             options={ ['assistant', 'ringer'] } />
                     </FormGroup>
                     <FormGroup
-                        className={ block('sign') }
                         label="Signature"
                         type="inline">
                         <InputField
