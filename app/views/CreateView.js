@@ -226,15 +226,15 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onError: (message) => dispatch(error(message)),
+        onError: (message) => dispatch(createError(message)),
         onInput: (field, value, isValid) => {
-            dispatch(update('project', { [field]: value }));
-            dispatch(update('isValid', { [field]: isValid }));
-            dispatch(error());
+            dispatch(createUpdate('project', { [field]: value }));
+            dispatch(createUpdate('isValid', { [field]: isValid }));
+            dispatch(createError());
         },
-        onReset: () => dispatch(reset()),
-        onSuccess: (id) => dispatch(update('project', { id })),
-        onToggle: (type) => dispatch(update('project', { type }))
+        onReset: () => dispatch(createReset()),
+        onSuccess: (id) => dispatch(createUpdate('project', { id })),
+        onToggle: (type) => dispatch(createUpdate('project', { type }))
     };
 };
 
