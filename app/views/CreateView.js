@@ -9,7 +9,7 @@ import { isDate, isString } from 'app/utils';
 
 import { Button, ButtonToggle, FormGroup, InputField, Lightbox, ProjectSuccess, ViewHeader } from 'app/components';
 
-import { error, reset, update } from 'app/redux/create';
+import { createError, createReset, createUpdate } from 'app/redux/create';
 
 
 const ERROR_DATES = 'Please make sure dates are in order.';

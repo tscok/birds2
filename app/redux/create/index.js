@@ -22,31 +22,31 @@ const defaultState = {
 /**
  * Action types
  */
-const ERROR = 'ERROR';
-const RESET = 'RESET';
-const UPDATE = 'UPDATE';
+const CREATE_ERROR = 'CREATE_ERROR';
+const CREATE_RESET = 'CREATE_RESET';
+const CREATE_UPDATE = 'CREATE_UPDATE';
 
 
 /**
  * Actions creators
  */
-export const error = (message='') => {
+export const createError = (message='') => {
     return {
-        type: ERROR,
+        type: CREATE_ERROR,
         message
     };
 }
 
-export const reset = () => {
+export const createReset = () => {
     return {
-        type: RESET
+        type: CREATE_RESET
     };
 };
 
-export const update = (root, payload) => {
+export const createUpdate = (branch, payload) => {
     return {
-        type: UPDATE,
-        root,
+        type: CREATE_UPDATE,
+        branch,
         payload
     };
 };
@@ -57,22 +57,22 @@ export const update = (root, payload) => {
  */
 export const reducer = (state = defaultState, action) => {
     switch (action.type) {
-        case ERROR:
+        case CREATE_ERROR:
             return {
                 ...state,
                 ...state.error = action.message
             };
 
-        case UPDATE:
+        case CREATE_UPDATE:
             return {
                 ...state,
-                [action.root]: {
-                    ...state[action.root],
+                [action.branch]: {
+                    ...state[action.branch],
                     ...action.payload
                 }
             };
 
-        case RESET:
+        case CREATE_RESET:
             state = defaultState;
             return { ...state };
 
