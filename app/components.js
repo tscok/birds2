@@ -6,8 +6,10 @@ import ButtonToggle from './components/ButtonToggle';
 import ClickOutside from './components/ClickOutside';
 import ContentBox from './components/ContentBox';
 import Divider from './components/Divider';
+import Dropdown from './components/Dropdown';
 import FormGroup from './components/FormGroup';
 import InputField from './components/InputField';
+import InputRange from './components/InputRange';
 import JoinButton from './components/JoinButton';
 import Lightbox from './components/Lightbox';
 import List from './components/List';
@@ -42,8 +44,10 @@ export {
     ClickOutside,
     ContentBox,
     Divider,
+    Dropdown,
     FormGroup,
     InputField,
+    InputRange,
     JoinButton,
     Lightbox,
     List,
