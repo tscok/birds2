@@ -36,6 +36,10 @@ const RingsForm = React.createClass({
         this.ringsRef = firebase.database().ref(`rings/${projectId}`);
     },
 
+    componentWillUnmount() {
+        this.props.onReset();
+    },
+
     getTrimmedValue(name, value) {
         switch (name) {
             case 'size':
