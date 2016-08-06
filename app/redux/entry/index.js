@@ -4,9 +4,13 @@
 const defaultState = {
     form: {
         age: '',
-        sex: ''
+        sex: '',
+        ring: '',
+        pjm: '',
+        fat: ''
     },
     meta: {
+        signs: [],
         type: 'New Ring'
     }
 };
