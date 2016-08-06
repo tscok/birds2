@@ -107,7 +107,7 @@ const CreateView = React.createClass({
         window.scrollTo(0,0);
     },
 
-    handleToggle(type) {
+    handleToggle(name, type) {
         this.props.onToggle(type);
     },
     
@@ -178,6 +178,7 @@ const CreateView = React.createClass({
                         active={ project.type }
                         center={ true }
                         className={ block('toggle') }
+                        name="privacy"
                         options={ this.props.types }
                         onClick={ this.handleToggle } />
                     { this.renderPrivacyInfo() }

@@ -56,7 +56,7 @@ const MemberListItemForm = React.createClass({
         this.props.onClose();
     },
 
-    handleToggle(option) {
+    handleToggle(name, option) {
         if (option === 'assistant') {
             this.props.onInput('');
         }
@@ -96,6 +96,7 @@ const MemberListItemForm = React.createClass({
                         <ButtonToggle
                             active={ member.role }
                             className={ block('toggle') }
+                            name="role"
                             onClick={ this.handleToggle }
                             options={ ['assistant', 'ringer'] } />
                     </FormGroup>
