@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import { reducer as create } from './create';
+import { reducer as entry } from './entry';
 import { reducer as join } from './join';
 import { reducer as login } from './login';
 import { reducer as members } from './members';
@@ -15,6 +16,7 @@ import { reducer as user } from './user';
 
 const appReducer = combineReducers({
     create,
+    entry,
     join,
     login,
     members,

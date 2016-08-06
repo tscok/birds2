@@ -4,29 +4,45 @@ import purebem from 'purebem';
 
 import { ButtonToggle, FormGroup, InputField, ViewHeader } from 'app/components';
 
+import { entryUpdate } from 'app/redux/entry';
+
 
 const block = purebem.of('project-entry-view');
 
 const ProjectEntryView = React.createClass({
 
     propTypes: {
-
+        form: PropTypes.shape({
+            age: PropTypes.string,
+            sex: PropTypes.string
+        }).isRequired,
+        type: PropTypes.string.isRequired
     },
 
     handleInput(evt) {
         console.log('input', evt.target.value);
     },
 
-    handleToggle() {
-        console.log('toggle');
+    handleToggle(name, option) {
+        switch (name) {
+            case 'type':
+                this.props.onType(option);
+                break;
+
+            default:
+                this.props.onUpdate({ [name]: option });
+        }
     },
 
     renderForm() {
+        const { form, type } = this.props;
+
         return (
             <div className={ block('form') }>
                 <ButtonToggle
-                    active="New Ring"
+                    active={ type }
                     center={ true }
+                    name="type"
                     onClick={ this.handleToggle }
                     options={ ['New Ring', 'Old Ring'] } />
                 <FormGroup label="Ring Size / ID">
@@ -40,13 +56,15 @@ const ProjectEntryView = React.createClass({
                 </FormGroup>
                 <FormGroup label="Age">
                     <ButtonToggle
-                        active="1.0"
+                        active={ form.age }
+                        name="age"
                         onClick={ this.handleToggle }
                         options={ ['1.0', '2.0', '2+', '3+'] } />
                 </FormGroup>
                 <FormGroup label="Sex">
                     <ButtonToggle
-                        active="F"
+                        active={ form.sex }
+                        name="sex"
                         onClick={ this.handleToggle }
                         options={ ['F', 'M'] } />
                 </FormGroup>
@@ -71,6 +89,9 @@ const ProjectEntryView = React.createClass({
                 <FormGroup label="Arm">
                     <InputField onChange={ this.handleInput } />
                 </FormGroup>
+                <FormGroup label="Comments">
+                    <textarea />
+                </FormGroup>
             </div>
         );
     },
@@ -87,11 +108,17 @@ const ProjectEntryView = React.createClass({
 });
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        form: state.entry.form,
+        type: state.entry.meta.type
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        onType: (type) => dispatch(entryUpdate('meta', { type })),
+        onUpdate: (data) => dispatch(entryUpdate('form', data))
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectEntryView);
