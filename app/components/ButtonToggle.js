@@ -10,6 +10,7 @@ const ButtonToggle = React.createClass({
 
     propTypes: {
         active: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
         onClick: PropTypes.func.isRequired,
         options: PropTypes.array.isRequired,
         // ...
@@ -30,9 +31,13 @@ const ButtonToggle = React.createClass({
                 case 13: // enter
                 case 32: // space
                     evt.preventDefault();
-                    this.props.onClick(option);
+                    this.handleToggle(option);
             }
         }
+    },
+
+    handleToggle(option) {
+        this.props.onClick(this.props.name, option);
     },
 
     renderOption(option, index, options) {
@@ -44,7 +49,7 @@ const ButtonToggle = React.createClass({
             <div
                 key={ index }
                 className={ block('option', { first, last, active }) }
-                onClick={ () => this.props.onClick(option) }
+                onClick={ () => this.handleToggle(option) }
                 onKeyDown={ this.onKeyDown(option) }
                 tabIndex="0">
                 { capitalize(option) }
