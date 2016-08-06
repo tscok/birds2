@@ -1,5 +1,6 @@
 import moment from 'moment';
 import purebem from 'purebem';
+import isstring from 'lodash.isstring';
 import { debounce } from './lodash';
 
 
@@ -15,7 +16,8 @@ export function getStatus(start, end) {
 };
 
 export function isString(str) {
-    return !!str && str.trim() !== '';
+    // return !!str && str.trim() !== '';
+    return isstring(str);
 };
 
 export function isEmpty(str) {
@@ -27,6 +29,9 @@ export function isDate(str, format='YYYYMMDD') {
 };
 
 export function capitalize(str) {
+    if (!isString(str)) {
+        return str;
+    }
     return str[0].toUpperCase() + str.substr(1);
 };
 

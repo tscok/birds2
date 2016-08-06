@@ -8,6 +8,7 @@ import forEach from 'lodash.foreach';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import isNull from 'lodash.isnull';
+import isString from 'lodash.isstring';
 import map from 'lodash.map';
 import omit from 'lodash.omit';
 import omitBy from 'lodash.omitby';
@@ -28,6 +29,7 @@ export {
     isEmpty,
     isEqual,
     isNull,
+    isString,
     map,
     omit,
     omitBy,
