@@ -150,7 +150,6 @@ const CreateView = React.createClass({
                     <InputField
                         name="title"
                         onChange={ this.handleInput }
-                        stretched={ true }
                         value={ project.title } />
                 </FormGroup>
                 <FormGroup
@@ -160,7 +159,6 @@ const CreateView = React.createClass({
                         maxLength="8"
                         name="dateStart"
                         onChange={ this.handleInput }
-                        stretched={ true }
                         value={ project.dateStart } />
                 </FormGroup>
                 <FormGroup
@@ -170,7 +168,6 @@ const CreateView = React.createClass({
                         maxLength="8"
                         name="dateEnd"
                         onChange={ this.handleInput }
-                        stretched={ true }
                         value={ project.dateEnd } />
                 </FormGroup>
                 <div className={ block('privacy') }>

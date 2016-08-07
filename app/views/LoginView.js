@@ -109,14 +109,12 @@ const LoginView = React.createClass({
                         <InputField
                             name="username"
                             onChange={ this.handleChange }
-                            stretched={ true }
                             value={ this.props.username } />
                     </FormGroup>
                     <FormGroup label="Password">
                         <InputField
                             name="password"
                             onChange={ this.handleChange }
-                            stretched={ true }
                             type="password"
                             value={ this.props.password } />
                     </FormGroup>
