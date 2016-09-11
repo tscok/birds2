@@ -2,14 +2,13 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 
-const config = {
+
+firebase.initializeApp({
     apiKey: "AIzaSyB4lx8ryB2LcN2sswd2efNfBSI2gQPmAr8",
     authDomain: "birds.firebaseapp.com",
     databaseURL: "https://birds.firebaseio.com",
     storageBucket: "firebase-birds.appspot.com",
-};
-
-firebase.initializeApp(config);
+});
 
 const getUser = (authData) => {
     if (!authData) {
@@ -26,7 +25,12 @@ const getUser = (authData) => {
     };
 };
 
+const ref = (path) => {
+    return firebase.database().ref(path);
+}
+
 export {
     firebase,
-    getUser
+    getUser,
+    ref
 };

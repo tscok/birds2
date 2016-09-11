@@ -9,7 +9,8 @@
         border: 1px solid @color-grayd;
         border-radius: 3px;
         outline: none;
-        .transition(100ms);
+        .transition(border-color, 100ms);
+        .ellipsis();
 
         &:focus {
             border-color: @color-grayb;

@@ -1,7 +1,7 @@
 import moment from 'moment';
 import purebem from 'purebem';
 import isstring from 'lodash.isstring';
-import { debounce } from './lodash';
+import { debounce, find, findIndex } from './lodash';
 
 
 const body = document.querySelector('body');
@@ -9,6 +9,14 @@ const debouncer = debounce(action => action(), 300);
 
 
 export function noop(){};
+
+export function getSelectedIndex(list) {
+    return findIndex(list, (o) => o.selected);
+};
+
+export function getSelectedItem(list) {
+    return find(list, (o) => o.selected);
+};
 
 export function getStatus(start, end) {
     const now = moment().unix();

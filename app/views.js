@@ -1,5 +1,5 @@
 import CreateView from './views/CreateView';
-import LoginView from './views/LoginView';
+// import LoginView from './views/LoginView';
 import Navigation from './views/Navigation';
 import NotFoundView from './views/404';
 import ProfileView from './views/ProfileView';
@@ -13,7 +13,7 @@ import SearchView from './views/SearchView';
 
 export {
     CreateView,
-    LoginView,
+    // LoginView,
     Navigation,
     NotFoundView,
     ProfileView,

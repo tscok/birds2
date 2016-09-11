@@ -4,9 +4,9 @@ import { Router, Route, browserHistory, IndexRedirect, Redirect } from 'react-ro
 import App from './App';
 
 import {
-    LoginView,
+    // LoginView,
     NotFoundView,
-    ProfileView,
+    // ProfileView,
     CreateView,
     SearchView,
     ProjectView,
@@ -16,6 +16,9 @@ import {
     ProjectRingsView,
     ProjectSitesView
 } from './views';
+
+import { LoginView } from 'app/login/components';
+import { ProfileView } from 'app/profile/components';
 
 
 const routes = (

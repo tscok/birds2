@@ -21,10 +21,10 @@ const Navigation = React.createClass({
     propTypes: {
         location: PropTypes.object.isRequired,
         params: PropTypes.object.isRequired,
-        isMenuExpanded: PropTypes.bool.isRequired,
-        isUserExpanded: PropTypes.bool.isRequired,
+        // isMenuExpanded: PropTypes.bool.isRequired,
+        // isUserExpanded: PropTypes.bool.isRequired,
         toggleMenu: PropTypes.func.isRequired,
-        user: PropTypes.object.isRequired
+        // user: PropTypes.object.isRequired
     },
 
     componentDidUpdate(prevProps) {
@@ -140,9 +140,9 @@ const Navigation = React.createClass({
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user,
-        isMenuExpanded: state.menu.main.expanded,
-        isUserExpanded: state.menu.user.expanded
+        // user: state.user,
+        // isMenuExpanded: state.menu.main.expanded,
+        // isUserExpanded: state.menu.user.expanded
     };
 };
 

@@ -33,7 +33,9 @@
     "react-onclickoutside": "^5.0.0",
     "react-redux": "^4.4.5",
     "react-router": "^2.0.0",
-    "redux": "^3.5.2"
+    "reduce-reducers": "^0.1.2",
+    "redux": "^3.5.2",
+    "redux-seamless-reducers": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.5.2",

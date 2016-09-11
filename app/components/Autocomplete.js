@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import { noop } from 'app/utils';
-import { find, findIndex } from 'app/lodash';
+import { getSelectedIndex, getSelectedItem } from 'app/utils';
 import { ClickOutside, InputField } from 'app/components';
 
 
@@ -33,7 +32,7 @@ const Autocomplete = React.createClass({
             case 32: // space
                 evt.stopPropagation();
                 evt.preventDefault();
-                this.getSelectedItem();
+                this.handleSelectItem();
                 break;
 
             case 38: // up
@@ -50,24 +49,20 @@ const Autocomplete = React.createClass({
         }
     },
 
-    getSelectedItem() {
-        const selectedItem = find(this.props.list, (o) => o.selected);
-        if (selectedItem) {
-            this.handleClick(selectedItem);
-        }
-    },
-
-    getSelectedIndex() {
-        return findIndex(this.props.list, (o) => o.selected);
-    },
-
     handleSelect(move) {
-        const index = this.getSelectedIndex();
+        const index = getSelectedIndex(this.props.list);
         const newIndex = index + move < 0
             ? this.props.list.length - 1
             : (index + move) % this.props.list.length;
 
         this.props.onSelect(newIndex);
+    },
+
+    handleSelectItem() {
+        const selectedItem = getSelectedItem(this.props.list);
+        if (selectedItem) {
+            this.handleClick(selectedItem);
+        }
     },
 
     handleCollapse() {

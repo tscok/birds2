@@ -6,7 +6,7 @@ import { firebase } from 'app/firebase';
 import { filter, map } from 'app/lodash';
 import { ButtonToggle, Dropdown, FormGroup, InputField, InputRange, ViewHeader } from 'app/components';
 
-import { entryUpdate } from 'app/redux/entry';
+import { entryUpdate, entryComponentUpdate } from 'app/redux/entry';
 
 
 const block = purebem.of('project-entry-view');
@@ -19,8 +19,8 @@ const ProjectEntryView = React.createClass({
             sex: PropTypes.string
         }).isRequired,
         meta: PropTypes.shape({
-            type: PropTypes.string,
-            signs: PropTypes.array
+            signs: PropTypes.array,
+            type: PropTypes.string
         }).isRequired
     },
 
@@ -30,8 +30,9 @@ const ProjectEntryView = React.createClass({
     },
 
     handleSnap(snap) {
-        const signs = filter(map(snap.val(), 'sign'));
-        this.props.onMetaUpdate({ signs });
+        const list = filter(map(snap.val(), 'sign'));
+        // this.props.onMetaUpdate('signs', { signs });
+        this.props.onComponentUpdate('meta', 'signs', { list });
     },
 
     handleInput(evt) {
@@ -42,7 +43,7 @@ const ProjectEntryView = React.createClass({
     handleToggle(name, option) {
         switch (name) {
             case 'type':
-                this.props.onMetaUpdate({ type: option });
+                this.props.onMetaUpdate('type', { type: option });
                 break;
 
             default:
@@ -51,7 +52,7 @@ const ProjectEntryView = React.createClass({
     },
 
     renderRingId() {
-        if (this.props.meta.type === 'New Ring') {
+        if (this.props.type === 'New Ring') {
             return null;
         }
         return (
@@ -62,7 +63,7 @@ const ProjectEntryView = React.createClass({
     },
 
     renderRingSize() {
-        if (this.props.meta.type === 'Old Ring') {
+        if (this.props.type === 'Old Ring') {
             return null;
         }
         return (
@@ -70,7 +71,7 @@ const ProjectEntryView = React.createClass({
                 <InputRange
                     name="ring"
                     onChange={ this.handleInput }
-                    value={ this.props.form.ring } />
+                    value={ this.props.form.ringNo } />
             </FormGroup>
         );
     },
@@ -105,7 +106,6 @@ const ProjectEntryView = React.createClass({
                 <FormGroup label="PJM">
                     <InputRange
                         max="6"
-                        min="0"
                         name="pjm"
                         onChange={ this.handleInput }
                         value={ form.pjm } />
@@ -113,15 +113,16 @@ const ProjectEntryView = React.createClass({
                 <FormGroup label="Fat">
                     <InputRange
                         max="10"
-                        min="0"
                         name="fat"
                         onChange={ this.handleInput }
                         value={ form.fat } />
                 </FormGroup>
                 <FormGroup label="Sign.">
                     <Dropdown
-                        name="sign"
-                        options={ meta.signs } />
+                        expanded={ false }
+                        list={ this.props.signs }
+                        root="entry"
+                        path="entry.signs" />
                 </FormGroup>
                 <FormGroup label="Weight">
                     <InputField onChange={ this.handleInput } />
@@ -162,17 +163,23 @@ const ProjectEntryView = React.createClass({
 });
 
 const mapStateToProps = (state) => {
-    console.log(state.entry.meta);
+    const { form, meta } = state.entry;
     return {
-        form: state.entry.form,
-        meta: state.entry.meta
+        form,
+        meta: {
+            signs: meta.signs.list,
+            type: meta.type
+        }
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onFormUpdate: (data) => dispatch(entryUpdate('form', data)),
-        onMetaUpdate: (data) => dispatch(entryUpdate('meta', data))
+        onMetaUpdate: (data) => dispatch(entryUpdate('meta', data)),
+        onComponentUpdate: (branch, component, data) => {
+            dispatch(entryComponentUpdate(branch, component, data));
+        }
     };
 };
 

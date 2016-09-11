@@ -1,13 +1,13 @@
 import Autocomplete from './components/Autocomplete';
 import Avatar from './components/Avatar';
-import Button from './components/Button';
+// import Button from './components/Button';
 import ButtonRadio from './components/ButtonRadio';
 import ButtonToggle from './components/ButtonToggle';
 import ClickOutside from './components/ClickOutside';
 import ContentBox from './components/ContentBox';
-import Divider from './components/Divider';
+// import Divider from './components/Divider';
 import Dropdown from './components/Dropdown';
-import FormGroup from './components/FormGroup';
+// import FormGroup from './components/FormGroup';
 import InputField from './components/InputField';
 import InputRange from './components/InputRange';
 import JoinButton from './components/JoinButton';
@@ -38,14 +38,14 @@ import ViewHeader from './components/ViewHeader';
 export {
     Autocomplete,
     Avatar,
-    Button,
+    // Button,
     ButtonRadio,
     ButtonToggle,
     ClickOutside,
     ContentBox,
-    Divider,
+    // Divider,
     Dropdown,
-    FormGroup,
+    // FormGroup,
     InputField,
     InputRange,
     JoinButton,

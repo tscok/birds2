@@ -10,6 +10,10 @@ import { Button, ContentBox, Divider, FormGroup, InputField, Spinner } from 'app
 import { loginUpdate } from 'app/redux/login';
 import { userUpdate, userLogout } from 'app/redux/user';
 
+import { loginInit } from 'app/redux/login/actions';
+
+import update from 'app/redux/components/update';
+
 
 const block = purebem.of('login-view');
 
@@ -20,20 +24,30 @@ const LoginView = React.createClass({
     },
 
     propsTypes: {
-        error: PropTypes.string.isRequired,
-        loading: PropTypes.bool.isRequired,
-        onError: PropTypes.func.isRequired,
-        onLogin: PropTypes.func.isRequired,
-        onLogout: PropTypes.func.isRequired,
-        onUpdate: PropTypes.func.isRequired,
-        password: PropTypes.string.isRequired,
-        username: PropTypes.string.isRequired
+        // error: PropTypes.string.isRequired,
+        // loading: PropTypes.bool.isRequired,
+        // onError: PropTypes.func.isRequired,
+        // onLogin: PropTypes.func.isRequired,
+        // onLogout: PropTypes.func.isRequired,
+        // onUpdate: PropTypes.func.isRequired,
+        // ...
+        password: PropTypes.string,
+        username: PropTypes.string,
+        // onInit: PropTypes.func,
+        // onUpdate: PropTypes.func
+        onInit: PropTypes.func
+    },
+
+    componentWillMount() {
+        this.props.onInit();
     },
 
     componentDidMount() {
+        // this.props.onInit();
+
         firebase.auth().signOut().then(() => {
             console.log('user logged out');
-            this.props.onLogout();
+            // this.props.onLogout();
         });
     },
 
@@ -84,8 +98,9 @@ const LoginView = React.createClass({
     },
 
     handleChange(evt) {
-        const { name, value } = evt.target;
-        this.props.onUpdate({ [name]: value, error: '' });
+        const { name, value, path } = evt.target;
+        this.props.onUpdate({ value, path: `login.${name}` });
+        // this.props.onUpdate({ [name]: value, error: '' });
     },
 
     renderError() {
@@ -107,12 +122,14 @@ const LoginView = React.createClass({
                 <form onSubmit={ this.handleSubmit }>
                     <FormGroup label="Username">
                         <InputField
+                            path="login.username"
                             name="username"
                             onChange={ this.handleChange }
                             value={ this.props.username } />
                     </FormGroup>
                     <FormGroup label="Password">
                         <InputField
+                            path="login.password"
                             name="password"
                             onChange={ this.handleChange }
                             type="password"
@@ -156,22 +173,25 @@ const LoginView = React.createClass({
     }
 });
 
-const mapStateToProps = (state) => {
-    const component = state.login;
+const mapStateToProps = (state, props) => {
+    const components = state.components.login;
+    console.log(state, props);
     return {
-        error: component.error,
-        loading: component.loading,
-        password: component.password,
-        username: component.username
+        // error: component.error,
+        // loading: component.loading,
+        password: components.password.value,
+        username: components.username.value
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onError: (message) => dispatch(loginUpdate({ error: message, loading: false })),
-        onLogin: (user) => dispatch(userUpdate({ ...user, loading: false })),
-        onLogout: () => dispatch(userLogout()),
-        onUpdate: (data) => dispatch(loginUpdate(data))
+        onInit: () => dispatch(loginInit()),
+        // onUpdate: (data) => dispatch(update('login', data.path, data.value))
+        // onError: (message) => dispatch(loginUpdate({ error: message, loading: false })),
+        // onLogin: (user) => dispatch(userUpdate({ ...user, loading: false })),
+        // onLogout: () => dispatch(userLogout()),
+        // onUpdate: (data) => dispatch(loginUpdate(data))
     };
 };
 

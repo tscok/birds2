@@ -1,0 +1,45 @@
+.dropdown {
+
+    @size: 44px;
+    cursor: pointer;
+
+    &__control {
+        display: flex;
+        width: 100%;
+        height: @size;
+        line-height: @size;
+        border: 1px solid @color-grayd;
+        overflow: hidden;
+        .border-radius(3px);
+        .transition(border-color, 100ms);
+
+        &:focus {
+            outline: none;
+        }
+
+        &:hover, &:focus {
+            border-color: @color-grayb;
+        }
+    }
+
+    &:active &__button {
+        // background-color: @color-grayd;
+    }
+
+    &__value {
+        flex: 1;
+        padding: 0 10px;
+        background-color: @color-white;
+    }
+
+    &__button {
+        width: @size;
+        text-align: center;
+        background-color: @color-graye;
+    }
+
+    &__options {
+
+    }
+
+}

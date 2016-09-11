@@ -4,7 +4,7 @@ import purebem from 'purebem';
 
 import { firebase, getUser } from 'app/firebase';
 
-import { LoginView, Navigation } from './views';
+import { Navigation } from './views';
 
 import { userUpdate } from 'app/redux/user';
 
