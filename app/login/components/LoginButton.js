@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { firebase } from 'app/firebase';
+import { firebase, getUser } from 'app/firebase';
 
 import { Button } from 'app/core/components';
 
 import { reset, submit } from 'app/redux/components/login/actions';
+import { update } from 'app/redux/user/actions';
 
 
 const LoginButton = React.createClass({
@@ -15,6 +16,7 @@ const LoginButton = React.createClass({
         path: PropTypes.string.isRequired,
         root: PropTypes.string.isRequired,
         // ...
+        onAuth: PropTypes.func,
         onReset: PropTypes.func,
         onSubmit: PropTypes.func,
         provider: PropTypes.string,
@@ -44,17 +46,20 @@ const LoginButton = React.createClass({
         this.props.onSubmit(true);
 
         firebase.auth().signInWithPopup(this.authProvider)
-            .then(this.handleSuccess, this.handleError)
+            .then(this.handleLoginSuccess, this.handleLoginError)
             .then(() => this.props.onSubmit(false));
     },
 
-    handleSuccess(auth) {
-        // Redux: set user
+    handleLoginSuccess(auth) {
+        if (!('user' in auth)) {
+            return;
+        }
+        this.props.onAuth(getUser(auth.user));
         this.props.onReset();
         this.props.onLogin();
     },
 
-    handleError(error) {
+    handleLoginError(error) {
         // Redux: set login error
     },
 
@@ -81,6 +86,9 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
+        onAuth: ({ email, name, photoUrl, uid }) => {
+            dispatch(update({ email, name, photoUrl, uid }));
+        },
         onReset: () => dispatch(reset()),
         onSubmit: (submitting) => dispatch(submit({
             root: props.root,

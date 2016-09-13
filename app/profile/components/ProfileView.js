@@ -19,7 +19,7 @@ const ProfileView = React.createClass({
 
     render() {
         return (
-            <div class={ block() }>
+            <div className={ block() }>
                 <h1>ProfileView</h1>
             </div>
         );

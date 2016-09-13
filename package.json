@@ -35,7 +35,8 @@
     "react-router": "^2.0.0",
     "reduce-reducers": "^0.1.2",
     "redux": "^3.5.2",
-    "redux-seamless-reducers": "^1.0.0"
+    "redux-seamless-reducers": "^1.0.0",
+    "seamless-immutable": "^6.1.1"
   },
   "devDependencies": {
     "babel-core": "^6.5.2",

@@ -2,11 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
 
-import { firebase, getUser } from 'app/firebase';
+import { firebase, getUser } from './firebase';
 
-import { Navigation } from './views';
+import { MenuView } from './menu/components';
 
-import { userUpdate } from 'app/redux/user';
+import { initialize } from './redux/user/actions';
+import { update } from './redux/user/actions';
 
 
 const block = purebem.of('app-view');
@@ -18,53 +19,30 @@ const App = React.createClass({
     },
 
     propTypes: {
-        onRefresh: PropTypes.func.isRequired,
-        // ...
         children: PropTypes.node,
         location: PropTypes.object,
-        user: PropTypes.shape({
-            uid: PropTypes.string,
-            name: PropTypes.string,
-            email: PropTypes.string,
-            photoURL: PropTypes.string
-        }).isRequired
+        onMount: PropTypes.func
     },
 
-    componentWillMount() {
-        firebase.auth().onAuthStateChanged((authData) => {
-            const { pathname } = this.props.location;
-            const { uid } = this.props.user;
+    componentDidMount() {
+        this.props.onMount();
 
-            if (!authData && pathname !== '/login') {
-                console.log('[authChange] redirect to login');
+        firebase.auth().onAuthStateChanged((authData) => {
+            console.log('authData:', !!authData);
+            if (authData) {
+                this.props.onAuth(getUser(authData));
+            } else {
                 this.context.router.push('/login');
             }
-
-            if (!uid && authData && pathname !== '/login') {
-                console.log('[authChange] user refreshed');
-                this.props.onRefresh(getUser(authData));
-            }
         });
-    },
-
-    componentWillUpdate(nextProps) {
-        const { pathname } = nextProps.location;
-        const { uid } = nextProps.user;
-
-        if (!uid && pathname !== '/login') {
-            console.log('[willUpdate] redirect to login');
-            this.context.router.push('/login');
-        }
     },
 
     render() {
         return (
             <div className={ block() }>
-                <Navigation { ...this.props } />
+                <MenuView />
                 <main className={ block('main') }>
-                    <div className="container">
-                        { this.props.children }
-                    </div>
+                    { this.props.children }
                 </main>
             </div>
         );
@@ -72,16 +50,13 @@ const App = React.createClass({
 
 });
 
-const mapStateToProps = (state) => {
-    return {
-        user: state.user
-    };
-};
-
 const mapDispatchToProps = (dispatch) => {
     return {
-        onRefresh: (user) => dispatch(userUpdate(user))
+        onAuth: ({ email, name, photoUrl, uid }) => {
+            dispatch(update({ email, name, photoUrl, uid }));
+        },
+        onMount: () => dispatch(initialize())
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);

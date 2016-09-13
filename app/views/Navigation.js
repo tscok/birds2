@@ -7,7 +7,7 @@ import { firebase, getUser } from 'app/firebase';
 import { overlayAdd, overlayRemove } from 'app/utils';
 import { ClickOutside, NavLink, User } from 'app/components';
 
-import { menuUpdate } from 'app/redux/menu';
+// import { menuUpdate } from 'app/redux/menu';
 
 
 const block = purebem.of('navigation');
@@ -19,11 +19,11 @@ const Navigation = React.createClass({
     },
 
     propTypes: {
-        location: PropTypes.object.isRequired,
-        params: PropTypes.object.isRequired,
+        location: PropTypes.object,
+        params: PropTypes.object,
         // isMenuExpanded: PropTypes.bool.isRequired,
         // isUserExpanded: PropTypes.bool.isRequired,
-        toggleMenu: PropTypes.func.isRequired,
+        toggleMenu: PropTypes.func,
         // user: PropTypes.object.isRequired
     },
 
@@ -119,11 +119,11 @@ const Navigation = React.createClass({
     },
 
     render() {
-        const active = !!this.props.user.uid;
-        const expanded = this.props.isMenuExpanded;
+        // const active = !!this.props.user.uid;
+        // const expanded = this.props.isMenuExpanded;
 
         return (
-            <header className={ block({ active, expanded }) }>
+            <header className={ block({ /*active, expanded*/ }) }>
                 { this.renderBurger() }
                 <ClickOutside onClick={ () => expanded && this.handleMenuToggle() }>
                     <div className={ block('content') }>
@@ -148,7 +148,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        toggleMenu: (menu, expanded) => dispatch(menuUpdate(menu, { expanded }))
+        // toggleMenu: (menu, expanded) => dispatch(menuUpdate(menu, { expanded }))
     };
 };
 
