@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import LoginButton from './LoginButton';
@@ -8,6 +9,7 @@ import { Divider } from 'app/core/components';
 
 import attach from 'app/redux/components/attach';
 import { initialize } from 'app/redux/components/login/actions';
+import { initialize as resetUser } from 'app/redux/user/actions';
 
 
 const block = purebem.of('login-view');
@@ -20,13 +22,17 @@ const LoginView = React.createClass({
 
     propTypes: {
         root: PropTypes.string.isRequired,
+        // ...
+        onSignOut: PropTypes.func
     },
 
     componentDidMount() {
-        firebase.auth().signOut();
+        firebase.auth().signOut().then(() => {
+            this.props.onSignOut();
+        });
     },
 
-    handleRedirect() {
+    getProfileRoute() {
         this.context.router.push('/profile');
     },
 
@@ -35,11 +41,11 @@ const LoginView = React.createClass({
             <div className={ block() }>
                 <h1>LoginView</h1>
                 <LoginForm
-                    onLogin={ this.handleRedirect }
+                    onLogin={ this.getProfileRoute }
                     root={ this.props.root } />
                 <Divider text="or" />
                 <LoginButton
-                    onLogin={ this.handleRedirect }
+                    onLogin={ this.getProfileRoute }
                     path="facebook"
                     provider="facebook"
                     root={ this.props.root }
@@ -50,4 +56,12 @@ const LoginView = React.createClass({
 
 });
 
-export default attach(LoginView, { initialize, root: 'login' });
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSignOut: () => dispatch(resetUser())
+    };
+};
+
+const LoginViewContainer = connect(null, mapDispatchToProps)(LoginView);
+
+export default attach(LoginViewContainer, { initialize, root: 'login' });

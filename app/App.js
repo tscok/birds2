@@ -6,8 +6,7 @@ import { firebase, getUser } from './firebase';
 
 import { MenuView } from './menu/components';
 
-import { initialize } from './redux/user/actions';
-import { update } from './redux/user/actions';
+import { initialize, update } from './redux/user/actions';
 
 
 const block = purebem.of('app-view');
@@ -21,20 +20,41 @@ const App = React.createClass({
     propTypes: {
         children: PropTypes.node,
         location: PropTypes.object,
-        onMount: PropTypes.func
+        // ...
+        onInit: PropTypes.func,
+        onUpdate: PropTypes.func,
+        uid: PropTypes.string
     },
 
     componentDidMount() {
-        this.props.onMount();
+        this.props.onInit();
+        this.handleAuthChanges();
+    },
 
+    componentWillUpdate(nextProps) {
+        /**
+         * Redirect to /login if authentication is missing or was lost
+         * due to actions that did not trigger 'onAuthStateChanged'.
+         */
+        const { pathname } = nextProps.location;
+        if (!nextProps.uid && pathname !== '/login') {
+            this.getLoginRoute();
+        }
+    },
+
+    handleAuthChanges() {
         firebase.auth().onAuthStateChanged((authData) => {
             console.log('authData:', !!authData);
             if (authData) {
-                this.props.onAuth(getUser(authData));
+                this.props.onUpdate(getUser(authData));
             } else {
-                this.context.router.push('/login');
+                this.getLoginRoute();
             }
         });
+    },
+
+    getLoginRoute() {
+        this.context.router.push('/login');
     },
 
     render() {
@@ -50,13 +70,19 @@ const App = React.createClass({
 
 });
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
     return {
-        onAuth: ({ email, name, photoUrl, uid }) => {
-            dispatch(update({ email, name, photoUrl, uid }));
-        },
-        onMount: () => dispatch(initialize())
+        uid: state.user.uid
     };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onInit: () => dispatch(initialize()),
+        onUpdate: ({ email, name, photoUrl, uid }) => {
+            dispatch(update({ email, name, photoUrl, uid }));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
