@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
 import { noop } from 'app/utils';
-import { Spinner } from 'app/components';
+import { Spinner } from 'app/core/components/layout';
 
 
 const block = purebem.of('button');
