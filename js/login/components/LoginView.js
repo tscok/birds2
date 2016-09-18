@@ -23,6 +23,7 @@ const LoginView = React.createClass({
     propTypes: {
         root: PropTypes.string.isRequired,
         // ...
+        error: PropTypes.string,
         onSignOut: PropTypes.func
     },
 
@@ -50,11 +51,21 @@ const LoginView = React.createClass({
                     provider="facebook"
                     root={ this.props.root }
                     text="Continue with Facebook" />
+                <div className={ block('error') }>
+                    { this.props.error }
+                </div>
             </div>
         );
     }
 
 });
+
+const mapStateToProps = (state, props) => {
+    const component = state.components[props.root];
+    return {
+        error: component.error.message
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -62,6 +73,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-const LoginViewContainer = connect(null, mapDispatchToProps)(LoginView);
+const LoginViewContainer = connect(mapStateToProps, mapDispatchToProps)(LoginView);
 
 export default attach(LoginViewContainer, { initialize, root: 'login' });

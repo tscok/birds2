@@ -1,15 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { firebase } from 'js/firebase';
+import { firebase, getUser } from 'js/firebase';
 
 import {
     Button,
     FormGroup,
     TextboxContainer
-} from 'js/core/components';
+} from 'js/core/components';    
 
-import { reset, submit } from 'js/redux/components/login/actions';
+import { error, reset, submit } from 'js/redux/components/login/actions';
+import { update } from 'js/redux/user/actions';
 
 
 const LoginForm = React.createClass({
@@ -18,6 +19,8 @@ const LoginForm = React.createClass({
         onLogin: PropTypes.func.isRequired,
         root: PropTypes.string.isRequired,
         // ...
+        onAuth: PropTypes.func,
+        onError: PropTypes.func,
         onReset: PropTypes.func,
         onSubmit: PropTypes.func,
         username: PropTypes.string,
@@ -37,14 +40,15 @@ const LoginForm = React.createClass({
     },
 
     handleSuccess(auth) {
-        // Redux: set user
+        console.log('success:', auth);
+        this.props.onAuth(getUser(auth));
         this.props.onReset();
         this.props.onLogin();
     },
 
     handleError(error) {
-        // Redux: clear password
-        // Redux: set login error
+        console.log('error', error);
+        this.props.onError(error.message);
     },
 
     render() {
@@ -84,6 +88,10 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
+        onAuth: ({ email, name, photoUrl, uid }) => {
+            dispatch(update({ email, name, photoUrl, uid }));
+        },
+        onError: (message) => dispatch(error({ message })),
         onReset: () => dispatch(reset()),
         onSubmit: (submitting) => dispatch(submit({
             root: props.root,

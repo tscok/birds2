@@ -5,7 +5,7 @@ import { firebase, getUser } from 'js/firebase';
 
 import { Button } from 'js/core/components';
 
-import { reset, submit } from 'js/redux/components/login/actions';
+import { error, reset, submit } from 'js/redux/components/login/actions';
 import { update } from 'js/redux/user/actions';
 
 
@@ -17,6 +17,7 @@ const LoginButton = React.createClass({
         root: PropTypes.string.isRequired,
         // ...
         onAuth: PropTypes.func,
+        onError: PropTypes.func,
         onReset: PropTypes.func,
         onSubmit: PropTypes.func,
         provider: PropTypes.string,
@@ -60,7 +61,7 @@ const LoginButton = React.createClass({
     },
 
     handleLoginError(error) {
-        // Redux: set login error
+        this.props.onError(error.message);
     },
 
     render() {
@@ -89,6 +90,7 @@ const mapDispatchToProps = (dispatch, props) => {
         onAuth: ({ email, name, photoUrl, uid }) => {
             dispatch(update({ email, name, photoUrl, uid }));
         },
+        onError: (message) => dispatch(error({ message })),
         onReset: () => dispatch(reset()),
         onSubmit: (submitting) => dispatch(submit({
             root: props.root,
