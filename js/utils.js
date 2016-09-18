@@ -24,16 +24,19 @@ export function getStatus(start, end) {
 };
 
 export function isString(str) {
-    // return !!str && str.trim() !== '';
     return isstring(str);
+};
+
+export function isDate(str, format='YYYYMMDD') {
+    return moment(str, format, true).isValid();
 };
 
 export function isEmpty(str) {
     return str === '' || str.trim().length === 0;
 };
 
-export function isDate(str, format='YYYYMMDD') {
-    return moment(str, format, true).isValid();
+export function isNullOrEmpty(val) {
+    return val === '' || val === null || val === void(0);
 };
 
 export function capitalize(str) {
@@ -68,6 +71,7 @@ export {
     getStatus,
     isDate,
     isEmpty,
+    isNullOrEmpty,
     noop,
     overlayAdd,
     overlayRemove,
