@@ -2,17 +2,26 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
 
+import { NavLink } from 'js/core/components';
+
 
 const block = purebem.of('navigation-main');
 
 const NavigationMain = React.createClass({
 
-    contextTypes: {
-        router: PropTypes.object
+    propTypes: {
+        isVisible: PropTypes.bool,
+        project: PropTypes.object
     },
 
-    propTypes: {
-        visible: PropTypes.bool
+    getDefaultProps() {
+        return {
+            project: {}
+        };
+    },
+
+    isProject() {
+        return !!('id' in this.props.project) && this.props.project.id !== '';
     },
 
     renderRegularNav() {
@@ -26,8 +35,7 @@ const NavigationMain = React.createClass({
     },
 
     renderProjectNav() {
-        const id = '123';
-
+        const { id } = this.props.project;
         return (
             <nav className={ block('links') }>
                 <NavLink baseClass={ block('link') } to={ `/project/${id}` }>Project</NavLink>
@@ -40,20 +48,23 @@ const NavigationMain = React.createClass({
     },
 
     render() {
-        if (!this.props.visible) {
+        if (!this.props.isVisible) {
             return null;
         }
 
-        return (
-            <nav>[main navigation]</nav>
-        );
+        if (this.isProject()) {
+            return this.renderProjectNav();
+        }
+
+        return this.renderRegularNav();
     }
 
 });
 
 const mapStateToProps = (state) => {
     return {
-        visible: state.user && state.user.uid !== ''
+        isVisible: state.user && state.user.uid !== '',
+        project: state.components.project
     };
 };
 

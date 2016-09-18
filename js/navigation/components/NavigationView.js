@@ -12,11 +12,17 @@ const block = purebem.of('navigation-view');
 
 const NavigationView = React.createClass({
 
+    propTypes: {
+        root: PropTypes.string
+    },
+
     render() {
         return (
             <header className={ block() }>
-                <NavigationMain />
-                <NavigationUser />
+                <div className={ block('content') }>
+                    <NavigationMain />
+                    <NavigationUser root={ this.props.root } />
+                </div>
             </header>
         );
     }
