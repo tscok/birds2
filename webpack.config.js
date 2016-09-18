@@ -2,7 +2,7 @@ var path = require('path');
 
 
 module.exports = {
-    entry: path.resolve(__dirname, './app/main.js'),
+    entry: path.resolve(__dirname, './js/main.js'),
     resolve: {
         root: path.resolve('./'),
         extensions: ['', '.js', '.less']
