@@ -11,6 +11,6 @@ export default () => {
 
 export const reducer = {
     [type]: (state, action) => {
-        return state.merge({ ...user });
+        return state.set('auth', { ...user });
     }
 };

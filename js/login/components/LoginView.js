@@ -9,7 +9,6 @@ import { Divider } from 'js/core/components';
 
 import attach from 'js/redux/components/attach';
 import { initialize } from 'js/redux/components/login/actions';
-import { initialize as resetUser } from 'js/redux/user/actions';
 
 
 const block = purebem.of('login-view');
@@ -23,14 +22,11 @@ const LoginView = React.createClass({
     propTypes: {
         root: PropTypes.string.isRequired,
         // ...
-        error: PropTypes.string,
-        onSignOut: PropTypes.func
+        error: PropTypes.string
     },
 
     componentDidMount() {
-        firebase.auth().signOut().then(() => {
-            this.props.onSignOut();
-        });
+        firebase.auth().signOut();
     },
 
     getProfileRoute() {
@@ -67,12 +63,6 @@ const mapStateToProps = (state, props) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onSignOut: () => dispatch(resetUser())
-    };
-};
-
-const LoginViewContainer = connect(mapStateToProps, mapDispatchToProps)(LoginView);
+const LoginViewContainer = connect(mapStateToProps)(LoginView);
 
 export default attach(LoginViewContainer, { initialize, root: 'login' });

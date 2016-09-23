@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import AppAuth from './AppAuth';
+import auth from 'js/redux/user/auth';
 import { NavigationView } from 'js/navigation/components';
 
 
@@ -10,23 +10,22 @@ const block = purebem.of('app-view');
 const AppView = React.createClass({
 
     propTypes: {
-        children: PropTypes.node,
-        location: PropTypes.object
+        children: PropTypes.node
     },
 
     render() {
         return (
-            <AppAuth pathname={ this.props.location.pathname }>
-                <div className={ block() }>
+            <div className={ block() }>
+                <header className={ block('header') }>
                     <NavigationView />
-                    <main className={ block('main') }>
-                        { this.props.children }
-                    </main>
-                </div>
-            </AppAuth>
+                </header>
+                <main className={ block('main') }>
+                    { this.props.children }
+                </main>
+            </div>
         );
     }
 
 });
 
-export default AppView;
+export default auth(AppView);

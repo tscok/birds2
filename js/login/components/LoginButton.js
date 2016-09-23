@@ -67,12 +67,11 @@ const LoginButton = React.createClass({
     render() {
         return (
             <Button
+                color={ this.props.provider }
                 loading={ this.props.submitting }
                 onClick={ this.handleLogin }
                 stretched={ true }
-                style="neutral">
-                { this.props.text }
-            </Button>
+                text={ this.props.text } />
         );
     }
 

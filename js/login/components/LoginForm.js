@@ -67,10 +67,8 @@ const LoginForm = React.createClass({
                 </FormGroup>
                 <Button
                     loading={ this.props.submitting }
-                    style="neutral"
-                    type="submit">
-                    Login
-                </Button>
+                    submit={ true }
+                    text="Login" />
             </form>
         );
     }

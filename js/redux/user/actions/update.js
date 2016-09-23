@@ -9,6 +9,6 @@ export default ({ email, name, photoUrl, uid }) => {
 
 export const reducer = {
     [type]: (state, action) => {
-        return state.merge({ ...action.payload });
+        return state.set('auth', { ...action.payload });
     }
 };
