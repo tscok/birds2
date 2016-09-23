@@ -1,8 +1,6 @@
 export default () => {
     return {
-        main: {
-            expanded: false
-        },
+        expanded: null,
         user: {
             expanded: false
         }
