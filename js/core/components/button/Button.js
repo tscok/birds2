@@ -10,37 +10,35 @@ const block = purebem.of('button');
 const Button = React.createClass({
 
     propTypes: {
-        active: PropTypes.bool,
-        children: PropTypes.node,
         className: PropTypes.string,
+        color: PropTypes.oneOf([
+            'blue', 'gray', 'green',
+            'red', 'white', 'yellow',
+            'facebook'
+        ]),
         disabled: PropTypes.bool,
-        large: PropTypes.bool,
         loading: PropTypes.bool,
         onClick: PropTypes.func,
         stretched: PropTypes.bool,
-        style: PropTypes.oneOf([
-            'danger',
-            'default',
-            'facebook',
-            'link',
-            'neutral',
-            'success',
-            'warning'
-        ]),
-        type: PropTypes.string
+        submit: PropTypes.bool,
+        text: PropTypes.string,
     },
 
     getDefaultProps() {
         return {
-            active: false,
+            color: 'blue',
             disabled: false,
-            large: false,
             loading: false,
             onClick: noop,
             stretched: false,
-            style: 'default',
-            type: 'button'
+            submit: false,
+            text: 'Button'
         };
+    },
+
+    isDarkButton() {
+        const dark = ['blue', 'facebook', 'green', 'red'];
+        return dark.some(color => color === this.props.color);
     },
 
     onKeyDown(evt) {
@@ -53,39 +51,30 @@ const Button = React.createClass({
 
     renderContent() {
         if (this.props.loading) {
-            const color = this.props.style !== 'default' ? 'white' : 'black';
+            const spinnerColor = this.isDarkButton() ? 'white' : 'black';
+
             return (
-                <Spinner type="circle" color={ color } />
+                <Spinner type="circle" color={ spinnerColor } />
             );
         }
+
         return (
-            <span>{ this.props.children }</span>
+            <span>{ this.props.text }</span>
         );
     },
 
     render() {
-        const { active, className, disabled, large, loading, onClick, stretched, style, type } = this.props;
-        const isDisabled = disabled || loading;
-
-        const classNames = purebem.many(
-            block({
-                active,
-                disabled: isDisabled,
-                large,
-                stretched,
-                style
-            }),
-            className
-        );
+        const { className, color, disabled, loading, stretched, submit } = this.props;
+        const classNames = purebem.many(block({ color, stretched }), className);
 
         return (
             <button
                 className={ classNames }
-                disabled={ isDisabled }
-                onClick={ onClick }
+                disabled={ disabled || loading }
+                onClick={ this.props.onClick }
                 onKeyDown={ this.onKeyDown }
                 tabIndex="0"
-                type={ type }>
+                type={ submit ? 'submit' : 'button' }>
                 { this.renderContent() }
             </button>
         );

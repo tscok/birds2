@@ -29,7 +29,7 @@
         }
     }
 
-    &--danger {
+    &--red {
         .button-states(
             @color-white,
             @color-red,
@@ -39,7 +39,7 @@
         );
     }
 
-    &--default {
+    &--gray {
         .button-states(
             inherit,
             @color-white,
@@ -49,7 +49,7 @@
         );
     }
 
-    &--neutral {
+    &--blue {
         .button-states(
             @color-white,
             @color-blue,
@@ -59,7 +59,7 @@
         );
     }
 
-    &--success {
+    &--green {
         .button-states(
             @color-white,
             @color-green,
@@ -69,7 +69,7 @@
         );
     }
 
-    &--warning {
+    &--yellow {
         .button-states(
             @color-white,
             @color-yellow,
@@ -77,6 +77,13 @@
             @color-yellow-dark,
             @color-yellow-dark--hover
         );
+    }
+
+    &--white {
+        color: @color-blue;
+        &:hover {
+            text-decoration: underline;
+        }
     }
 
     &--facebook {
@@ -89,26 +96,12 @@
         );
     }
 
-    &--link {
-        color: @color-blue;
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-
     &--disabled {
         .opacity(.6);
 
         &:hover {
             text-decoration: none;
         }
-    }
-
-    &--large {
-        padding: 0 30px;
-        height: 50px;
-        line-height: 50px;
-        border-radius: 5px;
     }
 
     & + & {
