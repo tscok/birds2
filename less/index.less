@@ -1,55 +1,22 @@
 // Definitions
-@import "definitions";
+@import "./definitions";
 
 // Fonts
-@import "fonts/feather";
+@import "./fonts/feather";
 
 // Functions / Mixins
-@import "functions";
+@import "./functions";
 
 // Grid + base styling
-@import "vendor/skeleton";
+@import "./vendor/skeleton";
 
 // CSS loader
-@import "vendor/spinner";
-
-// Views
-@import "views/AppView";
-@import "views/CreateView";
-@import "views/LoginView";
-@import "views/ProfileView";
-@import "views/ProjectEntryView";
-@import "views/ProjectRingsView";
-@import "views/ProjectView";
-@import "views/SearchView";
+@import "./vendor/spinner";
 
 // Components
-@import "components/Autocomplete";
-@import "components/Avatar";
-@import "components/Button";
-@import "components/ButtonToggle";
-@import "components/ContentBox";
-@import "components/Divider";
-@import "components/Dropdown";
-@import "components/FormGroup";
-@import "components/InputField";
-@import "components/JoinButton";
-@import "components/Lightbox";
-@import "components/ListItem";
-@import "components/MemberListItem";
-@import "components/MemberListItemForm";
-@import "components/Navigation";
-@import "components/PendingCount";
-@import "components/ProjectListItem";
-@import "components/ProjectMap";
-@import "components/ProjectSuccess";
-@import "components/RingsForm";
-@import "components/RingsListHeader";
-@import "components/RingsListItem";
-@import "components/Table";
-@import "components/Tabs";
-@import "components/User";
-@import "components/ViewHeader";
+@import "./core/components";
+@import "./navigation/components";
+
 
 // Basic styling
 * {
@@ -62,42 +29,36 @@ html, body {
     touch-action: manipulation;
 }
 
-body {
-    background-color: @color-grayf9;
-
-    &:after {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 0;
-        height: 0;
-        opacity: 0;
-        z-index: @z-index-base;
-        background-color: @color-overlay;
-        .transition(opacity @timing-normal, height @timing-fast @timing-normal, width @timing-fast @timing-normal);
-    }
-
-    &.overlay {
-        position: fixed;
-        width: 100%;
-        overflow: hidden;
-
-        &:after {
-            width: 100%;
-            height: 100%;
-            opacity: 1;
-            .transition(opacity @timing-normal);
-        }
-    }
+html, body {
+    min-height: 100%;
 }
 
-.desktop-layout({
+body {
+    background-color: @gray-99;
 
-    body.overlay {
-        &--navigation:after {
-            display: none;
-        }
-    }
+    // &:after {
+    //     content: "";
+    //     position: fixed;
+    //     top: 0;
+    //     left: 0;
+    //     width: 0;
+    //     height: 0;
+    //     opacity: 0;
+    //     z-index: @z-index-base;
+    //     background-color: @color-overlay;
+    //     .transition(opacity @timing-normal, height @timing-fast @timing-normal, width @timing-fast @timing-normal);
+    // }
 
-});
+    // &.overlay {
+    //     position: fixed;
+    //     width: 100%;
+    //     overflow: hidden;
+
+    //     &:after {
+    //         width: 100%;
+    //         height: 100%;
+    //         opacity: 1;
+    //         .transition(opacity @timing-normal);
+    //     }
+    // }
+}

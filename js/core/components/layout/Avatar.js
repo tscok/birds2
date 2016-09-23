@@ -13,24 +13,32 @@ const Avatar = React.createClass({
         userName: PropTypes.string
     },
 
+    getFirstLetter() {
+        return this.props.userName.substring(0,1).toUpperCase();
+    },
+
     renderLetter() {
-        const letter = this.props.userName.substring(0,1).toUpperCase();
-        console.log('letter', letter);
         return (
-            <div className={ block('letter') }>{ letter }</div>
+            <div className={ block('letter') }>{ this.getFirstLetter() }</div>
         );
     },
 
     renderPhoto() {
         return (
-            <img className={ block('photo') } src={ this.props.photoUrl } />
+            <img className={ block('picture') } src={ this.props.photoUrl } />
         );
     },
 
     render() {
-        return isNullOrEmpty(this.props.photoUrl)
-            ? this.renderLetter()
-            : this.renderPhoto();
+        return (
+            <div className={ block() }>
+            {
+                isNullOrEmpty(this.props.photoUrl)
+                    ? this.renderLetter()
+                    : this.renderPhoto()
+            }
+            </div>
+        );
     }
 
 });
