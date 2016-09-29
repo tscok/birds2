@@ -2,12 +2,12 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
 import attach from 'js/redux/components/attach';
-import { initialize } from 'js/redux/components/profile/actions';
+import { initialize } from 'js/redux/components/projects/actions';
 
 
-const block = purebem.of('profile-view');
+const block = purebem.of('projects-view');
 
-const ProfileView = React.createClass({
+const ProjectsView = React.createClass({
 
     contextTypes: {
         router: PropTypes.object
@@ -20,10 +20,10 @@ const ProfileView = React.createClass({
     render() {
         return (
             <div className={ block() }>
-                <h1>ProfileView</h1>
+                <h1></h1>
             </div>
         );
     }
 });
 
-export default attach(ProfileView, { initialize, root: 'profile' });
+export default attach(ProjectsView, { initialize, root: 'projects' });

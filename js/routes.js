@@ -18,7 +18,7 @@ import { AppView } from './app/components';
 // } from './views';
 
 import { LoginView } from './login/components';
-import { ProfileView } from './profile/components';
+import { ProjectsView } from './projects/components';
 
 
 const routes = (
@@ -28,7 +28,7 @@ const routes = (
 
             <Route path="/login" component={ LoginView } />
             
-            <Route path="/profile" component={ ProfileView } />
+            <Route path="/projects" component={ ProjectsView } />
             {/*<Route path="/create" component={ CreateView } />
             <Route path="/search" component={ SearchView } />*/}
 
