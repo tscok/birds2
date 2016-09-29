@@ -1,0 +1,54 @@
+.button {
+    .shadow(@color) {
+        @shaded: shade(@color, 20%);
+        .box-shadow(~'0 -2px @{shaded} inset');
+    }
+
+    .hover(@color) {
+        &:not([disabled]):hover,
+        &:not([disabled]):focus {
+            background-color: tint(@color, 10%);
+        }
+    }
+
+    @size: 40px;
+    display: block;
+    width: auto;
+    height: @size;
+    min-width: 100px;
+    padding: 0 15px;
+    line-height: @size;
+    border: 0;
+    outline: none;
+    .border-radius(3px);
+
+    &--stretched {
+        width: 100%;
+    }
+
+    &--gray {
+        background-color: @gray-86;
+        color: inherit;
+        // .shadow(@gray-86);
+        .hover(@gray-86);
+    }
+
+    &--red {
+        background-color: @red;
+        color: @white;
+        // .shadow(@red);
+        .hover(@red);
+    }
+
+    &--facebook {
+        background-color: @facebook;
+        color: @white;
+        // .shadow(@facebook);
+        .hover(@facebook);
+    }
+
+    &--none {
+        border: 1px solid @gray-86;
+        background-color: transparent;
+    }
+}

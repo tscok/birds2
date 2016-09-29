@@ -1,26 +1,30 @@
 .avatar {
-    @size: 40px;
-
     display: flex;
     align-items: center;
-    width: @size;
-    height: @size;
+    height: 100%;
     overflow: hidden;
     background-color: @gray-80;
     .border-radius(100%);
 
     &__letter {
         flex: 1;
+        font-size: 2em;
         text-align: center;
         color: @white;
+        .user-select;
     }
 
     &__picture {
         display: block;
-        max-height: @size;
+        height: 100%;
     }
 }
 
 .desktop-layout({
-    .avatar {}
+    .avatar {
+        &__letter {
+            font-size: 1em;
+            color: inherit;
+        }
+    }
 });

@@ -1,0 +1,20 @@
+.textbox {
+    @size: 40px;
+    width: auto;
+    height: @size;
+    min-width: 200px;
+    padding: 0 10px;
+    line-height: @size;
+    border: 1px solid @gray-90;
+    outline: none;
+    background-color: @white;
+    .border-radius(3px);
+
+    &--stretched {
+        width: 100%;
+    }
+
+    &:not([disabled]):focus {
+        border-color: @gray-80;
+    }
+}
