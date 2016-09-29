@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
+import { isNullOrEmpty } from 'js/utils';
+
 
 const block = purebem.of('form-group');
 
@@ -8,7 +10,6 @@ const FormGroup = React.createClass({
 
     propTypes: {
         children: PropTypes.node,
-        className: PropTypes.string,
         description: PropTypes.string,
         label: PropTypes.string,
         type: PropTypes.oneOf([
@@ -19,17 +20,15 @@ const FormGroup = React.createClass({
 
     getDefaultProps() {
         return {
-            className: null,
-            description: '',
-            label: '',
             type: 'block'
         };
     },
 
     renderDescription() {
-        if (this.props.description === '') {
+        if (isNullOrEmpty(this.props.description)) {
             return null;
         }
+
         return (
             <span className={ block('description') }>
                 { this.props.description }
@@ -38,9 +37,10 @@ const FormGroup = React.createClass({
     },
 
     renderLabel() {
-        if (this.props.label === '') {
+        if (isNullOrEmpty(this.props.label)) {
             return null;
         }
+
         return (
             <label className={ block('label') }>
                 { this.props.label }
@@ -50,14 +50,9 @@ const FormGroup = React.createClass({
     },
 
     render() {
-        const { className, type } = this.props;
-        const classNames = purebem.many(
-            block({ type }),
-            className
-        );
-
+        const { type } = this.props;
         return (
-            <div className={ classNames }>
+            <div className={ block({ type }) }>
                 { this.renderLabel() }
                 { this.props.children }
             </div>

@@ -5,12 +5,12 @@ import onClickOutside from 'react-onclickoutside';
 const ClickOutside = onClickOutside(React.createClass({
 
     propTypes: {
-        children: PropTypes.node.isRequired,
-        onClick: PropTypes.func.isRequired
+        children: PropTypes.node,
+        onClick: PropTypes.func
     },
 
-    handleClickOutside() {
-        this.props.onClick();
+    handleClickOutside(evt) {
+        this.props.onClick(evt);
     },
 
     render() {

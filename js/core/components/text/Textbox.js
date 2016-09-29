@@ -9,8 +9,18 @@ const Textbox = React.createClass({
     propTypes: {
         name: PropTypes.string,
         onChange: PropTypes.func,
-        type: PropTypes.oneOf(['text', 'password']),
+        stretched: PropTypes.bool,
+        type: PropTypes.oneOf([
+            'text', 'password'
+        ]),
         value: PropTypes.string
+    },
+
+    getDefaultProps() {
+        return {
+            stretched: false,
+            type: 'text'
+        };
     },
 
     handleChange(evt) {
@@ -18,9 +28,11 @@ const Textbox = React.createClass({
     },
 
     render() {
+        const { stretched } = this.props;
+
         return (
             <input
-                className={ block() }
+                className={ block({ stretched }) }
                 name={ this.props.name }
                 type={ this.props.type }
                 value={ this.props.value }

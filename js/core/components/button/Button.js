@@ -14,7 +14,7 @@ const Button = React.createClass({
         color: PropTypes.oneOf([
             'blue', 'gray', 'green',
             'red', 'white', 'yellow',
-            'facebook'
+            'facebook', 'none'
         ]),
         disabled: PropTypes.bool,
         loading: PropTypes.bool,
@@ -26,7 +26,7 @@ const Button = React.createClass({
 
     getDefaultProps() {
         return {
-            color: 'blue',
+            color: 'gray',
             disabled: false,
             loading: false,
             onClick: noop,
@@ -58,9 +58,7 @@ const Button = React.createClass({
             );
         }
 
-        return (
-            <span>{ this.props.text }</span>
-        );
+        return this.props.text;
     },
 
     render() {
