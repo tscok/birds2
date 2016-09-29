@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+import { isNullOrEmpty } from 'js/utils';
+
 import { firebase, getUser } from 'js/firebase';
+
 import { initialize, update } from 'js/redux/user/actions';
 
 
@@ -15,8 +18,8 @@ export default (AppComponent) => {
 
     const mapDispatchToProps = (dispatch) => {
         return {
-            onAuth: ({ email, name, photoUrl, uid }) => {
-                dispatch(update({ email, name, photoUrl, uid }));
+            onAuth: ({ email, name, photoUrl, provider, uid }) => {
+                dispatch(update({ email, name, photoUrl, provider, uid }));
             },
             onMount: () => dispatch(initialize())
         };
@@ -36,6 +39,12 @@ export default (AppComponent) => {
             onMount: PropTypes.func
         },
 
+        getDefaultProps() {
+            return {
+                auth: {}
+            };
+        },
+
         componentDidMount() {
             this.handleAuthChanges();
         },
@@ -44,22 +53,27 @@ export default (AppComponent) => {
             const { auth, location } = nextProps;
 
             if (!auth.uid && location.pathname !== '/login') {
-                this.handleRouting();
+                this.getLoginView();
             }
         },
 
         handleAuthChanges() {
             firebase.auth().onAuthStateChanged((authData) => {
-                if (authData) {
+
+                const { uid } = this.props.auth;
+
+                if (authData && !isNullOrEmpty(uid)) {
+                    return;
+                } else if (authData) {
                     this.props.onAuth(getUser(authData));
                 } else {
                     this.props.onMount();
-                    this.handleRouting();
+                    this.getLoginView();
                 }
             });
         },
 
-        handleRouting() {
+        getLoginView() {
             this.context.router.replace('/login');
         },
 

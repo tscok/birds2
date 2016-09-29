@@ -32,6 +32,8 @@ export default (WrappedComponent, { initialize, root }) => {
         },
 
         componentDidMount() {
+            console.log(`Component (${this.props.root}) mounted.`);
+
             if (!this.props.initialized) {
                 this.props.onMount();
             }
