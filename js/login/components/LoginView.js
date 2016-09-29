@@ -2,13 +2,16 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
 
+import { getUser } from 'js/firebase';
+
 import LoginButton from './LoginButton';
 import LoginForm from './LoginForm';
 
 import { Divider } from 'js/core/components';
 
 import attach from 'js/redux/components/attach';
-import { initialize } from 'js/redux/components/login/actions';
+import { error, initialize, reset, submit } from 'js/redux/components/login/actions';
+import { update } from 'js/redux/user/actions';
 
 
 const block = purebem.of('login-view');
@@ -22,34 +25,58 @@ const LoginView = React.createClass({
     propTypes: {
         root: PropTypes.string.isRequired,
         // ...
-        error: PropTypes.string
+        error: PropTypes.string,
+        onAuth: PropTypes.func,
+        onError: PropTypes.func,
+        onReset: PropTypes.func
     },
 
     componentDidMount() {
         firebase.auth().signOut();
     },
 
-    getProfileRoute() {
-        this.context.router.push('/profile');
+    getLoggedInView() {
+        this.context.router.push('/projects');
+    },
+
+    handleError(error) {
+        this.props.onError(error.message);
+    },
+
+    handleSuccess(auth) {
+        const data = 'user' in auth ? auth.user : auth;
+        this.props.onAuth(getUser(data));
+        this.props.onReset();
+        this.getLoggedInView();
+    },
+
+    renderError() {
+        if (!this.props.error) {
+            return null;
+        }
+        return (
+            <div className={ block('error') }>{ this.props.error }</div>
+        );
     },
 
     render() {
         return (
             <div className={ block() }>
-                <h1>LoginView</h1>
                 <LoginForm
-                    onLogin={ this.getProfileRoute }
+                    onError={ this.handleError }
+                    onSubmit={ this.props.onSubmit }
+                    onSuccess={ this.handleSuccess }
                     root={ this.props.root } />
                 <Divider text="or" />
                 <LoginButton
-                    onLogin={ this.getProfileRoute }
+                    onError={ this.handleError }
+                    onSubmit={ this.props.onSubmit }
+                    onSuccess={ this.handleSuccess }
                     path="facebook"
                     provider="facebook"
                     root={ this.props.root }
                     text="Continue with Facebook" />
-                <div className={ block('error') }>
-                    { this.props.error }
-                </div>
+                { this.renderError() }
             </div>
         );
     }
@@ -63,6 +90,21 @@ const mapStateToProps = (state, props) => {
     };
 };
 
-const LoginViewContainer = connect(mapStateToProps)(LoginView);
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        onAuth: ({ email, name, photoUrl, provider, uid }) => {
+            dispatch(update({ email, name, photoUrl, provider, uid }));
+        },
+        onError: (message) => dispatch(error({ message })),
+        onReset: () => dispatch(reset()),
+        onSubmit: (path, submitting) => dispatch(submit({
+            root: props.root,
+            path: `${path}.submitting`,
+            submitting
+        }))
+    };
+};
+
+const LoginViewContainer = connect(mapStateToProps, mapDispatchToProps)(LoginView);
 
 export default attach(LoginViewContainer, { initialize, root: 'login' });

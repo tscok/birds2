@@ -1,28 +1,23 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { firebase, getUser } from 'js/firebase';
+import { firebase } from 'js/firebase';
 
 import { Button } from 'js/core/components';
-
-import { error, reset, submit } from 'js/redux/components/login/actions';
-import { update } from 'js/redux/user/actions';
 
 
 const LoginButton = React.createClass({
 
     propTypes: {
-        onLogin: PropTypes.func.isRequired,
-        path: PropTypes.string.isRequired,
-        root: PropTypes.string.isRequired,
-        // ...
-        onAuth: PropTypes.func,
         onError: PropTypes.func,
-        onReset: PropTypes.func,
         onSubmit: PropTypes.func,
+        onSuccess: PropTypes.func,
         provider: PropTypes.string,
-        submitting: PropTypes.bool,
-        text: PropTypes.string
+        path: PropTypes.string,
+        root: PropTypes.string,
+        text: PropTypes.string,
+        // ...
+        submitting: PropTypes.bool
     },
 
     componentDidMount() {
@@ -44,24 +39,15 @@ const LoginButton = React.createClass({
             return;
         }
 
-        this.props.onSubmit(true);
+        this.handleSubmit(true);
 
         firebase.auth().signInWithPopup(this.authProvider)
-            .then(this.handleLoginSuccess, this.handleLoginError)
-            .then(() => this.props.onSubmit(false));
+            .then(this.props.onSuccess, this.props.onError)
+            .then(() => this.handleSubmit(false));
     },
 
-    handleLoginSuccess(auth) {
-        if (!('user' in auth)) {
-            return;
-        }
-        this.props.onAuth(getUser(auth.user));
-        this.props.onReset();
-        this.props.onLogin();
-    },
-
-    handleLoginError(error) {
-        this.props.onError(error.message);
+    handleSubmit(submitting) {
+        this.props.onSubmit(this.props.path, submitting);
     },
 
     render() {
@@ -84,19 +70,4 @@ const mapStateToProps = (state, props) => {
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
-    return {
-        onAuth: ({ email, name, photoUrl, uid }) => {
-            dispatch(update({ email, name, photoUrl, uid }));
-        },
-        onError: (message) => dispatch(error({ message })),
-        onReset: () => dispatch(reset()),
-        onSubmit: (submitting) => dispatch(submit({
-            root: props.root,
-            path: `${props.path}.submitting`,
-            submitting
-        }))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginButton);
+export default connect(mapStateToProps)(LoginButton);
