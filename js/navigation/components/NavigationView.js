@@ -6,7 +6,7 @@ import debounce from 'lodash.debounce';
 import { isNullOrEmpty } from 'js/utils';
 
 import attach from 'js/redux/components/attach';
-import { initialize, toggle } from 'js/redux/components/navigation/actions';
+import { initialize, logout, toggle } from 'js/redux/components/navigation/actions';
 
 import NavigationMenu from './NavigationMenu';
 import NavigationUser from './NavigationUser';
@@ -21,8 +21,8 @@ const NavigationView = React.createClass({
         expanded: PropTypes.any,
         onCollapse: PropTypes.func,
         onExpand: PropTypes.func,
-        root: PropTypes.string,
-        visible: PropTypes.bool
+        onLogout: PropTypes.func,
+        root: PropTypes.string
     },
 
     componentDidMount() {
@@ -45,10 +45,6 @@ const NavigationView = React.createClass({
     },
 
     render() {
-        if (!this.props.visible) {
-            return (<div className={ block() } />);
-        }
-
         const { expanded } = this.props;
         const collapsed = expanded === false;
 
@@ -57,8 +53,12 @@ const NavigationView = React.createClass({
                 <div className={ block('burger') } onClick={ this.handleToggle } />
                 <ClickOutside onClick={ () => expanded && this.handleToggle() }>
                     <div className={ block('content', { expanded, collapsed }) }>
-                        <NavigationMenu root={ this.props.root } />
-                        <NavigationUser root={ this.props.root } />
+                        <NavigationMenu
+                            onLogout={ this.props.onLogout }
+                            root={ this.props.root } />
+                        <NavigationUser
+                            onLogout={ this.props.onLogout }
+                            root={ this.props.root } />
                     </div>
                 </ClickOutside>
             </div>
@@ -70,14 +70,18 @@ const NavigationView = React.createClass({
 const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
     return {
-        expanded: component.expanded,
-        visible: !!state.user.auth && !isNullOrEmpty(state.user.auth.uid)
+        expanded: component.expanded
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, props) => {
     return {
-        onToggle: (expanded) => dispatch(toggle({ expanded: !expanded })),
+        onLogout: () => dispatch(logout()),
+        onToggle: (expanded) => dispatch(toggle({
+            root: props.root,
+            path: 'expanded',
+            expanded: !expanded
+        })),
         onReset: () => dispatch(initialize())
     };
 };
