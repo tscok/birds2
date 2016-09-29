@@ -1,9 +1,9 @@
 const type = 'USER.UPDATE';
 
-export default ({ email, name, photoUrl, uid }) => {
+export default ({ email, name, photoUrl, provider, uid }) => {
     return {
         type,
-        payload: { email, name, photoUrl, uid }
+        payload: { email, name, photoUrl, provider, uid }
     };
 };
 

@@ -21,7 +21,8 @@ const getUser = (authData) => {
         uid: authData.uid,
         name: providerData.displayName,
         email: providerData.email,
-        photoUrl: providerData.photoURL
+        photoUrl: providerData.photoURL,
+        provider: providerData.providerId
     };
 };
 
