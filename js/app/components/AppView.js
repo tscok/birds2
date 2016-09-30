@@ -13,30 +13,32 @@ const AppView = React.createClass({
 
     propTypes: {
         auth: PropTypes.object,
-        children: PropTypes.node
+        children: PropTypes.node,
+        location: PropTypes.object
     },
 
     isUser() {
         return !isNullOrEmpty(this.props.auth.uid);
     },
 
-    renderNavigation() {
+    renderNavigation(props) {
         if (!this.isUser()) {
             return null;
         }
 
-        return (<NavigationView user={ this.props.auth } />);
+        return (
+            <NavigationView { ...props } />
+        );
     },
 
     render() {
-        const childrenWithProps = React.Children.map(this.props.children, 
-            (child) => React.cloneElement(child, { user: this.props.auth })
-        );
+        const { children, ...rest } = this.props;
+        const childrenWithProps = React.Children.map(children, (child) => React.cloneElement(child, { ...rest }));
 
         return (
             <div className={ block() }>
                 <header className={ block('header') }>
-                    { this.renderNavigation() }
+                    { this.renderNavigation({ ...rest }) }
                 </header>
                 <main className={ block('main') }>
                     { childrenWithProps }
