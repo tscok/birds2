@@ -9,12 +9,9 @@ const block = purebem.of('projects-view');
 
 const ProjectsView = React.createClass({
 
-    contextTypes: {
-        router: PropTypes.object
-    },
-
     propTypes: {
-        root: PropTypes.string.isRequired
+        root: PropTypes.string.isRequired,
+        user: PropTypes.object.isRequired
     },
 
     render() {
