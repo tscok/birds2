@@ -10,8 +10,8 @@ const block = purebem.of('projects-view');
 const ProjectsView = React.createClass({
 
     propTypes: {
-        root: PropTypes.string.isRequired,
-        user: PropTypes.object.isRequired
+        auth: PropTypes.object.isRequired,
+        root: PropTypes.string.isRequired
     },
 
     render() {
