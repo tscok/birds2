@@ -25,17 +25,21 @@ const AppView = React.createClass({
             return null;
         }
 
-        return (<NavigationView />);
+        return (<NavigationView user={ this.props.auth } />);
     },
 
     render() {
+        const childrenWithProps = React.Children.map(this.props.children, 
+            (child) => React.cloneElement(child, { user: this.props.auth })
+        );
+
         return (
             <div className={ block() }>
                 <header className={ block('header') }>
                     { this.renderNavigation() }
                 </header>
                 <main className={ block('main') }>
-                    { this.props.children }
+                    { childrenWithProps }
                 </main>
             </div>
         );

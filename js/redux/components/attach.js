@@ -48,12 +48,13 @@ export default (WrappedComponent, { initialize, root }) => {
                 return null;
             }
 
-            const { component, root, ...rest } = this.props;
+            const { component, root, user, ...rest } = this.props;
 
             return (
                 <WrappedComponent
                     component={ component }
-                    root={ root } />
+                    root={ root }
+                    user={ user } />
             );
         }
 
