@@ -18,11 +18,13 @@ const block = purebem.of('navigation-view');
 const NavigationView = React.createClass({
 
     propTypes: {
+        root: PropTypes.string.isRequired,
+        user: PropTypes.object.isRequired,
+        // ...
         expanded: PropTypes.any,
         onCollapse: PropTypes.func,
         onExpand: PropTypes.func,
-        onLogout: PropTypes.func,
-        root: PropTypes.string
+        onLogout: PropTypes.func
     },
 
     componentDidMount() {
@@ -58,7 +60,8 @@ const NavigationView = React.createClass({
                             root={ this.props.root } />
                         <NavigationUser
                             onLogout={ this.props.onLogout }
-                            root={ this.props.root } />
+                            root={ this.props.root }
+                            user={ this.props.user } />
                     </div>
                 </ClickOutside>
             </div>

@@ -11,18 +11,18 @@ const block = purebem.of('navigation-user');
 const NavigationUser = React.createClass({
 
     propTypes: {
-        root: PropTypes.string,
-        // ...
-        expanded: PropTypes.bool,
-        onLogout: PropTypes.func,
-        onToggle: PropTypes.func,
+        onLogout: PropTypes.func.isRequired,
+        root: PropTypes.string.isRequired,
         user: PropTypes.shape({
             email: PropTypes.string,
             name: PropTypes.string,
             photoUrl: PropTypes.string,
             provider: PropTypes.string,
             uid: PropTypes.string
-        })
+        }).isRequired,
+        // ...
+        expanded: PropTypes.bool,
+        onToggle: PropTypes.func,
     },
 
     handleCollapse() {
@@ -106,8 +106,7 @@ const NavigationUser = React.createClass({
 const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
     return {
-        expanded: component.user.expanded,
-        user: state.user.auth
+        expanded: component.user.expanded
     };
 };
 
