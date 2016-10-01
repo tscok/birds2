@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
+import { firebase } from 'js/firebase';
+
+import ProjectsList from './ProjectsList';
+
 import attach from 'js/redux/components/attach';
 import { initialize } from 'js/redux/components/projects/actions';
 
@@ -15,9 +19,17 @@ const ProjectsView = React.createClass({
     },
 
     render() {
+        if (!this.props.auth.uid) {
+            return null;
+        }
+
         return (
             <div className={ block() }>
-                <h1></h1>
+                <h1>ProjectsView</h1>
+                <ProjectsList
+                    path="list"
+                    root={ this.props.root }
+                    uid={ this.props.auth.uid } />
             </div>
         );
     }

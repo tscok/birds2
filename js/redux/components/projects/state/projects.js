@@ -1,6 +1,6 @@
 export default () => {
     return {
-        loading: false,
-        list: []
+        list: [],
+        loading: true
     };
 };
