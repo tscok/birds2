@@ -3,14 +3,14 @@
     align-items: center;
     height: 100%;
     overflow: hidden;
-    background-color: @gray-80;
+    background-color: @white;
     .border-radius(100%);
 
     &__letter {
         flex: 1;
         font-size: 2em;
         text-align: center;
-        color: @white;
+        color: @gray-20;
         .user-select;
     }
 
@@ -20,11 +20,13 @@
     }
 }
 
-.desktop-layout({
+.tablet-layout({
     .avatar {
+        background-color: @gray-20;
+
         &__letter {
             font-size: 1em;
-            color: inherit;
+            color: @white;
         }
     }
 });
