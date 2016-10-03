@@ -18,6 +18,7 @@ import { AppView } from './app/components';
 // } from './views';
 
 import { LoginView } from './login/components';
+import { ProjectView } from './project/components';
 import { ProjectsView } from './projects/components';
 
 
@@ -32,8 +33,8 @@ const routes = (
             {/*<Route path="/create" component={ CreateView } />
             <Route path="/search" component={ SearchView } />*/}
 
-            {/*<Route path="/project/:id" component={ ProjectView } />
-            <Route path="/project/:id/entry" component={ ProjectEntryView } />
+            <Route path="/project/:id" component={ ProjectView } />
+            {/*<Route path="/project/:id/entry" component={ ProjectEntryView } />
             <Route path="/project/:id/export" component={ ProjectExportView } />
             <Route path="/project/:id/members" component={ ProjectMembersView } />
             <Route path="/project/:id/rings" component={ ProjectRingsView } />
