@@ -9,6 +9,10 @@ const block = purebem.of('button');
 
 const Button = React.createClass({
 
+    contextTypes: {
+        router: PropTypes.object
+    },
+
     propTypes: {
         className: PropTypes.string,
         color: PropTypes.oneOf([
@@ -22,6 +26,7 @@ const Button = React.createClass({
         stretched: PropTypes.bool,
         submit: PropTypes.bool,
         text: PropTypes.string,
+        to: PropTypes.string
     },
 
     getDefaultProps() {
@@ -32,13 +37,21 @@ const Button = React.createClass({
             onClick: noop,
             stretched: false,
             submit: false,
-            text: 'Button'
+            text: 'Button',
+            to: ''
         };
     },
 
     isDarkButton() {
         const dark = ['blue', 'facebook', 'green', 'red'];
         return dark.some(color => color === this.props.color);
+    },
+
+    onClick() {
+        if (this.props.to !== '') {
+            this.context.router.push(this.props.to);
+        }
+        this.props.onClick();
     },
 
     onKeyDown(evt) {
@@ -69,7 +82,7 @@ const Button = React.createClass({
             <button
                 className={ classNames }
                 disabled={ disabled || loading }
-                onClick={ this.props.onClick }
+                onClick={ this.onClick }
                 onKeyDown={ this.onKeyDown }
                 tabIndex="0"
                 type={ submit ? 'submit' : 'button' }>
