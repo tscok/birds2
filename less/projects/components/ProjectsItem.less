@@ -1,0 +1,49 @@
+.projects-item {
+    display: flex;
+    padding: 20px;
+    margin-bottom: 2px;
+    background-color: @white;
+    border-bottom: 2px solid @gray-95;
+    .border-radius(3px);
+
+    &:hover {
+        cursor: pointer;
+        background-color: @gray-97;
+    }
+
+    &__data {
+        width: 120px;
+
+        &--name {
+            flex: 1;
+        }
+
+        &--chevron {
+            text-align: right;
+        }
+    }
+
+    &__label {
+        font-size: 15px;
+    }
+
+    &__value {
+        font-size: 15px;
+        font-style: italic;
+        color: @gray-60;
+
+        &--member {
+            color: @green;
+        }
+
+        &--pending {
+            color: @yellow;
+        }
+    }
+
+    &__polyline {
+        stroke: @gray-90;
+        stroke-width: 10;
+        fill: none;
+    }
+}

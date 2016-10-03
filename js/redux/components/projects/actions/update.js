@@ -1,9 +1,8 @@
 const type = 'PROJECTS.UPDATE';
 
-export default ({ root, list }) => {
+export default ({ list }) => {
     return {
         type,
-        meta: { root },
         payload: { list }
     };
 };

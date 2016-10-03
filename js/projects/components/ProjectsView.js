@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import purebem from 'purebem';
-
-import { firebase } from 'js/firebase';
 
 import ProjectsList from './ProjectsList';
 
@@ -25,9 +24,7 @@ const ProjectsView = React.createClass({
 
         return (
             <div className={ block() }>
-                <h1>ProjectsView</h1>
                 <ProjectsList
-                    path="list"
                     root={ this.props.root }
                     uid={ this.props.auth.uid } />
             </div>
@@ -35,4 +32,13 @@ const ProjectsView = React.createClass({
     }
 });
 
-export default attach(ProjectsView, { initialize, root: 'projects' });
+const mapStateToProps = (state, props) => {
+    const component = state.components[props.root];
+    return {
+        empty: !component.loading && component.list.length === 0,
+    };
+};
+
+const ProjectsViewContainer = connect(mapStateToProps)(ProjectsView);
+
+export default attach(ProjectsViewContainer, { initialize, root: 'projects' });

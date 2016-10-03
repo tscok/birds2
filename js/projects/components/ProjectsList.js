@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { List, Spinner } from 'js/core/components';
+import ProjectsEmpty from './ProjectsEmpty';
 import ProjectsItem from './ProjectsItem';
 
 import { update } from 'js/redux/components/projects/actions';
@@ -13,7 +14,6 @@ const block = purebem.of('projects-list');
 const ProjectsList = React.createClass({
 
     propTypes: {
-        path: PropTypes.string.isRequired,
         root: PropTypes.string.isRequired,
         uid: PropTypes.string.isRequired,
         // ...
@@ -36,7 +36,8 @@ const ProjectsList = React.createClass({
         const promises = [];
 
         snap.forEach(childSnap => {
-            promises.push(this.getProject(childSnap.key));
+            const { status } = childSnap.val();
+            promises.push(this.getProject(childSnap.key, status));
         });
 
         Promise.all(promises).then(data => {
@@ -44,10 +45,10 @@ const ProjectsList = React.createClass({
         });
     },
 
-    getProject(id) {
+    getProject(id, status) {
         return new Promise(resolve => {
             firebase.database().ref(`projects/${id}`).on('value', (snap) => {
-                resolve(snap.val());
+                resolve({ ...snap.val(), status });
             });
         });
     },
@@ -57,8 +58,13 @@ const ProjectsList = React.createClass({
             return (<Spinner />);
         }
 
+        if (this.props.empty) {
+            return (<ProjectsEmpty />);
+        }
+
         return (
             <div className={ block() }>
+                <h1>My Projects</h1>
                 <List
                     list={ this.props.list }
                     item={ ProjectsItem } />
@@ -71,18 +77,16 @@ const ProjectsList = React.createClass({
 const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
     return {
+        empty: !component.loading && !component.list.length,
         list: component.list,
         loading: component.loading
     };
 };
 
-const mapDispatchToProps = (dispatch, props) => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        onUpdate: (list) => dispatch(update({
-            root: props.root,
-            list
-        }))
+        onUpdate: (list) => dispatch(update({ list }))
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectsList);
