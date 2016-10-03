@@ -54,7 +54,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --devtool eval --progress --colors --inline --hot --content-base build --history-api-fallback",
+    "dev": "webpack-dev-server --host 0.0.0.0 --port 8080 --devtool eval --progress --colors --inline --hot --content-base build --history-api-fallback",
     "build": "webpack -p"
   },
   "repository": {
