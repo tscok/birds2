@@ -25,6 +25,7 @@ const Divider = React.createClass({
     render() {
         return (
             <div className={ block() }>
+                <hr className={ block('ruler') } />
                 { this.renderText() }
             </div>
         );

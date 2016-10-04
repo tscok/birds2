@@ -1,23 +1,27 @@
 .divider {
-    display: flex;
-    align-items: center;
-    height: 30px;
     margin: 20px 0;
+    text-align: center;
+    position: relative;
 
-    &::before, &::after {
-        content: "";
-        flex: 1;
+    &__ruler {
+        position: absolute;
+        top: 52%;
+        left: 0;
+        width: 100%;
         height: 1px;
+        margin: 0;
+        border: 0;
         background-color: @gray-93;
     }
 
     &__text {
+        position: relative;
         padding: 0 15px;
-        margin-top: -2px;
-        color: @gray-80;
         font-style: italic;
         line-height: 30px;
         cursor: default;
+        color: @gray-80;
+        background-color: @white;
         .user-select;
     }
 }
