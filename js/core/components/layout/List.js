@@ -11,12 +11,16 @@ const List = React.createClass({
         list: PropTypes.array
     },
 
-    renderItem(item, index) {
+    renderItem(item, index, list) {
+        const first = index === 0;
+        const last = index === list.length - 1;
         return (
             <this.props.item
+                first={ first }
                 index={ index }
                 item={ item }
-                key={ index } />
+                key={ index }
+                last={ last } />
         );
     },
 
