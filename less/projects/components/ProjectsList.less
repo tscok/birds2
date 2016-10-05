@@ -1,54 +1,56 @@
 .projects-list {
-    // padding: 20px;
-    // background-color: @white;
-    // border-bottom: 2px solid @gray-95;
 
-    // &__header, &__item {
-    //     display: flex;
-    //     padding: 20px;
-    // }
+    &__header, &__item {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid @gray-95;
+    }
 
-    // &__header {
-    //     font-size: 14px;
-    //     color: @gray-70;
-    // }
+    &__header {
+        font-size: 14px;
+        color: @gray-70;
+        padding: 10px 20px;
+    }
 
-    // &__item {
-    //     border-top: 1px solid @gray-95;
+    &__item {
+        padding: 20px;
 
-    //     &:hover {
-    //         cursor: pointer;
-    //         background-color: @gray-99;
-    //     }
-    // }
+        &:not(&--pending):hover {
+            cursor: pointer;
+            background-color: @gray-99;
+        }
+    }
 
-    // &__data {
-    //     width: 120px;
+    &__data {
+        width: 130px;
+        padding-right: 20px;
 
-    //     &--title {
-    //         flex: 1;
-    //         .ellipsis;
-    //     }
+        &--title {
+            flex: 1;
+        }
 
-    //     &--name {
-    //         width: 160px;
-    //         .ellipsis;
-    //     }
+        &--chevron {
+            width: 20px;
+            display: flex;
+            padding: 0;
+            align-items: center;
+        }
+    }
 
-    //     &--status {
-    //         text-align: right;
-    //     }
+    &__label {
+        display: none;
+    }
 
-    //     &--member {
-    //         color: @green;
-    //     }
+    &__value {
+        &--pending {
+            color: @yellow;
+        }
+    }
 
-    //     &--owner {
-    //         color: @gray-60;
-    //     }
+    &__polyline {
+        stroke: @gray-90;
+        stroke-width: 10;
+        fill: none;
+    }
 
-    //     &--pending {
-    //         color: @yellow;
-    //     }
-    // }
 }

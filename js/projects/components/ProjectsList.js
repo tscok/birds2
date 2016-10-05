@@ -65,6 +65,13 @@ const ProjectsList = React.createClass({
         return (
             <div className={ block() }>
                 <h1>My Projects</h1>
+                <div className={ block('header') }>
+                    <div className={ block('data', ['title']) }>Title</div>
+                    <div className={ block('data') }>Duration</div>
+                    <div className={ block('data') }>Due</div>
+                    <div className={ block('data') }>Status</div>
+                    <div className={ block('data', ['chevron']) }></div>
+                </div>
                 <List
                     list={ this.props.list }
                     item={ ProjectsItem } />
