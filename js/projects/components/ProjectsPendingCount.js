@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
 
+import { firebase } from 'js/firebase';
+
 import { pending } from 'js/redux/components/projects/actions';
 
 
