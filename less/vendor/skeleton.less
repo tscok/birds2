@@ -8,9 +8,7 @@
 /* Base Styles
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 body {
-  font-size: 1.6em;
-  line-height: 1.5;
-  font-weight: 300;
+  font: 300 1.6em/1.5 'open_sansregular', Arial, sans-serif;
   color: @text-color;
 }
 
@@ -24,10 +22,13 @@ body {
 
 /* Typography
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-html, html a, html input, html button {
+html {
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale;
     font-smooth: always;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
 }
 
 /* Links

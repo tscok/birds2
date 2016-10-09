@@ -27,7 +27,7 @@ module.exports = {
                 loader: 'style!css!less'
             },
             {
-                test: /\.(ttf|woff|svg)(\?[a-z0-9]+)?$/,
+                test: /\.(eot|ttf|woff|svg)(\?[a-z0-9]+)?$/,
                 loader: 'file?name=[name].[ext]?[hash:6]'
             }
         ]
