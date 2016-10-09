@@ -1,0 +1,100 @@
+.projects-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 20px;
+    margin-bottom: 3px;
+    border: 1px solid @gray-90;
+    position: relative;
+
+    &:before {
+        content: "";
+        width: 5px;
+        position: absolute;
+        left: -1px;
+        top: -1px;
+        bottom: -1px;
+        background-color: @gray-90;
+    }
+
+    &:not(&--pending):hover {
+        cursor: pointer;
+        background-color: @gray-99;
+    }
+
+    &--pending:hover {
+        cursor: default;
+    }
+
+    &--member:before {
+        background-color: @green;
+    }
+
+    &--owner:before {
+        background-color: @blue;
+    }
+
+    &--pending:before {
+        background-color: @yellow;
+    }
+
+    &__description {
+        flex: 1;
+        margin-bottom: 10px;
+        padding-right: 20px;
+    }
+
+    &__title {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    &__meta {
+        font-size: 13px;
+        color: @gray-70;
+    }
+
+    &__status {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+
+        &:before {
+            @size: 8px;
+            content: "";
+            display: inline-block;
+            width: @size;
+            height: @size;
+            margin-right: @size;
+            .border-radius(@size);
+        }
+
+        &--member {
+            color: @green;
+            &:before { background-color: @green; }
+        }
+
+        &--owner {
+            color: @blue;
+            &:before { background-color: @blue; }
+        }
+
+        &--pending {
+            color: @yellow;
+            &:before { background-color: @yellow; }
+        }
+    }
+
+}
+
+.tablet-layout({
+
+    .projects-item {
+        flex-direction: row;
+        align-items: center;
+
+        &__description {
+            margin-bottom: 0;
+        }
+    }
+
+});

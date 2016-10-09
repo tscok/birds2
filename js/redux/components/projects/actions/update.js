@@ -9,6 +9,8 @@ export default ({ list }) => {
 
 export const reducer = {
     [type]: (state, action) => {
-        return state.setIn(['projects'], { list: action.payload.list, loading: false });
+        return state
+            .setIn(['projects', 'list'], action.payload.list)
+            .setIn(['projects', 'loading'], false);
     }
 };

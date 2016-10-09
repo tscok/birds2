@@ -1,0 +1,33 @@
+.projects-pending-count {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 16px;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    color: @white;
+    background-color: @red;
+    .border-radius(100%);
+
+    .transform(scale(0));
+    .transition(150ms);
+    .opacity(0);
+
+    &--show {
+        .transform(scale(1));
+        .opacity(1);
+    }
+}
+
+.tablet-layout({
+
+    .projects-pending-count {
+        position: relative;
+        left: 5px;
+        top: -10px;
+    }
+
+});

@@ -1,6 +1,7 @@
 export default () => {
     return {
         list: [],
-        loading: true
+        loading: true,
+        pending: {}
     };
 };

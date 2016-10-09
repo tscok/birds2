@@ -8,6 +8,7 @@ const List = React.createClass({
 
     propTypes: {
         item: PropTypes.any,
+        itemProps: PropTypes.object,
         list: PropTypes.array
     },
 
@@ -15,7 +16,7 @@ const List = React.createClass({
         const first = index === 0;
         const last = index === list.length - 1;
         return (
-            <this.props.item
+            <this.props.item { ...this.props.itemProps }
                 first={ first }
                 index={ index }
                 item={ item }

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
+import orderBy from 'lodash.orderby';
 
 import { List, Spinner } from 'js/core/components';
 import ProjectsEmpty from './ProjectsEmpty';
@@ -62,19 +63,18 @@ const ProjectsList = React.createClass({
             return (<ProjectsEmpty />);
         }
 
+        const listItemProps = {
+            root: this.props.root,
+            uid: this.props.uid
+        };
+
         return (
             <div className={ block() }>
                 <h1>My Projects</h1>
-                <div className={ block('header') }>
-                    <div className={ block('data', ['title']) }>Title</div>
-                    <div className={ block('data') }>Duration</div>
-                    <div className={ block('data') }>Due</div>
-                    <div className={ block('data') }>Status</div>
-                    <div className={ block('data', ['chevron']) }></div>
-                </div>
                 <List
-                    list={ this.props.list }
-                    item={ ProjectsItem } />
+                    item={ ProjectsItem }
+                    itemProps={ listItemProps }
+                    list={ orderBy(this.props.list, ['status']) } />
             </div>
         );
     }

@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-// import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import ProjectsList from './ProjectsList';
@@ -31,14 +30,5 @@ const ProjectsView = React.createClass({
         );
     }
 });
-
-// const mapStateToProps = (state, props) => {
-//     const component = state.components[props.root];
-//     return {
-//         empty: !component.loading && component.list.length === 0,
-//     };
-// };
-
-// const ProjectsViewContainer = connect(mapStateToProps)(ProjectsView);
 
 export default attach(ProjectsView, { initialize, root: 'projects' });
