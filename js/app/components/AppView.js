@@ -40,7 +40,7 @@ const AppView = React.createClass({
                 <header className={ block('header') }>
                     { this.renderNavigation({ ...rest }) }
                 </header>
-                <main className={ purebem.many(block('main'), 'container') }>
+                <main className={ block('main') }>
                     { childrenWithProps }
                 </main>
             </div>
