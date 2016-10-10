@@ -4,7 +4,6 @@ import moment from 'moment';
 
 import { capitalize } from 'js/utils';
 
-import { NavLink } from 'js/core/components';
 import ProjectsPendingCount from './ProjectsPendingCount';
 
 
@@ -18,7 +17,6 @@ const ProjectsItem = React.createClass({
 
     propTypes: {
         first: PropTypes.bool.isRequired,
-        index: PropTypes.number.isRequired,
         item: PropTypes.object.isRequired,
         last: PropTypes.bool.isRequired,
         // ...
@@ -49,7 +47,6 @@ const ProjectsItem = React.createClass({
         return (
             <ProjectsPendingCount
                 id={ this.props.item.id }
-                index={ this.props.index }
                 root={ this.props.root } />
         );
     },
