@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
-import debounce from 'lodash.debounce';
 
 import { isNullOrEmpty } from 'js/utils';
 
