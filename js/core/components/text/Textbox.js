@@ -9,6 +9,7 @@ const Textbox = React.createClass({
     propTypes: {
         name: PropTypes.string,
         onChange: PropTypes.func,
+        placeholder: PropTypes.string,
         stretched: PropTypes.bool,
         type: PropTypes.oneOf([
             'text', 'password'
@@ -18,6 +19,7 @@ const Textbox = React.createClass({
 
     getDefaultProps() {
         return {
+            placeholder: '',
             stretched: false,
             type: 'text'
         };
@@ -34,9 +36,10 @@ const Textbox = React.createClass({
             <input
                 className={ block({ stretched }) }
                 name={ this.props.name }
+                onChange={ this.handleChange }
+                placeholder={ this.props.placeholder }
                 type={ this.props.type }
-                value={ this.props.value }
-                onChange={ this.handleChange } />
+                value={ this.props.value } />
         );
     }
 
