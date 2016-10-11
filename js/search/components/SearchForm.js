@@ -8,7 +8,7 @@ import { debouncer, isNullOrEmpty } from 'js/utils';
 
 import { TextboxContainer } from 'js/core/components';
 
-import { loading, update } from 'js/redux/components/search/actions';
+import { reset, search, update } from 'js/redux/components/search/actions';
 
 
 const block = purebem.of('search-form');
@@ -21,43 +21,47 @@ const SearchForm = React.createClass({
         uid: PropTypes.string,
         // redux
         keyword: PropTypes.string,
-        onMatch: PropTypes.func
+        onSearch: PropTypes.func,
+        onReset: PropTypes.func,
+        onResult: PropTypes.func,
+        searching: PropTypes.bool
     },
 
     componentDidMount() {
         this.publicRef = ref('projects').orderByChild('type').equalTo('Public');
     },
 
-    componentWillReceiveProps(nextProps) {
-        console.log(nextProps);
-        
-        if (!isNullOrEmpty(nextProps.keyword.trim())) {
-            console.log('has keyword');
-            this.props.onSearch();
-            debouncer(this.handleSearch);
-        } else {
-            console.log('no keyword');
-            this.props.onMatch([]);
+    componentWillUpdate(nextProps) {
+        if (nextProps.searching) {
+            debouncer(() => this.publicRef.once('value').then(this.handleSnap))
         }
+    },
 
-        // if (!hasKeyword && nextProps.result.length) {
-        //     console.log('!hasKeyword && result');
-        //     this.props.onMatch([]);
-        // }
+    componentWillUnmount() {
+        this.props.onReset();
     },
 
     isMatch(str) {
-        const pattern = new RegExp(`${this.props.keyword}`, 'i');
-        return isNullOrEmpty(str) ? false : pattern.test(str);
+        const { keyword } = this.props;
+        const pattern = new RegExp(`${keyword}`, 'i');
+
+        if (isNullOrEmpty(str) || isNullOrEmpty(keyword)) {
+            return false;
+        }
+        
+        return pattern.test(str);
     },
 
-    isOwner(project) {
-        return project.ownerId === this.props.uid;
+    isOwn(ownerId) {
+        return ownerId === this.props.uid;
     },
 
-    handleSearch() {
-        console.log('handleSearch');
-        this.publicRef.once('value').then(this.handleSnap);
+    handleSearch(value) {
+        if (isNullOrEmpty(value.trim())) {
+            this.props.onReset();
+            return;
+        }
+        this.props.onSearch();
     },
 
     handleSnap(snap) {
@@ -65,17 +69,17 @@ const SearchForm = React.createClass({
 
         const matches = filter(projects, (project) => {
             const match = this.isMatch(project.owner) || this.isMatch(project.title);
-            return match && !this.isOwner(project);
+            return match && !this.isOwn(project.ownerId);
         });
 
-        this.props.onMatch(matches);
+        this.props.onResult(matches);
     },
 
     render() {
         return (
             <div className={ block() }>
-                <p className={ block('body') }>Search for projects by title or name of project owner. Any projects you own will be omitted from results.<br />Clicking the Join button will notify the project's owner of your request. You may Cancel pending requests at any time.</p>
                 <TextboxContainer
+                    onChangeCallback={ this.handleSearch }
                     path={ this.props.path }
                     placeholder="Project title or name of owner…"
                     root={ this.props.root }
@@ -89,15 +93,16 @@ const SearchForm = React.createClass({
 const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
     return {
-        keyword: component.keyword.value
-        // result: component.result
+        keyword: component.keyword.value,
+        searching: component.searching
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onMatch: (result) => dispatch(update({ result })),
-        onSearch: () => dispatch(loading())
+        onSearch: () => dispatch(search({ searching: true })),
+        onReset: () => dispatch(reset()),
+        onResult: (result) => dispatch(update({ result }))
     };
 };
 

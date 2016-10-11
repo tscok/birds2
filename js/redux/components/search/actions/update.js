@@ -11,6 +11,6 @@ export const reducer = {
     [type]: (state, action) => {
         return state
             .setIn(['search', 'result'], action.payload.result)
-            .setIn(['search', 'loading'], false);
+            .setIn(['search', 'searching'], false);
     }
 };

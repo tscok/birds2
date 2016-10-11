@@ -1,9 +1,11 @@
 import initialize from './actions/initialize';
-import loading from './actions/loading';
+import reset from './actions/reset';
+import search from './actions/search';
 import update from './actions/update';
 
 export {
     initialize,
-    loading,
+    reset,
+    search,
     update
 };

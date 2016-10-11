@@ -18,18 +18,14 @@ const SearchResult = React.createClass({
         uid: PropTypes.string,
         // redux
         keyword: PropTypes.string,
-        loading: PropTypes.bool,
-        result: PropTypes.array
+        result: PropTypes.array,
+        searching: PropTypes.bool
     },
 
     render() {
-        const { keyword, loading, result } = this.props;
+        const { keyword, result, searching } = this.props;
 
-        if (loading) {
-            return (<Spinner />);
-        }
-
-        if (isNullOrEmpty(keyword.trim())) {
+        if (isNullOrEmpty(keyword.trim()) && !searching) {
             return null;
         }
 
@@ -54,8 +50,8 @@ const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
     return {
         keyword: component.keyword.value,
-        loading: component.loading,
-        result: component.result
+        result: component.result,
+        searching: component.searching
     };
 };
 
