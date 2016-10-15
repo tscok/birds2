@@ -52,7 +52,7 @@ const SearchForm = React.createClass({
         return pattern.test(str);
     },
 
-    isOwn(ownerId) {
+    isOwnProject(ownerId) {
         return ownerId === this.props.uid;
     },
 
@@ -69,7 +69,7 @@ const SearchForm = React.createClass({
 
         const matches = filter(projects, (project) => {
             const match = this.isMatch(project.owner) || this.isMatch(project.title);
-            return match && !this.isOwn(project.ownerId);
+            return match && !this.isOwnProject(project.ownerId);
         });
 
         this.props.onResult(matches);
@@ -79,9 +79,11 @@ const SearchForm = React.createClass({
         return (
             <div className={ block() }>
                 <TextboxContainer
+                    large={ true }
+                    loading={ this.props.searching }
                     onChangeCallback={ this.handleSearch }
                     path={ this.props.path }
-                    placeholder="Project title or name of owner…"
+                    placeholder="Project title or owner's name…"
                     root={ this.props.root }
                     stretched={ true } />
             </div>
@@ -92,6 +94,7 @@ const SearchForm = React.createClass({
 
 const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
+    console.log('search-form component', component);
     return {
         keyword: component.keyword.value,
         searching: component.searching

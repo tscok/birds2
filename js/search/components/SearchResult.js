@@ -22,24 +22,34 @@ const SearchResult = React.createClass({
         searching: PropTypes.bool
     },
 
-    render() {
-        const { keyword, result, searching } = this.props;
-
-        if (isNullOrEmpty(keyword.trim()) && !searching) {
-            return null;
-        }
-
+    renderResult() {
+        const { result, searching } = this.props;
         const listItemProps = {
             root: this.props.root
         };
 
+        if (!result.length && !searching) {
+            return (<p className={ block('empty') }>No projects match your search :(</p>);
+        }
+
+        return (
+            <List
+                item={ SearchResultItem }
+                itemProps={ listItemProps }
+                list={ result } />
+        );
+    },
+
+    render() {
+        const { keyword } = this.props;
+
+        if (isNullOrEmpty(keyword.trim())) {
+            return null;
+        }
+
         return (
             <div className={ block() }>
-                <p className={ block('matches') }>{ result.length } projects matches your search.</p>
-                <List
-                    item={ SearchResultItem }
-                    itemProps={ listItemProps }
-                    list={ result } />
+                { this.renderResult() }
             </div>
         );
     }

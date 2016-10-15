@@ -11,9 +11,16 @@ const SearchResultButton = React.createClass({
         root: PropTypes.string.isRequired
     },
 
+    handleClick() {
+        // ...
+    },
+
     render() {
         return (
-            <Button text="Join" />
+            <Button
+                onClick={ this.handleClick }
+                stretched={ true }
+                text="Join" />
         );
     }
 
