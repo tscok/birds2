@@ -8,7 +8,8 @@ const SearchResultButton = React.createClass({
     propTypes: {
         id: PropTypes.string.isRequired,
         path: PropTypes.string.isRequired,
-        root: PropTypes.string.isRequired
+        root: PropTypes.string.isRequired,
+        uid: PropTypes.string.isRequired
     },
 
     handleClick() {

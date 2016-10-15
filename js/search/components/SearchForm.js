@@ -94,7 +94,6 @@ const SearchForm = React.createClass({
 
 const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
-    console.log('search-form component', component);
     return {
         keyword: component.keyword.value,
         searching: component.searching

@@ -25,7 +25,8 @@ const SearchResult = React.createClass({
     renderResult() {
         const { result, searching } = this.props;
         const listItemProps = {
-            root: this.props.root
+            root: this.props.root,
+            uid: this.props.uid
         };
 
         if (!result.length && !searching) {

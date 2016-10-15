@@ -14,7 +14,8 @@ const SearchResultItem = React.createClass({
         item: PropTypes.object.isRequired,
         last: PropTypes.bool.isRequired,
         // ...
-        root: PropTypes.string
+        root: PropTypes.string,
+        uid: PropTypes.string
     },
 
     getDate(timestamp) {
@@ -29,8 +30,9 @@ const SearchResultItem = React.createClass({
         return (
             <SearchResultButton
                 id={ this.props.item.id }
-                path="search.button"
-                root={ this.props.root } />
+                path="button"
+                root={ this.props.root }
+                uid={ this.props.uid } />
         );
     },
 
