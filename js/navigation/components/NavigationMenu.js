@@ -32,7 +32,6 @@ const NavigationMenu = React.createClass({
         return (
             <div className={ block('logout') }>
                 <Button
-                    color="none"
                     onClick={ this.props.onLogout }
                     stretched={ true }
                     text="Log out" />
