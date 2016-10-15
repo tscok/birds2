@@ -19,14 +19,17 @@
     outline: none;
     .border-radius(3px);
 
-    &--stretched {
-        width: 100%;
-    }
-
+    // Color
     &--gray {
         background-color: @gray-86;
         color: inherit;
         .hover(@gray-86);
+    }
+
+    &--green {
+        background-color: @green;
+        color: @white;
+        .hover(@green);
     }
 
     &--red {
@@ -41,9 +44,20 @@
         .hover(@facebook);
     }
 
-    &--none {
+    &--outlined {
         border: 1px solid @gray-86;
         background-color: transparent !important;
         .hover(@gray-86);
+    }
+
+    // Size
+    &--stretched {
+        width: 100%;
+    }
+
+    &--large {
+        height: @size + 10;
+        line-height: @size + 10;
+        padding: 0 20px;
     }
 }

@@ -18,9 +18,10 @@ const Button = React.createClass({
         color: PropTypes.oneOf([
             'blue', 'gray', 'green',
             'red', 'white', 'yellow',
-            'facebook', 'none'
+            'facebook', 'outlined'
         ]),
         disabled: PropTypes.bool,
+        large: PropTypes.bool,
         loading: PropTypes.bool,
         onClick: PropTypes.func,
         stretched: PropTypes.bool,
@@ -31,8 +32,9 @@ const Button = React.createClass({
 
     getDefaultProps() {
         return {
-            color: 'gray',
+            color: 'outlined',
             disabled: false,
+            large: false,
             loading: false,
             onClick: noop,
             stretched: false,
@@ -75,8 +77,8 @@ const Button = React.createClass({
     },
 
     render() {
-        const { className, color, disabled, loading, stretched, submit } = this.props;
-        const classNames = purebem.many(block({ color, stretched }), className);
+        const { className, color, disabled, large, loading, stretched, submit } = this.props;
+        const classNames = purebem.many(block({ color, large, stretched }), className);
 
         return (
             <button
