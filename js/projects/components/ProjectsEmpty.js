@@ -7,21 +7,26 @@ import { Button } from 'js/core/components';
 const block = purebem.of('projects-empty');
 
 const ProjectsEmpty = React.createClass({
+
+    propTypes: {
+        uid: PropTypes.string
+    },
+
     render() {
         return (
             <div className={ block() }>
-                <h1>Starting fresh!</h1>
-                <p>You are currently not participating in any projects.<br/>To get started, choose an action below.</p>
+                <h1>Your projects will appear here</h1>
+                <p>Projects you have created, joined or requested to join will be listed on this page.</p>
                 <div className={ block('buttons') }>
                     <div className={ block('button') }>
                         <Button
-                            color="none"
+                            large={ true }
                             text="Create New Project"
                             to="/create" />
                     </div>
                     <div className={ block('button') }>
                         <Button
-                            color="none"
+                            large={ true }
                             text="Join Existing Project"
                             to="/search" />
                     </div>
