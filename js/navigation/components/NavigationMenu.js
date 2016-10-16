@@ -6,15 +6,18 @@ import { isNullOrEmpty } from 'js/utils';
 
 import { Button, NavLink } from 'js/core/components';
 
+import links from 'js/navigation/links';
+
 
 const block = purebem.of('navigation-menu');
 
 const NavigationMenu = React.createClass({
 
     propTypes: {
-        onLogout: PropTypes.func,
-        root: PropTypes.string,
-        // ...
+        onLogout: PropTypes.func.isRequired,
+        onReset: PropTypes.func.isRequired,
+        root: PropTypes.string.isRequired,
+        // redux
         project: PropTypes.object
     },
 
@@ -39,33 +42,29 @@ const NavigationMenu = React.createClass({
         );
     },
 
-    renderProjectNav() {
-        const { id } = this.props.project;
+    renderNavLink(link, index) {
         return (
-            <nav className={ block('links') }>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}` }>Project</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/entry` }>New Entry</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/members` }>Members</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/rings` }>Rings</NavLink>
-                <NavLink baseClass={ block('link') } to={ `/project/${id}/export` }>Data</NavLink>
-            </nav>
-        );
-    },
-
-    renderRegularNav() {
-        return (
-            <nav className={ block('links') }>
-                <NavLink baseClass={ block('link') } to="/projects">My Projects</NavLink>
-                <NavLink baseClass={ block('link') } to="/create">Create</NavLink>
-                <NavLink baseClass={ block('link') } to="/search">Search</NavLink>
-            </nav>
+            <NavLink
+                key={ index }
+                baseClass={ block('link') }
+                onClick={ this.props.onReset }
+                to={ link.to }>
+                { link.text }
+            </NavLink>
         );
     },
 
     render() {
+        const { id } = this.props.project;
+        const navigation = this.isProject() ? links({ id }).project : links().regular;
+
         return (
             <div className={ block('content') }>
-                { this.isProject() ? this.renderProjectNav() : this.renderRegularNav() }
+                <nav className={ block('links') }>
+                    {
+                        [].map.call(navigation, this.renderNavLink)
+                    }
+                </nav>
                 { this.renderLogout() }
             </div>
         );

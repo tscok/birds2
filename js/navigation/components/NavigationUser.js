@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { Avatar, Button, ClickOutside, NavLink } from 'js/core/components';
-import { toggle } from 'js/redux/components/navigation/actions';
+import { reset, toggle } from 'js/redux/components/navigation/actions';
+
+import links from 'js/navigation/links';
 
 
 const block = purebem.of('navigation-user');
@@ -12,6 +14,7 @@ const NavigationUser = React.createClass({
 
     propTypes: {
         onLogout: PropTypes.func.isRequired,
+        onReset: PropTypes.func.isRequired,
         root: PropTypes.string.isRequired,
         user: PropTypes.shape({
             email: PropTypes.string,
@@ -20,9 +23,9 @@ const NavigationUser = React.createClass({
             provider: PropTypes.string,
             uid: PropTypes.string
         }).isRequired,
-        // ...
+        // redux
         expanded: PropTypes.bool,
-        onToggle: PropTypes.func,
+        onToggle: PropTypes.func
     },
 
     handleCollapse() {
@@ -63,14 +66,29 @@ const NavigationUser = React.createClass({
         );
     },
 
+    renderNavLink(link, index) {
+        return (
+            <NavLink
+                key={ index }
+                activeClass={ false }
+                baseClass={ block('link') }
+                onClick={ this.props.onReset }
+                to={ link.to }>
+                { link.text }
+            </NavLink>
+        );
+    },
+
     renderExpanded() {
+        const navigation = links().regular;
+
         return (
             <div className={ block('expanded') }>
                 { this.renderInfo() }
                 <nav className={ block('links') }>
-                    <NavLink to="/projects" baseClass={ block('link') } activeClass={ false }>My Projects</NavLink>
-                    <NavLink to="/create" baseClass={ block('link') } activeClass={ false }>Create</NavLink>
-                    <NavLink to="/search" baseClass={ block('link') } activeClass={ false }>Search</NavLink>
+                    {
+                        [].map.call(navigation, this.renderNavLink)
+                    }
                     <hr className={ block('divider') } />
                     <NavLink to="" onClick={ this.props.onLogout } baseClass={ block('link') } activeClass={ false }>Log out</NavLink>
                 </nav>
@@ -112,6 +130,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
+        onReset: () => dispatch(reset()),
         onToggle: (expanded) => dispatch(toggle({
             root: props.root,
             path: 'user.expanded',

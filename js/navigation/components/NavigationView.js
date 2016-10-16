@@ -5,7 +5,7 @@ import purebem from 'purebem';
 import { isNullOrEmpty } from 'js/utils';
 
 import attach from 'js/redux/components/attach';
-import { initialize, logout, toggle } from 'js/redux/components/navigation/actions';
+import { initialize, logout, reset, toggle } from 'js/redux/components/navigation/actions';
 
 import NavigationMenu from './NavigationMenu';
 import NavigationUser from './NavigationUser';
@@ -60,9 +60,11 @@ const NavigationView = React.createClass({
                     <div className={ block('content', { expanded, collapsed }) }>
                         <NavigationMenu
                             onLogout={ this.props.onLogout }
+                            onReset={ this.handleReset }
                             root={ this.props.root } />
                         <NavigationUser
                             onLogout={ this.props.onLogout }
+                            onReset={ this.handleReset }
                             root={ this.props.root }
                             user={ this.props.auth } />
                     </div>
@@ -83,12 +85,12 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = (dispatch, props) => {
     return {
         onLogout: () => dispatch(logout()),
+        onReset: () => dispatch(reset()),
         onToggle: (expanded) => dispatch(toggle({
             root: props.root,
             path: 'expanded',
             expanded: !expanded
-        })),
-        onReset: () => dispatch(initialize())
+        }))
     };
 };
 
