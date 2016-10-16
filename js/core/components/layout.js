@@ -5,6 +5,7 @@ import FormGroup from './layout/FormGroup';
 import List from './layout/List';
 import NavLink from './layout/NavLink';
 import Spinner from './layout/Spinner';
+import Status from './layout/Status';
 
 export {
     Avatar,
@@ -13,5 +14,6 @@ export {
     FormGroup,
     List,
     NavLink,
-    Spinner
+    Spinner,
+    Status
 };

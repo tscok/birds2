@@ -1,0 +1,28 @@
+.status {
+    font-size: 13px;
+
+    &:before {
+        @size: 8px;
+        content: "";
+        display: inline-block;
+        width: @size;
+        height: @size;
+        margin-right: @size;
+        .border-radius(@size);
+    }
+
+    &--member {
+        color: @green;
+        &:before { background-color: @green; }
+    }
+
+    &--owner {
+        color: @blue;
+        &:before { background-color: @blue; }
+    }
+
+    &--pending {
+        color: @yellow;
+        &:before { background-color: @yellow; }
+    }
+}
