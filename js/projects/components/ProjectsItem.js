@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 import moment from 'moment';
 
-import { capitalize } from 'js/utils';
+import { Status } from 'js/core/components';
 
 import ProjectsPendingCount from './ProjectsPendingCount';
 
@@ -68,7 +68,9 @@ const ProjectsItem = React.createClass({
                     </div>
                     <div className={ block('meta') }>Created { created } by { item.owner }. Due { due }.</div>
                 </div>
-                <div className={ block('status', { status }) }>{ capitalize(status) }</div>
+                <div className={ block('status') }>
+                    <Status status={ status } />
+                </div>
             </div>
         );
     }
