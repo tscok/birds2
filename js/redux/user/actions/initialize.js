@@ -10,7 +10,7 @@ export default () => {
 };
 
 export const reducer = {
-    [type]: (state, action) => {
-        return state.set('auth', { ...user });
+    [type]: (state) => {
+        return state.set('auth', user());
     }
 };

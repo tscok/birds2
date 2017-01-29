@@ -7,9 +7,11 @@ import { getUser } from 'js/firebase';
 import LoginButton from './LoginButton';
 import LoginForm from './LoginForm';
 
-import { Divider } from 'js/core/components';
+import {
+    Attach,
+    Divider
+} from 'js/core/components';
 
-import attach from 'js/redux/components/attach';
 import { error, initialize, reset, submit } from 'js/redux/components/login/actions';
 import { update } from 'js/redux/user/actions';
 
@@ -32,6 +34,7 @@ const LoginView = React.createClass({
     },
 
     componentDidMount() {
+        console.log('Login: signout');
         firebase.auth().signOut();
     },
 
@@ -107,4 +110,4 @@ const mapDispatchToProps = (dispatch, props) => {
 
 const LoginViewContainer = connect(mapStateToProps, mapDispatchToProps)(LoginView);
 
-export default attach(LoginViewContainer, { initialize, root: 'login' });
+export default Attach(LoginViewContainer, { initialize, root: 'login' });

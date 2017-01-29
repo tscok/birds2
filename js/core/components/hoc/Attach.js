@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 
-export default (WrappedComponent, { initialize, root }) => {
+export default (WrappedComponent, { initialize, root, terminate = null } = {}) => {
 
     const mapStateToProps = (state) => {
         const component = state.components[root];
@@ -15,7 +15,8 @@ export default (WrappedComponent, { initialize, root }) => {
 
     const mapDispatchToProps = (dispatch, props) => {
         return {
-            onMount: () => dispatch(initialize(root, props))
+            onMount: () => dispatch(initialize(root, props)),
+            onUnmount: () => dispatch(terminate({ root }))
         };
     };
 
@@ -26,6 +27,7 @@ export default (WrappedComponent, { initialize, root }) => {
         propTypes: {
             initialized: PropTypes.bool.isRequired,
             onMount: PropTypes.func.isRequired,
+            onUnmount: PropTypes.func.isRequired,
             root: PropTypes.string.isRequired,
             // ...
             component: PropTypes.object
@@ -41,6 +43,10 @@ export default (WrappedComponent, { initialize, root }) => {
 
         componentWillUnmount() {
             console.log(`Component (${this.props.root}) unmounted.`);
+
+            if (terminate) {
+                this.props.onUnmount();
+            }
         },
 
         render() {
@@ -48,7 +54,7 @@ export default (WrappedComponent, { initialize, root }) => {
                 return null;
             }
 
-            const { children, initialized, onMount, ...rest } = this.props;
+            const { initialized, onMount, ...rest } = this.props;
 
             return (
                 <WrappedComponent { ...rest } />

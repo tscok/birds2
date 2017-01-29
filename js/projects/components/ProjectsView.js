@@ -3,7 +3,7 @@ import purebem from 'purebem';
 
 import ProjectsList from './ProjectsList';
 
-import attach from 'js/redux/components/attach';
+import { Attach } from 'js/core/components';
 import { initialize } from 'js/redux/components/projects/actions';
 
 
@@ -31,4 +31,4 @@ const ProjectsView = React.createClass({
     }
 });
 
-export default attach(ProjectsView, { initialize, root: 'projects' });
+export default Attach(ProjectsView, { initialize, root: 'projects' });

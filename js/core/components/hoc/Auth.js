@@ -49,10 +49,11 @@ export default (AppComponent) => {
             this.handleAuthChanges();
         },
 
-        componentWillReceiveProps(nextProps) {
+        componentWillUpdate(nextProps) {
             const { auth, location } = nextProps;
 
-            if (!auth.uid && location.pathname !== '/login') {
+            if (!auth.uid && location.pathname !== 'login') {
+                console.log('Auth: unauthorized');
                 this.getLoginView();
             }
         },
@@ -63,10 +64,13 @@ export default (AppComponent) => {
                 const { uid } = this.props.auth;
 
                 if (authData && !isNullOrEmpty(uid)) {
+                    console.log('Auth: authorized');
                     return;
                 } else if (authData) {
+                    console.log('Auth: update');
                     this.props.onAuth(getUser(authData));
                 } else {
+                    console.log('Auth: reset');
                     this.props.onMount();
                     this.getLoginView();
                 }
@@ -74,6 +78,7 @@ export default (AppComponent) => {
         },
 
         getLoginView() {
+            console.log('Auth: route to login');
             this.context.router.replace('/login');
         },
 

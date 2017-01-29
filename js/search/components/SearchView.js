@@ -4,7 +4,7 @@ import purebem from 'purebem';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
 
-import attach from 'js/redux/components/attach';
+import { Attach } from 'js/core/components';
 import { initialize } from 'js/redux/components/search/actions';
 
 
@@ -42,4 +42,4 @@ const SearchView = React.createClass({
 
 });
 
-export default attach(SearchView, { initialize, root: 'search' });
+export default Attach(SearchView, { initialize, root: 'search' });

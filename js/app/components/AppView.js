@@ -3,7 +3,7 @@ import purebem from 'purebem';
 
 import { isNullOrEmpty } from 'js/utils';
 
-import auth from 'js/redux/user/auth';
+import { Auth } from 'js/core/components';
 import { NavigationView } from 'js/navigation/components';
 
 
@@ -49,4 +49,4 @@ const AppView = React.createClass({
 
 });
 
-export default auth(AppView);
+export default Auth(AppView);

@@ -96,4 +96,4 @@ const mapDispatchToProps = (dispatch, props) => {
 
 const NavigationViewContainer = connect(mapStateToProps, mapDispatchToProps)(NavigationView);
 
-export default attach(NavigationViewContainer, { initialize, root: 'navigation' });
+export default Attach(NavigationViewContainer, { initialize, root: 'navigation' });
