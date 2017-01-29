@@ -5,14 +5,13 @@ import purebem from 'purebem';
 import { Avatar, Button, ClickOutside, NavLink } from 'js/core/components';
 import { reset, toggle } from 'js/redux/components/navigation/actions';
 
-import links from 'js/navigation/links';
-
 
 const block = purebem.of('navigation-user');
 
 const NavigationUser = React.createClass({
 
     propTypes: {
+        links: PropTypes.array.isRequired,
         onLogout: PropTypes.func.isRequired,
         onReset: PropTypes.func.isRequired,
         root: PropTypes.string.isRequired,
@@ -66,7 +65,7 @@ const NavigationUser = React.createClass({
         );
     },
 
-    renderNavLink(link, index) {
+    renderLink(link, index) {
         return (
             <NavLink
                 key={ index }
@@ -80,17 +79,20 @@ const NavigationUser = React.createClass({
     },
 
     renderExpanded() {
-        const navigation = links().regular;
 
         return (
             <div className={ block('expanded') }>
                 { this.renderInfo() }
                 <nav className={ block('links') }>
                     {
-                        [].map.call(navigation, this.renderNavLink)
+                        [].map.call(this.props.links, this.renderLink)
                     }
                     <hr className={ block('divider') } />
-                    <NavLink to="" onClick={ this.props.onLogout } baseClass={ block('link') } activeClass={ false }>Log out</NavLink>
+                    <NavLink
+                        activeClass={ false }
+                        baseClass={ block('link') }
+                        onClick={ this.props.onLogout }
+                        to="/">Log out</NavLink>
                 </nav>
             </div>
         );

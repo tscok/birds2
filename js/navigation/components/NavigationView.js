@@ -4,8 +4,10 @@ import purebem from 'purebem';
 
 import { isNullOrEmpty } from 'js/utils';
 
-import attach from 'js/redux/components/attach';
+import { Attach } from 'js/core/components';
 import { initialize, logout, reset, toggle } from 'js/redux/components/navigation/actions';
+
+import links from 'js/navigation/links';
 
 import NavigationMenu from './NavigationMenu';
 import NavigationUser from './NavigationUser';
@@ -30,11 +32,18 @@ const NavigationView = React.createClass({
         onLogout: PropTypes.func
     },
 
+    getDefaultProps() {
+        return {
+            project: {}
+        };
+    },
+
     componentDidMount() {
         window.addEventListener('resize', this.handleReset);
     },
 
     componentWillUnmount() {
+        this.props.onReset();
         window.removeEventListener('resize', this.handleReset);
     },
 
@@ -50,7 +59,7 @@ const NavigationView = React.createClass({
     },
 
     render() {
-        const { expanded } = this.props;
+        const { expanded, project } = this.props;
         const collapsed = expanded === false;
 
         return (
@@ -59,12 +68,14 @@ const NavigationView = React.createClass({
                 <ClickOutside onClick={ () => expanded && this.handleToggle() }>
                     <div className={ block('content', { expanded, collapsed }) }>
                         <NavigationMenu
+                            links={ links(project.id) }
                             onLogout={ this.props.onLogout }
-                            onReset={ this.handleReset }
+                            onReset={ this.props.onReset }
                             root={ this.props.root } />
                         <NavigationUser
+                            links={ links() }
                             onLogout={ this.props.onLogout }
-                            onReset={ this.handleReset }
+                            onReset={ this.props.onReset }
                             root={ this.props.root }
                             user={ this.props.auth } />
                     </div>
@@ -78,13 +89,17 @@ const NavigationView = React.createClass({
 const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
     return {
-        expanded: component.expanded
+        expanded: component.expanded,
+        project: state.components.project
     };
 };
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onLogout: () => dispatch(logout()),
+        onLogout: () => {
+            console.log('dispatch logout');
+            dispatch(logout());
+        },
         onReset: () => dispatch(reset()),
         onToggle: (expanded) => dispatch(toggle({
             root: props.root,
