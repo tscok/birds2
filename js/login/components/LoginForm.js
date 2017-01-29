@@ -60,6 +60,7 @@ const LoginForm = React.createClass({
                 </FormGroup>
                 <div className={ block('submit') }>
                     <Button
+                        color="gray"
                         loading={ this.props.submitting }
                         stretched={ true }
                         submit={ true }

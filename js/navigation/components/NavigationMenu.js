@@ -1,12 +1,9 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 import purebem from 'purebem';
 
 import { isNullOrEmpty } from 'js/utils';
 
-import { Button, NavLink } from 'js/core/components';
-
-import links from 'js/navigation/links';
+import { RouteButton, NavLink } from 'js/core/components';
 
 
 const block = purebem.of('navigation-menu');
@@ -14,17 +11,10 @@ const block = purebem.of('navigation-menu');
 const NavigationMenu = React.createClass({
 
     propTypes: {
+        links: PropTypes.array.isRequired,
         onLogout: PropTypes.func.isRequired,
         onReset: PropTypes.func.isRequired,
-        root: PropTypes.string.isRequired,
-        // redux
-        project: PropTypes.object
-    },
-
-    getDefaultProps() {
-        return {
-            project: {}
-        };
+        root: PropTypes.string.isRequired
     },
 
     isProject() {
@@ -34,15 +24,15 @@ const NavigationMenu = React.createClass({
     renderLogout() {
         return (
             <div className={ block('logout') }>
-                <Button
+                <RouteButton
                     onClick={ this.props.onLogout }
-                    stretched={ true }
-                    text="Log out" />
+                    text="Log out"
+                    to="/login" />
             </div>
         );
     },
 
-    renderNavLink(link, index) {
+    renderLink(link, index) {
         return (
             <NavLink
                 key={ index }
@@ -55,14 +45,11 @@ const NavigationMenu = React.createClass({
     },
 
     render() {
-        const { id } = this.props.project;
-        const navigation = this.isProject() ? links({ id }).project : links().regular;
-
         return (
             <div className={ block('content') }>
                 <nav className={ block('links') }>
                     {
-                        [].map.call(navigation, this.renderNavLink)
+                        [].map.call(this.props.links, this.renderLink)
                     }
                 </nav>
                 { this.renderLogout() }
@@ -72,11 +59,4 @@ const NavigationMenu = React.createClass({
 
 });
 
-const mapStateToProps = (state, props) => {
-    const component = state.components[props.root];
-    return {
-        project: state.components.project
-    };
-};
-
-export default connect(mapStateToProps)(NavigationMenu);
+export default NavigationMenu;

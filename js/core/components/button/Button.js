@@ -14,7 +14,6 @@ const Button = React.createClass({
     },
 
     propTypes: {
-        className: PropTypes.string,
         color: PropTypes.oneOf([
             'blue', 'gray', 'green',
             'red', 'white', 'yellow',
@@ -77,12 +76,11 @@ const Button = React.createClass({
     },
 
     render() {
-        const { className, color, disabled, large, loading, stretched, submit } = this.props;
-        const classNames = purebem.many(block({ color, large, stretched }), className);
+        const { color, disabled, large, loading, stretched, submit } = this.props;
 
         return (
             <button
-                className={ classNames }
+                className={ block({ color, large, stretched }) }
                 disabled={ disabled || loading }
                 onClick={ this.onClick }
                 onKeyDown={ this.onKeyDown }
