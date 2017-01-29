@@ -1,7 +1,7 @@
 import projects from 'js/redux/components/projects/state/projects';
 
 
-const type = 'PROJECTS.INITIALIZE';
+const type = 'PROJECTS.RESET';
 
 export default () => {
     return {
@@ -10,7 +10,7 @@ export default () => {
 };
 
 export const reducer = {
-    [type]: (state) => {
+    [type]: (state, action) => {
         return state.setIn(['projects'], projects());
     }
 };

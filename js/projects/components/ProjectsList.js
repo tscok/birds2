@@ -7,7 +7,8 @@ import { List, Spinner } from 'js/core/components';
 import ProjectsEmpty from './ProjectsEmpty';
 import ProjectsItem from './ProjectsItem';
 
-import { update } from 'js/redux/components/projects/actions';
+// import { set } from 'js/redux/components/project/actions';
+import { reset, update } from 'js/redux/components/projects/actions';
 
 
 const block = purebem.of('projects-list');
@@ -15,6 +16,8 @@ const block = purebem.of('projects-list');
 const ProjectsList = React.createClass({
 
     propTypes: {
+        onReset: PropTypes.func.isRequired,
+        // onSelect: PropTypes.func.isRequired,
         root: PropTypes.string.isRequired,
         uid: PropTypes.string.isRequired,
         // ...
@@ -30,6 +33,7 @@ const ProjectsList = React.createClass({
     },
 
     componentWillUnmount() {
+        this.props.onReset();
         this.projectsRef.off('value', this.handleSnap);
     },
 
@@ -64,6 +68,7 @@ const ProjectsList = React.createClass({
         }
 
         const listItemProps = {
+            // onSelect: this.props.onSelect,
             root: this.props.root,
             uid: this.props.uid
         };
@@ -92,6 +97,8 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        onReset: () => dispatch(reset()),
+        // onSelect: (project) => dispatch(set({ project })),
         onUpdate: (list) => dispatch(update({ list }))
     };
 };

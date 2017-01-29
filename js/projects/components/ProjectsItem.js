@@ -20,6 +20,7 @@ const ProjectsItem = React.createClass({
         item: PropTypes.object.isRequired,
         last: PropTypes.bool.isRequired,
         // ...
+        // onSelect: PropTypes.func,
         root: PropTypes.string,
         uid: PropTypes.string
     },
@@ -33,10 +34,8 @@ const ProjectsItem = React.createClass({
     },
 
     onClick(item) {
-        if (item.status === 'pending') {
-            return;
-        }
-        this.context.router.push(`project/${item.id}`);
+        // this.props.onSelect(item);
+        this.context.router.push(`project/${item.id}/dashboard`);
     },
 
     renderPendingCount() {
@@ -54,13 +53,15 @@ const ProjectsItem = React.createClass({
     render() {
         const { first, item, last } = this.props;
         const { expire, timestamp } = item.dates;
-        const { status } = item;
+        const isPending = item.status === 'pending';
 
         const created = this.getDateFromNow(timestamp);
         const due = this.getDateFromNow(expire);
 
         return (
-            <div className={ block({ first, last, status }) } onClick={ () => this.onClick(item) }>
+            <div
+                className={ block({ first, last, status: item.status }) }
+                onClick={ () => !isPending && this.onClick(item) }>
                 <div className={ block('description') }>
                     <div className={ block('title') }>
                         { item.title }
@@ -69,7 +70,7 @@ const ProjectsItem = React.createClass({
                     <div className={ block('meta') }>Created { created } by { item.owner }. Due { due }.</div>
                 </div>
                 <div className={ block('status') }>
-                    <Status status={ status } />
+                    <Status status={ item.status } />
                 </div>
             </div>
         );
