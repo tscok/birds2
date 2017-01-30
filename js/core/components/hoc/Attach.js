@@ -54,7 +54,7 @@ export default (WrappedComponent, { initialize, root, terminate = null } = {}) =
                 return null;
             }
 
-            const { initialized, onMount, ...rest } = this.props;
+            const { initialized, onMount, onUnmount, ...rest } = this.props;
 
             return (
                 <WrappedComponent { ...rest } />

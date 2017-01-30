@@ -13,8 +13,7 @@ const AppView = React.createClass({
 
     propTypes: {
         auth: PropTypes.object,
-        children: PropTypes.node,
-        location: PropTypes.object
+        children: PropTypes.node
     },
 
     isUser() {

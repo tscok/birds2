@@ -83,9 +83,12 @@ export default (AppComponent) => {
         },
 
         render() {
-            const { onAuth, onMount, ...rest } = this.props;
+            const { auth, children } = this.props;
+
             return (
-                <AppComponent { ...rest } />
+                <AppComponent
+                    auth={ auth }
+                    children={ children } />
             );
         }
 
