@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 const MembersView = React.createClass({
 
     propTypes: {
-        auth: PropTypes.string,
+        auth: PropTypes.object,
         root: PropTypes.string
     },
 
