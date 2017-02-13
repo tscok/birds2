@@ -18,12 +18,9 @@ const block = purebem.of('navigation-view');
 
 const NavigationView = React.createClass({
 
-    contextTypes: {
-        router: PropTypes.object
-    },
-
     propTypes: {
         auth: PropTypes.object.isRequired,
+        location: PropTypes.object.isRequired,
         root: PropTypes.string.isRequired,
         // ...
         expanded: PropTypes.any,
@@ -69,9 +66,9 @@ const NavigationView = React.createClass({
                     <div className={ block('content', { expanded, collapsed }) }>
                         <NavigationMenu
                             links={ links(project.id) }
+                            location={ window.location.pathname }
                             onLogout={ this.props.onLogout }
-                            onReset={ this.props.onReset }
-                            root={ this.props.root } />
+                            onReset={ this.props.onReset } />
                         <NavigationUser
                             links={ links() }
                             onLogout={ this.props.onLogout }
@@ -96,10 +93,9 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onLogout: () => {
-            console.log('dispatch logout');
-            dispatch(logout());
-        },
+        // onCollapse: () => dispatch(collapse()),
+        // onExpand: () => dispatch(expand()),
+        onLogout: () => dispatch(logout()),
         onReset: () => dispatch(reset()),
         onToggle: (expanded) => dispatch(toggle({
             root: props.root,

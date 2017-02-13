@@ -3,6 +3,7 @@ import purebem from 'purebem';
 
 import { isNullOrEmpty } from 'js/utils';
 
+import NavigationLink from './NavigationLink';
 import { RouteButton, NavLink } from 'js/core/components';
 
 
@@ -10,16 +11,24 @@ const block = purebem.of('navigation-menu');
 
 const NavigationMenu = React.createClass({
 
+    contextTypes: {
+        router: PropTypes.object.isRequired
+    },
+
     propTypes: {
         links: PropTypes.array.isRequired,
         onLogout: PropTypes.func.isRequired,
-        onReset: PropTypes.func.isRequired,
-        root: PropTypes.string.isRequired
+        onReset: PropTypes.func.isRequired
     },
 
     isProject() {
         return !isNullOrEmpty(this.props.project.id);
     },
+
+    // handleClick(route) {
+    //     console.log(this.context);
+    //     this.context.router.push(route);
+    // },
 
     renderLogout() {
         return (
@@ -34,13 +43,14 @@ const NavigationMenu = React.createClass({
 
     renderLink(link, index) {
         return (
-            <NavLink
+            <NavigationLink
+                className={ block('link') }
                 key={ index }
-                baseClass={ block('link') }
+                // onClick={ () => this.handleClick(link.to) }
                 onClick={ this.props.onReset }
                 to={ link.to }>
                 { link.text }
-            </NavLink>
+            </NavigationLink>
         );
     },
 

@@ -19,10 +19,10 @@ const NavLink = React.createClass({
 
     render() {
         const block = purebem.of(this.props.baseClass);
-        const active = this.props.activeClass ? `${block()}--active` : '';
+        const className = this.props.activeClass ? `${block()}--active` : '';
 
         return (
-            <Link { ...this.props } className={ block() } activeClassName={ active } />
+            <Link { ...this.props } className={ block() } activeClassName={ className } />
         );
     }
 

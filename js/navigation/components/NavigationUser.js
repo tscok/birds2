@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
 
-import { Avatar, Button, ClickOutside, NavLink } from 'js/core/components';
+import NavigationLink from './NavigationLink';
+import { Avatar, Button, ClickOutside } from 'js/core/components';
+
 import { reset, toggle } from 'js/redux/components/navigation/actions';
 
 
@@ -67,14 +69,13 @@ const NavigationUser = React.createClass({
 
     renderLink(link, index) {
         return (
-            <NavLink
+            <NavigationLink
+                className={ block('link') }
                 key={ index }
-                activeClass={ false }
-                baseClass={ block('link') }
-                onClick={ this.props.onReset }
+                // onClick={ this.props.onReset }
                 to={ link.to }>
                 { link.text }
-            </NavLink>
+            </NavigationLink>
         );
     },
 
@@ -88,11 +89,11 @@ const NavigationUser = React.createClass({
                         [].map.call(this.props.links, this.renderLink)
                     }
                     <hr className={ block('divider') } />
-                    <NavLink
-                        activeClass={ false }
-                        baseClass={ block('link') }
-                        onClick={ this.props.onLogout }
-                        to="/">Log out</NavLink>
+                    <NavigationLink
+                        className={ block('link') }
+                        hasActiveClass={ false }
+                        // onClick={ this.props.onLogout }
+                        to="/">Log out</NavigationLink>
                 </nav>
             </div>
         );
