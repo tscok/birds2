@@ -1,7 +1,21 @@
 .form-group {
     margin-bottom: 20px;
-    
+
     &__label {
         display: block;
+        margin-bottom: 5px;
+    }
+
+    &__description {
+        font-size: 12px;
+        color: @gray-60;
+    }
+
+    &--inline {
+        flex: 1;
+    }
+
+    &--inline + &--inline {
+        padding-left: 10%;
     }
 }

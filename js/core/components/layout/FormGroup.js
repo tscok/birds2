@@ -11,16 +11,16 @@ const FormGroup = React.createClass({
     propTypes: {
         children: PropTypes.node,
         description: PropTypes.string,
-        label: PropTypes.string,
-        type: PropTypes.oneOf([
-            'block',
-            'inline'
-        ])
+        inline: PropTypes.bool,
+        label: PropTypes.string
     },
 
     getDefaultProps() {
         return {
-            type: 'block'
+            children: null,
+            description: '',
+            inline: false,
+            label: '&nbsp;'
         };
     },
 
@@ -30,9 +30,9 @@ const FormGroup = React.createClass({
         }
 
         return (
-            <span className={ block('description') }>
+            <div className={ block('description') }>
                 { this.props.description }
-            </span>
+            </div>
         );
     },
 
@@ -50,9 +50,10 @@ const FormGroup = React.createClass({
     },
 
     render() {
-        const { type } = this.props;
+        const { inline } = this.props;
+
         return (
-            <div className={ block({ type }) }>
+            <div className={ block({ inline }) }>
                 { this.renderLabel() }
                 { this.props.children }
             </div>
