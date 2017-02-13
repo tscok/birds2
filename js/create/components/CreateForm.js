@@ -16,17 +16,17 @@ const CreateForm = React.createClass({
     propTypes: {
         root: PropTypes.string,
         // redux
-        title: PropTypes.string
+        form: PropTypes.object
     },
 
     getDefaultProps() {
         return {
-            title: ''
+            form: {}
         };
     },
 
     handleSubmit() {
-
+        // ...
     },
 
     render() {
@@ -38,7 +38,34 @@ const CreateForm = React.createClass({
                         root={ this.props.root }
                         stretched={ true } />
                 </FormGroup>
-                <div>Input: { this.props.title }</div>
+                <div className={ block('row') }>
+                    <FormGroup
+                        description="YYYYMMDD"
+                        inline={ true }
+                        label="Start date">
+                        <TextboxContainer
+                            path="form.date.start"
+                            root={ this.props.root }
+                            stretched={ true } />
+                    </FormGroup>
+                    <FormGroup
+                        description="YYYYMMDD"
+                        inline={ true }
+                        label="End date">
+                        <TextboxContainer
+                            path="form.date.end"
+                            root={ this.props.root }
+                            stretched={ true } />
+                    </FormGroup>
+                </div>
+                <Button
+                    color="green"
+                    stretched={ true }
+                    submit={ true }
+                    text="Save" />
+                <Button
+                    stretched={ true }
+                    text="Reset" />
             </form>
         );
     }
@@ -48,7 +75,7 @@ const CreateForm = React.createClass({
 const mapStateToProps = (state, props) => {
     const component = state.components[props.root];
     return {
-        title: component.form.title.value
+        form: component.form
     };
 };
 
