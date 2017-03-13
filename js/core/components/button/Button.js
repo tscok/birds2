@@ -20,6 +20,7 @@ const Button = React.createClass({
             'facebook', 'outlined'
         ]),
         disabled: PropTypes.bool,
+        inline: PropTypes.bool,
         large: PropTypes.bool,
         loading: PropTypes.bool,
         onClick: PropTypes.func,
@@ -33,6 +34,7 @@ const Button = React.createClass({
         return {
             color: 'outlined',
             disabled: false,
+            inline: false,
             large: false,
             loading: false,
             onClick: noop,
@@ -76,11 +78,11 @@ const Button = React.createClass({
     },
 
     render() {
-        const { color, disabled, large, loading, stretched, submit } = this.props;
+        const { color, disabled, inline, large, loading, stretched, submit } = this.props;
 
         return (
             <button
-                className={ block({ color, large, stretched }) }
+                className={ block({ color, inline, large, stretched }) }
                 disabled={ disabled || loading }
                 onClick={ this.onClick }
                 onKeyDown={ this.onKeyDown }

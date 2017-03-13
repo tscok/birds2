@@ -63,4 +63,13 @@
         line-height: @size + 10;
         padding: 0 20px;
     }
+
+    // Position
+    &--inline {
+        display: inline-block;
+
+        & + & {
+            margin-left: 20px;
+        }
+    }
 }
