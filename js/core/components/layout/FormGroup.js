@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import { isNullOrEmpty } from 'js/utils';
-
 
 const block = purebem.of('form-group');
 
@@ -20,12 +18,12 @@ const FormGroup = React.createClass({
             children: null,
             description: '',
             inline: false,
-            label: '&nbsp;'
+            label: ''
         };
     },
 
     renderDescription() {
-        if (isNullOrEmpty(this.props.description)) {
+        if (this.props.description === '') {
             return null;
         }
 
@@ -37,7 +35,7 @@ const FormGroup = React.createClass({
     },
 
     renderLabel() {
-        if (isNullOrEmpty(this.props.label)) {
+        if (this.props.label === '') {
             return null;
         }
 

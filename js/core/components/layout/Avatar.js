@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import { isNullOrEmpty } from 'js/utils';
-
 
 const block = purebem.of('avatar');
 
@@ -11,6 +9,13 @@ const Avatar = React.createClass({
     propTypes: {
         photoUrl: PropTypes.string,
         userName: PropTypes.string
+    },
+
+    getDefaultProps() {
+        return {
+            photoUrl: '',
+            userName: ''
+        };
     },
 
     getFirstLetter() {
@@ -33,7 +38,7 @@ const Avatar = React.createClass({
         return (
             <div className={ block() }>
             {
-                isNullOrEmpty(this.props.photoUrl)
+                this.props.photoUrl === ''
                     ? this.renderLetter()
                     : this.renderPhoto()
             }

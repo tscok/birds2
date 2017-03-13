@@ -2,8 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
 
-import { isNullOrEmpty } from 'js/utils';
-
 import { Attach } from 'js/core/components';
 import { initialize, logout, reset, toggle } from 'js/redux/components/navigation/actions';
 

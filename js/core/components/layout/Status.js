@@ -12,8 +12,18 @@ const Status = React.createClass({
         status: PropTypes.string
     },
 
+    getDefaultProps() {
+        return {
+            status: ''
+        };
+    },
+
     render() {
         const { status } = this.props;
+
+        if (status === '') {
+            return null;
+        }
 
         return (
             <div className={ block({ status }) }>

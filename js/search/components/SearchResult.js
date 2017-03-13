@@ -2,8 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import purebem from 'purebem';
 
-import { isNullOrEmpty } from 'js/utils';
-
 import { List, Spinner } from 'js/core/components';
 import SearchResultItem from './SearchResultItem';
 
@@ -15,11 +13,19 @@ const SearchResult = React.createClass({
     propTypes: {
         path: PropTypes.string,
         root: PropTypes.string,
-        uid: PropTypes.string,
+        uid: PropTypes.string,      // get from mapStateToProps?
         // redux
         keyword: PropTypes.string,
         result: PropTypes.array,
         searching: PropTypes.bool
+    },
+
+    getDefaultProps() {
+        return {
+            keyword: '',
+            result: [],
+            searching: false
+        };
     },
 
     renderResult() {
@@ -42,9 +48,7 @@ const SearchResult = React.createClass({
     },
 
     render() {
-        const { keyword } = this.props;
-
-        if (isNullOrEmpty(keyword.trim())) {
+        if (this.props.keyword.trim() === '') {
             return null;
         }
 

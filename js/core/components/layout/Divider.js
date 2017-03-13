@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import purebem from 'purebem';
 
-import { isNullOrEmpty } from 'js/utils';
-
 
 const block = purebem.of('divider');
 
@@ -12,8 +10,14 @@ const Divider = React.createClass({
         text: PropTypes.string
     },
 
+    getDefaultProps() {
+        return {
+            text: ''
+        };
+    },
+
     renderText() {
-        if (isNullOrEmpty(this.props.text)) {
+        if (this.props.text === '') {
             return null;
         }
         
