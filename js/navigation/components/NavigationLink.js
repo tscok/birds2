@@ -29,7 +29,6 @@ const NavigationLink = React.createClass({
             <Link
                 className={ block() }
                 activeClassName={ activeClassName }
-                activeStyle={{ color: 'red' }}
                 // onClick={ this.props.onClick }
                 to={ to }>
                 { children }

@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 import purebem from 'purebem';
 
-import { Button, RouteButton } from 'js/core/components';
+import { RouteButton } from 'js/core/components';
 
 
 const block = purebem.of('projects-empty');
@@ -19,9 +18,6 @@ const ProjectsEmpty = React.createClass({
                 <h1>Your projects will appear here</h1>
                 <p>Projects you have created, joined or requested to join will be listed on this page.</p>
                 <div className={ block('buttons') }>
-                    <Link to="/create">
-                        test
-                    </Link>
                     <div className={ block('button') }>
                         <RouteButton
                             large={ true }
@@ -29,7 +25,7 @@ const ProjectsEmpty = React.createClass({
                             to="/create" />
                     </div>
                     <div className={ block('button') }>
-                        <Button
+                        <RouteButton
                             large={ true }
                             text="Join Existing Project"
                             to="/search" />
