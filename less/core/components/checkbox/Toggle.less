@@ -1,0 +1,41 @@
+.toggle {
+    position: relative;
+    width: 80px;
+    height: 40px;
+    border-radius: 40px;
+    border: 1px solid @gray-90;
+    background-color: @white;
+    cursor: pointer;
+    outline: none;
+
+    &:focus {
+        border-color: @gray-80;
+    }
+
+    &:after {
+        @size: 30px;
+        content: "";
+        display: block;
+        width: @size;
+        height: @size;
+        border-radius: @size;
+        background-color: @gray-90;
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        .transition(all 150ms);
+    }
+
+    &--active {
+        border-color: @blue;
+
+        &:focus {
+            border-color: darken(@blue, 20%);
+        }
+
+        &:after {
+            background-color: @blue;
+            .transform(translate3d(40px,0,0));
+        }
+    }
+}
