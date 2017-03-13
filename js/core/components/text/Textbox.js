@@ -11,6 +11,7 @@ const Textbox = React.createClass({
     propTypes: {
         large: PropTypes.bool,
         loading: PropTypes.bool,
+        maxLength: PropTypes.number,
         name: PropTypes.string,
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
@@ -25,6 +26,7 @@ const Textbox = React.createClass({
         return {
             large: false,
             loading: false,
+            maxLength: null,
             placeholder: '',
             stretched: false,
             type: 'text'
@@ -47,12 +49,13 @@ const Textbox = React.createClass({
     },
 
     render() {
-        const { large, loading, stretched } = this.props;
+        const { large, loading, maxLength, stretched } = this.props;
 
         return (
             <div className={ block({ large, loading, stretched }) }>
                 <input
                     className={ block('input') }
+                    maxLength={ maxLength }
                     name={ this.props.name }
                     onChange={ this.handleChange }
                     placeholder={ this.props.placeholder }

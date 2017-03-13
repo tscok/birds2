@@ -1,35 +1,37 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { noop } from 'js/utils';
-
 import Textbox from './Textbox';
-import { textbox as textboxChange } from 'js/redux/components/core/actions';
+
+import { noop } from 'js/utils';
+import { getComponent } from 'js/redux/components/utils';
+import { textbox as update } from 'js/redux/components/core/actions';
 
 
 const TextboxContainer = React.createClass({
 
     propTypes: {
-        component: PropTypes.object,
+        path: PropTypes.string.isRequired,
+        root: PropTypes.string.isRequired,
+        // ...
         onChange: PropTypes.func,
-        onChangeCallback: PropTypes.func,
-        path: PropTypes.string,
-        root: PropTypes.string
+        // redux
+        onUpdate: PropTypes.func.isRequired
     },
 
     getDefaultProps() {
         return {
-            onChangeCallback: noop
+            onChange: noop
         };
     },
 
     handleChange(value) {
         this.props.onChange(value);
-        this.props.onChangeCallback(value);
+        this.props.onUpdate(value);
     },
 
     render() {
-        const { onChange, onChangeCallback, ...rest } = this.props;
+        const { onChange, onUpdate, path, root, ...rest } = this.props;
         return (
             <Textbox { ...rest } onChange={ this.handleChange } />
         );
@@ -38,14 +40,15 @@ const TextboxContainer = React.createClass({
 });
 
 const mapStateToProps = (state, props) => {
+    const component = getComponent(state.components, props);
     return {
-        component: state.components[props.root][props.path]
+        value: component.value
     };
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onChange: (value) => dispatch(textboxChange({
+        onUpdate: (value) => dispatch(update({
             root: props.root,
             path: props.path,
             value
