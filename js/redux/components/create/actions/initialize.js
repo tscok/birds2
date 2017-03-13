@@ -1,4 +1,4 @@
-import create from 'js/redux/components/create/state/create';
+import initialState from 'js/redux/components/create/state';
 
 
 const type = 'CREATE.INITIALIZE';
@@ -11,6 +11,6 @@ export default () => {
 
 export const reducer = {
     [type]: (state) => {
-        return state.setIn(['create'], create());
+        return state.setIn(['create'], initialState());
     }
 };

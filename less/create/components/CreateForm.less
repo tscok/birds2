@@ -1,5 +1,30 @@
 .create-form {
-    &__row {
+    &__columns {
         display: flex;
+        flex-direction: column;
+    }
+
+    &__column {
+        flex: 1;
+    }
+
+    &__buttons {
+        margin-top: 60px;
     }
 }
+
+.tablet-layout({
+
+    .create-form {
+        &__columns {
+            flex-direction: row;
+        }
+
+        &__column {
+            & + & {
+                padding-left: 10%;
+            }
+        }
+    }
+
+});
