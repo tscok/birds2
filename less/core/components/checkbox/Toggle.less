@@ -8,18 +8,19 @@
     cursor: pointer;
     outline: none;
 
-    &:focus {
+    &:focus, &:focus:after {
         border-color: @gray-80;
     }
 
     &:after {
-        @size: 30px;
+        @size: 28px;
         content: "";
         display: block;
         width: @size;
         height: @size;
-        border-radius: @size;
-        background-color: @gray-90;
+        border: 1px solid @gray-90;
+        border-radius: 100%;
+        background-color: @white;
         position: absolute;
         top: 4px;
         left: 4px;
@@ -27,14 +28,8 @@
     }
 
     &--active {
-        border-color: @blue;
-
-        &:focus {
-            border-color: darken(@blue, 20%);
-        }
-
         &:after {
-            background-color: @blue;
+            background-color: @gray-90;
             .transform(translate3d(40px,0,0));
         }
     }
