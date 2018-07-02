@@ -1,0 +1,29 @@
+.project-entry {
+    &__columns {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__column {
+        flex: 1;
+    }
+}
+
+.tablet-layout({
+
+    .project-entry {
+        max-width: 700px;
+        margin: 0 auto;
+
+        &__columns {
+            flex-direction: row;
+        }
+
+        &__column {
+            & + & {
+                padding-left: 40px;
+            }
+        }
+    }
+
+});

@@ -1,0 +1,33 @@
+@import (reference) '~less/index.less';
+
+
+.login-view {
+    margin: 0 20px;
+
+    &__error {
+        padding: 10px 20px;
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: @red;
+        color: @white;
+    }
+}
+
+.tablet-layout({
+
+    .login-view {
+        margin: 0 auto;
+        max-width: 420px;
+        padding: 40px;
+        background-color: @white;
+        border-bottom: 2px solid @gray-95;
+
+        &__error {
+            text-align: left;
+        }
+    }
+
+});

@@ -1,0 +1,24 @@
+.clearfix() {
+    &:before, &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+@responsive-size-tablet: 550px;
+@responsive-size-desktop: 960px;
+
+.tablet-layout(@styles) {
+    @media screen and (min-width: @responsive-size-tablet) {
+        @styles();
+    }
+}
+
+.desktop-layout(@styles) {
+    @media screen and (min-width: @responsive-size-desktop) {
+        @styles();
+    }
+}

@@ -1,0 +1,25 @@
+@import (reference) '~less/index.less';
+
+
+.divider {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+
+    &:before,
+    &:after {
+        flex: 1;
+        content: '';
+        height: 1px;
+        background-color: @gray-93;
+    }
+
+    &__text {
+        padding: 0 15px;
+        font-style: italic;
+        line-height: 30px;
+        cursor: default;
+        user-select: none;
+        color: @gray-80;
+    }
+}

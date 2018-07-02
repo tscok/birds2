@@ -1,0 +1,56 @@
+@import (reference) '~less/index.less';
+
+
+.textbox {
+    @size: 40px;
+    position: relative;
+
+    &__input {
+        width: auto;
+        height: @size;
+        min-width: 200px;
+        padding: 0 10px;
+        line-height: @size;
+        border: 1px solid @gray-90;
+        outline: none;
+        background-color: @white;
+        border-radius: 3px;
+
+        &:not([disabled]):focus {
+            border-color: @gray-80;
+        }
+    }
+
+    &--error &__input {
+        border-color: @red !important;
+    }
+
+    &__spinner {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    &--large &__input {
+        height: @size + 10;
+        line-height: @size + 10;
+        padding: 0 15px;
+    }
+
+    &--large &__spinner {
+        top: 15px;
+        right: 15px;
+    }
+
+    &--loading &__input {
+        padding-right: @size;
+    }
+
+    &--large&--loading &__input {
+        padding-right: @size + 10;
+    }
+
+    &--stretched &__input {
+        width: 100%;
+    }
+}

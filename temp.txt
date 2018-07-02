@@ -1,0 +1,47 @@
+src/
+    app/
+        home/
+        create/
+        login/
+        navigation/
+        project/
+        search/
+
+        AppView.js
+    core/
+    fonts/
+    less/
+    redux/
+    site/
+
+    firebase.js
+    index.js
+    routes.js
+    utils.js
+
+----------
+
+const routes = [
+    {
+        path: '/',
+        component: SiteView
+    },
+    {
+        path: '/app',
+        component: AppView
+    },
+    {
+        path: '/app/project/:projectId',
+        component: ProjectView,
+        routes: [
+            {
+                path: '/app/project/:projectId/add',
+                component: AddView
+            },
+            {
+                path: '/app/project/:projectId/members',
+                component: MembersView
+            }
+        ]
+    }
+];

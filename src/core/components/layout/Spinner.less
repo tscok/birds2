@@ -1,0 +1,116 @@
+@import (reference) '~less/index.less';
+
+
+// http://tobiasahlin.com/spinkit/
+.spinner {
+    margin: 0 auto;
+
+    // Circle
+
+    &--circle {
+        width: 20px;
+        height: 20px;
+        position: relative;
+    }
+
+    &--circle &__child {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        &:before {
+            content: '';
+            display: block;
+            margin: 0 auto;
+            width: 15%;
+            height: 15%;
+            background-color: #00ff00;
+            border-radius: 100%;
+            animation: 'circle-bounce-delay' 1.2s infinite ease-in-out both;
+        }
+
+        &--2 {
+            transform: rotate(30deg);
+            &:before { animation-delay: -1.1s; }}
+        &--3 {
+            transform: rotate(60deg);
+            &:before { animation-delay: -1s; }}
+        &--4 {
+            transform: rotate(90deg);
+            &:before { animation-delay: -0.9s; }}
+        &--5 {
+            transform: rotate(120deg);
+            &:before { animation-delay: -0.8s; }}
+        &--6 {
+            transform: rotate(150deg);
+            &:before { animation-delay: -0.7s; }}
+        &--7 {
+            transform: rotate(180deg);
+            &:before { animation-delay: -0.6s; }}
+        &--8 {
+            transform: rotate(210deg);
+            &:before { animation-delay: -0.5s; }}
+        &--9 {
+            transform: rotate(240deg);
+            &:before { animation-delay: -0.4s; }}
+        &--10 {
+            transform: rotate(270deg);
+            &:before { animation-delay: -0.3s; }}
+        &--11 {
+            transform: rotate(300deg);
+            &:before { animation-delay: -0.2s; }}
+        &--12 {
+            transform: rotate(330deg);
+            &:before { animation-delay: -0.1s; }}
+    }
+
+    &--circle&--dark &__child:before {
+        background-color: black;
+    }
+
+    &--circle&--light &__child:before {
+        background-color: white;
+    }
+
+    @keyframes circle-bounce-delay {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
+    }
+
+
+    // Linear
+
+    &--linear {
+        width: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &--linear &__child {
+        width: 16px;
+        height: 16px;
+        background-color: #00ff00;
+        border-radius: 100%;
+        animation: 'linear-bounce-delay' 1.4s infinite ease-in-out both;
+
+        &--1 { animation-delay: -0.32s; }
+        &--2 { animation-delay: -0.16s; }
+    }
+
+    &--linear&--dark &__child {
+        background-color: black;
+    }
+
+    &--linear&--light &__child {
+        background-color: white;
+    }
+
+    @keyframes linear-bounce-delay {
+        0%, 80%, 100% { transform: scale(0) }
+        40% { transform: scale(1.0) }
+    }
+
+}

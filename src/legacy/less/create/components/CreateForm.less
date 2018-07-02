@@ -1,0 +1,38 @@
+.create-form {
+    &__columns {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__column {
+        flex: 1;
+    }
+
+    &__error {
+        margin: 40px 0 0;
+        padding: 10px 20px;
+        border-radius: 3px;
+        background-color: @red;
+        color: @white;
+    }
+
+    &__buttons {
+        margin-top: 60px;
+    }
+}
+
+.tablet-layout({
+
+    .create-form {
+        &__columns {
+            flex-direction: row;
+        }
+
+        &__column {
+            & + & {
+                padding-left: 10%;
+            }
+        }
+    }
+
+});
